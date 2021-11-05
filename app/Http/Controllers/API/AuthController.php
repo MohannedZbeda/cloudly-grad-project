@@ -45,13 +45,16 @@ class AuthController extends Controller
 
     public function reset_password(Request $request)
     {
+        if(!$request->email)
+          return response()->json(['status_code' => 422, 'ar_message' => 'يرجى تحديد البريد الإكتروني', 'en_message' => 'Please specify an email'])->setStatusCode(422);  
         $user = User::where('email', $request->email)->first();
         $validator = Validator::make($request->all(), [
         'code' => [
             'required',
             Rule::in([$user->info->password_reset_code]), 
         ],
-        'password' => 'required|confirmed'
+        'password' => 'required|confirmed',
+        'email' => 'required|exists:users,email'
 
         ]);
         if($validator->fails()) 
@@ -72,7 +75,7 @@ class AuthController extends Controller
             'string',
             Rule::unique('users')->ignore($request->id)
             ],
-            'password' => 'required|string',
+            'password' => 'required|confirmed',
             'phone' => [
                 'required',
                 'string',
@@ -118,9 +121,9 @@ class AuthController extends Controller
         }
         $user = User::where('username', $request->username)->first();
         if(!$user)
-            return response()->json(['status_code' => 422, 'message.ar' => 'لا يوجد مستخدم بهذا الإسم', 'message.en ' => 'No user with that username was found'])->setStatusCode(422);
+            return response()->json(['status_code' => 422, 'ar_message' => 'لا يوجد مستخدم بهذا الإسم', 'en_message ' => 'No user with that username was found'])->setStatusCode(422);
         else if(!Hash::check($request->password, $user->password))
-        return response()->json(['status_code' => 422, 'message.ar' => 'رقم سري خاطئ', 'message.en ' => 'Wrong password'])->setStatusCode(422);
+        return response()->json(['status_code' => 422, 'ar_message' => 'رقم سري خاطئ', 'en_message ' => 'Wrong password'])->setStatusCode(422);
         
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json(['status_code' => 200, 'token' => $token])->setStatusCode(200);
