@@ -3,14 +3,9 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-
-
-
-
-
+use Facade\FlareClient\View;
 
 Auth::routes(['register' => false]);
-
 Route::prefix('dashboard')->group(function () {
     Route::prefix('/admins')->group(function () {
         Route::get('/', [UserController::class, 'index']);

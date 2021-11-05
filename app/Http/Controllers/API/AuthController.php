@@ -4,23 +4,83 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserInfo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
+    public function genToken(Request $request)
+    {
+        if($request->cookie('token'))
+         return response()->json(['token' => $request->cookie('token')])->setStatusCode(200);
+        return response()->json(['message' => 'Unauthorized'])->setStatusCode(401);
+    }
+    
+
+    public function send_reset_email(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['email' => 'required|email']);
+        if($validator->fails()) 
+          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
+        
+        $user = User::where('email', $request->email)->first();
+        if(!$user)
+          return response()->json([
+            'status_code' => 404,
+            'ar_message' => 'لم يتم العثور على بريد إلكتروني بهذا العنوان',
+            'en_message' => 'Your Email Address was not found in our database'])
+            ->setStatusCode(404);
+        $user_info = UserInfo::where('user_id', $user->id)->first();
+        $user_info->password_reset_code = substr(str_shuffle("0123456789"), 0, 5);
+        $user_info->save(); 
+        
+        Mail::to($user->email)->send(new \App\Mail\ResetPasswordMail($user_info->password_reset_code, $user->name));
+        return response()->json(['status_code' => 200, 'message' => 'Email Sent'])->setStatusCode(200);
+    }
+
+    public function reset_password(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        $validator = Validator::make($request->all(), [
+        'code' => [
+            'required',
+            Rule::in([$user->info->password_reset_code]), 
+        ],
+        'password' => 'required|confirmed'
+
+        ]);
+        if($validator->fails()) 
+          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
+        $user->password = Hash::make($request->password);
+        $user->save();
+        return response()->json(['status_code' => 200, 'message' => 'Password Has Been Reset'])->setStatusCode(200);
+        
+        }
+        
+    
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|unique:users,email,except,'.$request->id ?? '',
-            'username' => 'required|string|unique:users,username,except,'.$request->id ?? '',
-            'password' => 'required|string'
+            'username' => [
+            'required',
+            'string',
+            Rule::unique('users')->ignore($request->id)
+            ],
+            'password' => 'required|string',
+            'phone' => [
+                'required',
+                'string',
+                Rule::unique('user_info')->ignore($request->id, 'user_id')
+            ]
         ]);
         if($validator->fails()) 
-          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity']);
+          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
         
         $user = new User();
         $user->name =  $request->name;
@@ -31,8 +91,20 @@ class AuthController extends Controller
         $user->state = true;
         $user->save();
         
+        $user_info = new UserInfo();
+        $user_info->user_id = $user->id;
+        $user_info->phone = $request->phone;
+        $user_info->save();
+        
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['status_code' => 201, 'user' => $user, 'token' => $token]);
+        
+        return response()
+               ->json([
+                   'status_code' => 201,
+                   'user' => User::with('info')->find($user->id),
+                   'token' => $token])
+               ->withCookie('token', $token, 10080)
+               ->setStatusCode(201);
     }
 
     public function login(Request $request)
@@ -42,16 +114,16 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
         if($validator->fails()) {
-            return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity']);
+            return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
         }
         $user = User::where('username', $request->username)->first();
         if(!$user)
-            return response()->json(['status_code' => 422, 'message.ar' => 'لا يوجد مستخدم بهذا الإسم', 'message.en ' => 'No user with that username was found']);
+            return response()->json(['status_code' => 422, 'message.ar' => 'لا يوجد مستخدم بهذا الإسم', 'message.en ' => 'No user with that username was found'])->setStatusCode(422);
         else if(!Hash::check($request->password, $user->password))
-        return response()->json(['status_code' => 422, 'message.ar' => 'رقم سري خاطئ', 'message.en ' => 'Wrong password']);
+        return response()->json(['status_code' => 422, 'message.ar' => 'رقم سري خاطئ', 'message.en ' => 'Wrong password'])->setStatusCode(422);
         
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['status_code' => 200, 'token' => $token]);
+        return response()->json(['status_code' => 200, 'token' => $token])->setStatusCode(200);
 
     }
 }

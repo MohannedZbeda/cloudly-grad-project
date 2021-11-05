@@ -20,5 +20,8 @@ Route::middleware('auth:sanctum')->post('/user', function (Request $request) {
     return 'Protected Route';
 });
 
+Route::get('/token', [AuthController::class, 'genToken']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/send-reset-email', [AuthController::class, 'send_reset_email']);
+Route::post('/reset-password', [AuthController::class, 'reset_password']);
