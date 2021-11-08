@@ -13,6 +13,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/admin/{id}', [UserController::class, 'GetUser']);
         Route::post('/', [UserController::class, 'store']);    
         Route::put('/', [UserController::class, 'update']);    
+        Route::post('/change-state', [UserController::class, 'changeState']);
     });   
     Route::post('/logout', function() {
         return Auth::logout();

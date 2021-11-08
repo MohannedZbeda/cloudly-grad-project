@@ -11,13 +11,27 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
+use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
     public function genToken(Request $request)
     {
         if($request->cookie('token'))
-         return response()->json(['token' => $request->cookie('token')])->setStatusCode(200);
+        { 
+            $token = PersonalAccessToken::findToken($request->cookie('token'));
+            if(!$token)
+              return response()->json(['message' => 'Unauthorized'])->setStatusCode(401);
+            $user = $token->tokenable;
+            DB::table('personal_access_tokens')
+            ->where('id', $token->id)
+            ->delete();
+            cookie()->forget('token');
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json(['token' => $token, 'user' => $user])->withCookie('token', $token, 10080)->setStatusCode(200);
+        
+        }
         return response()->json(['message' => 'Unauthorized'])->setStatusCode(401);
     }
     
@@ -61,19 +75,21 @@ class AuthController extends Controller
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
         $user->password = Hash::make($request->password);
         $user->save();
+        $user_info = UserInfo::where('user_id', $user->id)->first();
+        $user_info->password_reset_code = null;
+        $user_info->save();
         return response()->json(['status_code' => 200, 'message' => 'Password Has Been Reset'])->setStatusCode(200);
         
         }
         
-    
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|unique:users,email,except,'.$request->id ?? '',
+            'email' => 'required|unique:users,email',
             'username' => [
             'required',
             'string',
-            Rule::unique('users')->ignore($request->id)
+            Rule::unique('users')
             ],
             'password' => 'required|confirmed',
             'phone' => [
@@ -126,7 +142,13 @@ class AuthController extends Controller
         return response()->json(['status_code' => 422, 'ar_message' => 'رقم سري خاطئ', 'en_message ' => 'Wrong password'])->setStatusCode(422);
         
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['status_code' => 200, 'token' => $token])->setStatusCode(200);
+        return response()->json(['status_code' => 200, 'token' => $token, 'user' => $user])->withCookie('token', $token, 10080)->setStatusCode(200);
 
+    }
+
+    public function logout()
+    {
+        cookie()->forget('token');
+        return response()->json(['status_code' => 200, 'message' => 'Logged Out'])->setStatusCode(200);
     }
 }

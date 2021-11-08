@@ -39,10 +39,10 @@
       <v-icon
         
         @click="prepareDialog(item)"
-        :color="item.state == 'مفعل' ? '#c0392b' : '#2ecc71'"
+        :color="item.state ? '#c0392b' : '#2ecc71'"
       >
       
-        {{item.state == 'مفعل' ? 'mdi-account-off' : 'mdi-account-check' }}
+        {{item.state  ? 'mdi-account-off' : 'mdi-account-check' }}
       </v-icon>
       <v-icon style="margin-right : 10px"
       @click="goToEdit(item.id)"
@@ -105,17 +105,17 @@ import AdminService from '../../services/Admin';
     goToEdit(id) {
      this.$router.push('/admins/edit/' + id);
     },
-    // changeState() {
-    //   const payload = {
-    //       id : this.admin.id,
-    //       state : this.admin.state == 'مفعل' ? false : true, 
-    //     };
-    //     AdminService.ChangeState(payload).then(response => {
-    //     this.activateDialog = false;
-    //     this.admins = response.data.admins;
-    //     this.admin = {}
-    //     }).catch(() =>  this.$unexpectedError());
-    // }      
+    changeState() {
+      const payload = {
+          id : this.admin.id,
+          state : !this.admin.state, 
+        };
+        AdminService.ChangeState(payload).then(response => {
+        this.activateDialog = false;
+        this.admins = response.data.admins;
+        this.admin = {}
+        }).catch(() =>  this.$unexpectedError());
+    }      
       
 
     }  

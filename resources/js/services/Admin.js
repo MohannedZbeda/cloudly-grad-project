@@ -24,7 +24,8 @@ export default class {
         return API.put(prefix, payload);
     }
 
-
-
+    static async ChangeState(payload) {
+        return API.post(prefix + '/change-state', payload);
+    }
 
 }

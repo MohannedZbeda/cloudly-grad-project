@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
@@ -14,23 +13,19 @@ class UserController extends Controller
     
     public function index()
     {
-        return ['admins' => UserResource::collection(User::all())];
+        return response()->json(['admins' => UserResource::collection(User::all())]);
     }
 
     public function GetAuthUser()
     {
-        return new JsonResponse(['user' => auth()->user(), 'lang' => App::getLocale()]);
+        return response()->json(['user' => auth()->user(), 'lang' => App::getLocale()]);
     }
 
     public function GetUser($id)
     {
-        return new JsonResponse(['admin' => User::find($id)]);
+        return response()->json(['admin' => User::find($id)]);
     }
-    public function create(Request $request)
-    {
-       
-    }
-
+    
     
     public function store(Request $request)
     {
@@ -39,10 +34,9 @@ class UserController extends Controller
         $user->email = $request->email; 
         $user->username = $request->username; 
         $user->password = Hash::make($request->password); 
-        $user->avatar = $request->avatar;
         $user->state = $request->state;
         $user->save();
-        return new JsonResponse(['message' => 'Admin Created']);  
+        return response()->json(['status_code' => 201, 'message' => 'Admin Created']);  
     }
 
     public function update(Request $request)
@@ -51,27 +45,21 @@ class UserController extends Controller
         $user->name = $request->name; 
         $user->email = $request->email; 
         $user->username = $request->username; 
-        $user->avatar = $request->avatar;
         $user->state = $request->state;
         $user->save();
-        return new JsonResponse(['message' => 'Admin Updated']);  
+        return response()->json(['status_code' => 200, 'message' => 'Admin Updated']);  
     }
 
     
-    public function show($id)
-    {
-        
-    }
-
     
-    public function edit($id)
-    {
-        
-    }
+   public function changeState(Request $request)
+   {
+       $user = User::find($request->id);
+       $user->state = $request->state;
+       $user->save();
+       return response()->json(['status_code' => 200, 'message' => 'Admin State Updated', 'admins' => UserResource::collection(User::all())]);  
 
+   }
+   
     
-    public function destroy($id)
-    {
-        
-    }
 }

@@ -2838,18 +2838,22 @@ __webpack_require__.r(__webpack_exports__);
     },
     goToEdit: function goToEdit(id) {
       this.$router.push('/admins/edit/' + id);
-    } // changeState() {
-    //   const payload = {
-    //       id : this.admin.id,
-    //       state : this.admin.state == 'مفعل' ? false : true, 
-    //     };
-    //     AdminService.ChangeState(payload).then(response => {
-    //     this.activateDialog = false;
-    //     this.admins = response.data.admins;
-    //     this.admin = {}
-    //     }).catch(() =>  this.$unexpectedError());
-    // }      
+    },
+    changeState: function changeState() {
+      var _this2 = this;
 
+      var payload = {
+        id: this.admin.id,
+        state: !this.admin.state
+      };
+      _services_Admin__WEBPACK_IMPORTED_MODULE_0__["default"].ChangeState(payload).then(function (response) {
+        _this2.activateDialog = false;
+        _this2.admins = response.data.admins;
+        _this2.admin = {};
+      })["catch"](function () {
+        return _this2.$unexpectedError();
+      });
+    }
   }
 });
 
@@ -3219,6 +3223,30 @@ var _default = /*#__PURE__*/function () {
       }
 
       return UpdateUser;
+    }()
+  }, {
+    key: "ChangeState",
+    value: function () {
+      var _ChangeState = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6(payload) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                return _context6.abrupt("return", _API__WEBPACK_IMPORTED_MODULE_1__["default"].post(prefix + '/change-state', payload));
+
+              case 1:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }));
+
+      function ChangeState(_x4) {
+        return _ChangeState.apply(this, arguments);
+      }
+
+      return ChangeState;
     }()
   }]);
 
@@ -44870,9 +44898,7 @@ var render = function() {
               _c(
                 "v-icon",
                 {
-                  attrs: {
-                    color: item.state == "مفعل" ? "#c0392b" : "#2ecc71"
-                  },
+                  attrs: { color: item.state ? "#c0392b" : "#2ecc71" },
                   on: {
                     click: function($event) {
                       return _vm.prepareDialog(item)
@@ -44883,9 +44909,7 @@ var render = function() {
                   _vm._v(
                     "\n    \n      " +
                       _vm._s(
-                        item.state == "مفعل"
-                          ? "mdi-account-off"
-                          : "mdi-account-check"
+                        item.state ? "mdi-account-off" : "mdi-account-check"
                       ) +
                       "\n    "
                   )
