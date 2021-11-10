@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,12 +20,16 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->post('/user', function (Request $request) {
     return 'Protected Route';
 });
-Route::prefix('/')->middleware('api.guest')->group(function () {
+Route::prefix('/auth')->middleware('api.guest')->group(function () {
     Route::get('/token', [AuthController::class, 'genToken']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/send-reset-email', [AuthController::class, 'send_reset_email']);
     Route::post('/reset-password', [AuthController::class, 'reset_password']);    
+});
+
+Route::prefix('/home')->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index']);   
 });
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);

@@ -85,8 +85,8 @@ export default {
         async create() {
           AdminService.CreateUser(this.form).then(() => {
             this.$swal(
-              this.$translate('تمت العملية بنجاح !', 'Operation done successfully !'), 
-              this.$translate('تمت إضافة المشرف بنجاح', 'Admin registered successfully'), 
+              this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
+              this.$translate('Admin registered successfully', 'تمت إضافة المشرف بنجاح'), 
               'success').then(() => {
              this.$router.push('/admins') 
             });

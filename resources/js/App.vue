@@ -56,30 +56,63 @@
       <v-list-group no-action>
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title><v-icon style="margin : 10dp">mdi-view-parallel</v-icon>  الأقسام - Sections</v-list-item-title>
+            <v-list-item-title><v-icon style="margin : 10dp">mdi-solar-panel</v-icon>{{$translate('Categories', 'التصنيفات')}}</v-list-item-title>
           </v-list-item-content>
         </template>
 
         
-        <router-link to="/sections" class="link">
+        <router-link to="/categories" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title> جميع الأقسام - All Sections</v-list-item-title>
+            <v-list-item-title>{{$translate('All Categories', 'جميع التصنيفات')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
           </router-link>
 
 
-        <router-link to="/sections/create" class="link">
+        <router-link to="/categories/create" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>إضافة قسم - Add Section</v-list-item-title>
+            <v-list-item-title>{{$translate('Add a Category', 'إضافة تصنيف')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        </router-link>  
+      </v-list-group>
+     
+     
+      <v-list-group no-action>
+        <template v-slot:activator>
+          <v-list-item-content>
+            <v-list-item-title><v-icon style="margin : 10dp">mdi-archive</v-icon>{{$translate('Products', 'المنتجات')}}</v-list-item-title>
+          </v-list-item-content>
+        </template>
+
+        
+        <router-link to="/products" class="link">
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-format-list-bulleted</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{$translate('All Products', 'جميع المنتجات')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+          </router-link>
+
+
+        <router-link to="/products/create" class="link">
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{$translate('Add a Product', 'إضافة منتج')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         </router-link>  

@@ -148,7 +148,8 @@ class AuthController extends Controller
 
     public function logout()
     {
-        cookie()->forget('token');
-        return response()->json(['status_code' => 200, 'message' => 'Logged Out'])->setStatusCode(200);
+        return response()
+        ->json(['status_code' => 200, 'message' => 'Logged Out']) 
+        ->withCookie('token', 'no-token', -10080)->setStatusCode(200);
     }
 }
