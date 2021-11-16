@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AttributeController;
+use App\Http\Controllers\ValueController;
 Auth::routes(['register' => false]);
 Route::prefix('dashboard')->group(function () {
     Route::prefix('/admins')->group(function () {
@@ -21,6 +23,13 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/{id}', [CategoryController::class, 'getCategory']);
         Route::post('/store', [CategoryController::class, 'store']);
         Route::post('/update', [CategoryController::class, 'update']);
+        Route::get('/{id}/attributes', [AttributeController::class, 'index']);
+        Route::get('/{category_id}/attributes/{id}', [AttributeController::class, 'getAttribute']);
+        Route::post('/attributes/store', [AttributeController::class, 'store']);
+        Route::post('/attributes/update', [AttributeController::class, 'update']);
+        Route::get('/attributes/{id}/values', [ValueController::class, 'index']);
+        Route::post('/attributes/{id}/values/store', [ValueController::class, 'store']);
+        Route::post('/attributes/{id}/values/update', [ValueController::class, 'update']);
         
     });
 

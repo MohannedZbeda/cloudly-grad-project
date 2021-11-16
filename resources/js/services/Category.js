@@ -12,11 +12,6 @@ export default class {
         return API.get(prefix + '/' + id);
     }
 
-    
-    static async GetUser(id) {
-        return API.get(prefix + '/admin/' + id);
-    }
-
     static async CreateCategory(payload) {
         return API.post(prefix + '/store', payload);
     }
@@ -24,12 +19,34 @@ export default class {
         return API.post(prefix + '/update', payload);
     }
 
-    static async UpdateUser(payload) {
-        return API.put(prefix, payload);
+    static async GetAttributes(id) {
+        return API.get(prefix + '/' + id + '/attributes');
     }
 
-    static async ChangeState(payload) {
-        return API.post(prefix + '/change-state', payload);
+
+    static async GetAttribute(category_id, id) {
+        return API.get(prefix + '/' + category_id + '/attributes/' + id);
+    }
+
+    static async AddAttribute(payload) {
+        return API.post(prefix + '/attributes/store', payload);
+    }
+
+    static async UpdateAttribute(payload) {
+        return API.post(prefix + '/attributes/update', payload);
+    }
+    
+
+    static async GetValues(attribute_id) {
+        return API.get(prefix + '/attributes/'+attribute_id+'/values');
+    }
+    
+    static async AddValue(id, payload) {
+        return API.post(prefix + '/attributes/'+id+'/values/store', payload);
+    }
+
+    static async UpdateValue(id, payload) {
+        return API.post(prefix + '/attributes/'+id+'/values/update', payload);
     }
 
 }

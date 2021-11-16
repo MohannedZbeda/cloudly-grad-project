@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePackageVariantsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    
     public function up()
     {
         Schema::create('package_variants', function (Blueprint $table) {
@@ -20,11 +16,7 @@ class CreatePackageVariantsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    
     public function down()
     {
         Schema::dropIfExists('package_variants');

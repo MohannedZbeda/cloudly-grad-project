@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePackagesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    
     public function up()
     {
         Schema::create('packages', function (Blueprint $table) {

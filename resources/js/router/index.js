@@ -9,10 +9,14 @@ import ProductIndex from '../components/product/index.vue';
 import CreateCategory from '../components/category/create.vue';
 import EditCategory from '../components/category/edit.vue';
 import CategoryIndex from '../components/category/index.vue';
+import AttributeIndex from '../components/category/attribute/index.vue';
+import CreateAttribute from '../components/category/attribute/create.vue';
+import EditAttribute from '../components/category/attribute/edit.vue';
+import ValueIndex from '../components/category/attribute/value/index.vue';
+
 Vue.use(VueRouter)
 
 const routes = [
- 
   {
     path: '/admins',
     name: 'admin.index',
@@ -60,6 +64,28 @@ const routes = [
     name: 'category.edit',
     component : EditCategory,        
   },
+  {
+    path: '/categories/:category_id/attributes',
+    name: 'attribute.index',
+    component : AttributeIndex,        
+  },
+
+  {
+    path: '/categories/:category_id/attributes/create',
+    name: 'attribute.create',
+    component : CreateAttribute,        
+  },
+  {
+    path: '/categories/:category_id/attributes/edit/:id',
+    name: 'attribute.edit',
+    component : EditAttribute,        
+  },
+
+  {
+    path: '/categories/:category_id/attributes/:attribute_id/values',
+    name: 'value.index',
+    component : ValueIndex,        
+  },
   
 ]
 
@@ -67,23 +93,5 @@ const router = new VueRouter({
   routes,
   mode: 'history'
 });
-// router.beforeEach((to, from, next) => {
-//   if(to.name == 'Login') {
-//     if(store.state.authenticated)
-//        next({name : 'sections'});
-//    else next();
-//   }
-//   else if(to.name == 'admins' || to.name == 'createAdmin' || to.name == 'editAdmin') {
-//     if(!store.state.superAdmin)
-//        next({name : 'sections'});
-//     else next();  
-//   }
-//   else {
-//     if(!store.state.authenticated)
-//       next({name : 'Login'});
-//     else next(); 
-//   }
-         
-// })
 
 export default router;

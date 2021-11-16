@@ -12,13 +12,13 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::with('attributes')->get();
         return response()->json(['status_code' => 200, 'categories' => CategoryResource::collection($categories)])->setStatusCode(200);
     }
 
     public function getCategory($id)
     {
-        $category = Category::find($id);
+        $category = Category::with('attributes')->find($id);
         return response()->json(['status_code' => 200, 'category' => $category])->setStatusCode(200);
     }
 

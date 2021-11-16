@@ -15,6 +15,7 @@
                             ></v-text-field>
 
                             <v-text-field
+                              dir="ltr"
                               :label="$translate('EN Name', 'الإسم بالإنجليزي')"
                               :placeholder="$translate('EN Category Name', 'إسم التصنيف بالإنجليزي')"
                               outlined

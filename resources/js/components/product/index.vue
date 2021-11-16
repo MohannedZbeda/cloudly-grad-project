@@ -8,32 +8,7 @@
     :no-data-text="$translate(`There's no products..`, 'لا يوجد منتجات..')"
 
   >
-    <!-- <template v-slot:top>
-      <v-toolbar
-        flat
-      >
-        
-        <v-spacer></v-spacer>
-        <v-dialog
-          v-model="activateDialog"
-          max-width="500px"
-        >
-          
-          <v-card>
-            <v-card-title class="text-h6">
-             {{$translate(`Are you sure you want to ${product.state ? 'disable ' : 'enable '}${product.name} `, 
-             `هل أنت متأكد من أنك تريد ${product.state ? 'تعطيل ' : 'تفعيل '}${product.name}`)}}
-            </v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
-              <v-btn color="blue darken-1" text @click="changeState">{{$translate('Yes', 'أجل')}}</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template> -->
+    
         <template v-slot:[`item.actions`]="{ item }">
 
       <v-icon style="margin-right : 10px"

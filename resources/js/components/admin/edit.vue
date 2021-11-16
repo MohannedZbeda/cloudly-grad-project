@@ -83,7 +83,6 @@ export default {
         }
     },
     beforeMount() {
-       console.log(this.id);
      AdminService.GetUser(this.id).then(response => {
         this.form = response.data.admin;
      });  
