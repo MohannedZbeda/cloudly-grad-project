@@ -36,7 +36,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDialog(true)">{{$translate('Cancel', 'إلغاء')}}</v-btn>
               <v-btn color="blue darken-1" text @click="editMode ? updateValue() : addValue()">{{editMode ? $translate('Save Changes', 'حفظ التغييرات') : $translate('Add Value', 'إضافة القيمة')}}</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -60,6 +60,8 @@ import CategoryService from '../../../../services/Category';
       return {
       attribute_id: this.$route.params.attribute_id,
       activateDialog: false,
+      oldValue: '',
+      editId: '',
       editMode: false,
       values: [],
       form: {
@@ -86,12 +88,19 @@ import CategoryService from '../../../../services/Category';
     },
     methods: {
     prepareDialog(item = null) {
+      this.oldValue = item ? item.value : '';
+      this.editId = item ? item.id : '';
       item ? this.form = item : '';
       this.editMode = item ? true : false;
       this.activateDialog = true;
-
     },
-    closeDialog() {
+    closeDialog(canceled = false) {
+      if(this.editMode && canceled) {
+        this.values.map(value => {
+          if(this.editId == value.id)
+          value.value = this.oldValue;
+        });
+      } 
       this.activateDialog = false;
       this.editMode = false;
       this.form = { value : ''};
