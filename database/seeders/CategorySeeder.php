@@ -15,18 +15,20 @@ class CategorySeeder extends Seeder
             'en_name' => 'Category NO1',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
-        ],
-        [
+        ]);
+        DB::table('categories')->insert([
             'ar_name' => 'التصنيف رقم إثنين',
             'en_name' => 'Category NO2',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
-        ],
-        [
+        ]);
+        DB::table('categories')->insert([
             'ar_name' => 'التصنيف رقم ثلاثة',
             'en_name' => 'Category NO3',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
-        ]);    
+        ]);
+        
+        
     }
 }

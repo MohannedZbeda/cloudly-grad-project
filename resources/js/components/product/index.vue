@@ -11,11 +11,8 @@
     
         <template v-slot:[`item.actions`]="{ item }">
 
-      <v-icon style="margin-right : 10px"
-      @click="goToEdit(item.id)"
-      >
-        mdi-pencil
-      </v-icon>
+      <v-icon style="margin-right : 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
+      <v-icon style="margin-right : 10px" @click="goToVariants(item.id)">mdi-format-list-numbered</v-icon>
     </template>
 
     
@@ -74,6 +71,9 @@ import Productservice from '../../services/Product';
 
     goToEdit(id) {
      this.$router.push('/products/edit/' + id);
+    },
+    goToVariants(id) {
+     this.$router.push('/products/'+id+'/variants');
     },
     // changeState() {
     //   const payload = {

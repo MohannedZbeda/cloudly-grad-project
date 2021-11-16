@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateVariantValuesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    
     public function up()
     {
         Schema::create('variant_values', function (Blueprint $table) {
@@ -20,11 +16,7 @@ class CreateVariantValuesTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    
     public function down()
     {
         Schema::dropIfExists('variant_values');
