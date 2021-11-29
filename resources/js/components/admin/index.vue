@@ -1,6 +1,29 @@
 <template>
   <v-data-table
-    :headers="headers"
+    :headers="$translate([
+        {
+          text: 'Name',
+          align: 'start',
+          sortable: false,
+          value: 'name',
+        },
+        { text: 'Username', value: 'username', sortable : false },
+        { text: 'Addition Date', value: 'created_at', sortable : true },
+        { text: 'Account State', value : 'state',  sortable : false },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ], 
+      [
+        {
+          text: 'الإسم',
+          align: 'start',
+          sortable: false,
+          value: 'name',
+        },
+        { text: 'إسم المستخدم', value: 'username', sortable : false },
+        { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
+        { text: 'حالة الحساب', value : 'state',  sortable : false },
+        { text: 'العمليات', value: 'actions', sortable: false },
+      ])"
     :items="admins"
     sort-by="created_at"
     class="elevation-1"
@@ -69,26 +92,13 @@ import AdminService from '../../services/Admin';
       return {
       activateDialog : false,
       admins: [],
-      admin : {},
-      headers: [
-        {
-          text: this.$translate('Name', 'الإسم'),
-          align: 'start',
-          sortable: false,
-          value: 'name',
-        },
-        { text: this.$translate('Username', 'إسم المستخدم') , value: 'username', sortable : false },
-        { text: this.$translate('Addition Date', 'تاريخ الإضافة'), value: 'created_at', sortable : true },
-        { text: this.$translate('Account State', 'حالة الحساب'), value : 'state',  sortable : false },
-        { text: this.$translate('Actions', 'العمليات'), value: 'actions', sortable: false },
-      ]
+      admin : {}
       
       } 
     },
 
     beforeMount() {
       AdminService.GetAdmins().then(response => {
-        console.log(response.data);
         this.admins = response.data.admins
       });
     },

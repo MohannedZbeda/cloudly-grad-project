@@ -1,6 +1,34 @@
 <template>
   <v-data-table
-    :headers="headers"
+    :headers="$translate([
+        {
+          text: 'AR Name',
+          align: 'start',
+          sortable: false,
+          value: 'ar_name',
+        },
+        {
+          text: 'EN Name',
+          sortable: false,
+          value: 'en_name',
+        },
+        { text: 'Addition Date', value: 'created_at', sortable : true },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ], [
+        {
+          text: 'الإسم بالعربي',
+          align: 'start',
+          sortable: false,
+          value: 'ar_name',
+        },
+        {
+          text: 'الإسم بالإنجليزي',
+          sortable: false,
+          value: 'en_name',
+        },
+        { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
+        { text: 'العمليات', value: 'actions', sortable: false },
+      ])"
     :items="categories"
     sort-by="created_at"
     class="elevation-1"
@@ -31,23 +59,8 @@ import CategoryService from '../../services/Category';
       form: {
         ar_name: '',
         en_name: ''
-      },
-      headers: [
-        {
-          text: this.$translate('AR Name', 'الإسم بالعربي'),
-          align: 'start',
-          sortable: false,
-          value: 'ar_name',
-        },
-        {
-          text: this.$translate('EN Name', 'الإسم بالإنجليزي'),
-          sortable: false,
-          value: 'en_name',
-        },
-        { text: this.$translate('Addition Date', 'تاريخ الإضافة'), value: 'created_at', sortable : true },
-        { text: this.$translate('Actions', 'العمليات'), value: 'actions', sortable: false },
-      ]
-      
+      }
+
       } 
     },
 

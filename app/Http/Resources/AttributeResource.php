@@ -14,7 +14,6 @@ class AttributeResource extends JsonResource
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
             'created_at' => $this->created_at->toDateString(),
-            'values' => $this->whenLoaded('values')
         ];
     }
 }

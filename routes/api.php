@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\HomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +29,7 @@ Route::prefix('/auth')->middleware('api.guest')->group(function () {
 });
 
 Route::prefix('/home')->group(function () {
-    Route::get('/categories', [CategoryController::class, 'index']);   
+    Route::get('/home-page', [HomeController::class, 'index']);   
 });
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);

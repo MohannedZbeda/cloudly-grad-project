@@ -12,7 +12,13 @@ import CategoryIndex from '../components/category/index.vue';
 import AttributeIndex from '../components/category/attribute/index.vue';
 import CreateAttribute from '../components/category/attribute/create.vue';
 import EditAttribute from '../components/category/attribute/edit.vue';
-import ValueIndex from '../components/category/attribute/value/index.vue';
+import PackageIndex from '../components/package/index.vue';
+import CreatePackage from '../components/package/create.vue';
+import EditPackage from '../components/package/edit.vue';
+import DiscountIndex from '../components/discount/index.vue';
+import CreateDiscount from '../components/discount/create.vue';
+import EditDiscount from '../components/discount/edit.vue';
+
 
 Vue.use(VueRouter)
 
@@ -82,10 +88,37 @@ const routes = [
   },
 
   {
-    path: '/categories/:category_id/attributes/:attribute_id/values',
-    name: 'value.index',
-    component : ValueIndex,        
+    path: '/packages',
+    name: 'package.index',
+    component : PackageIndex,        
   },
+
+  {
+    path: '/packages/create',
+    name: 'package.create',
+    component : CreatePackage,        
+  },
+  {
+    path: '/packages/edit/:id',
+    name: 'package.edit',
+    component : EditPackage,        
+  },
+  {
+    path: '/discounts',
+    name: 'discount.index',
+    component : DiscountIndex,        
+  },
+  {
+    path: '/discounts/create',
+    name: 'discount.create',
+    component : CreateDiscount,        
+  },
+  {
+    path: '/discounts/edit/:id',
+    name: 'discount.edit',
+    component : EditDiscount,        
+  },
+
   
 ]
 

@@ -121,30 +121,30 @@
       <v-list-group no-action>
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title><v-icon style="margin : 10dp">mdi-handshake</v-icon>  العملاء - Clients</v-list-item-title>
+            <v-list-item-title><v-icon style="margin : 10dp">mdi-gift</v-icon>{{$translate('Packages', 'الباقات')}}</v-list-item-title>
           </v-list-item-content>
         </template>
 
         
-        <router-link to="/clients" class="link">
+        <router-link to="/packages" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title> جميع العملاء - All Clients</v-list-item-title>
+            <v-list-item-title>{{$translate('All Packages', 'كل الباقات')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
           </router-link>
 
 
-        <router-link to="/clients/create" class="link">
+        <router-link to="/packages/create" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>إضافة عميل - Add Client</v-list-item-title>
+            <v-list-item-title>{{$translate('Add a package', 'إضافة باقة')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         </router-link>  
@@ -153,30 +153,30 @@
       <v-list-group no-action>
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title><v-icon style="margin : 10dp">mdi-account-multiple</v-icon>  الشركاء - Partners</v-list-item-title>
+            <v-list-item-title><v-icon style="margin : 10dp">mdi-sale</v-icon>{{$translate('Discounts', 'التخفيضات')}}</v-list-item-title>
           </v-list-item-content>
         </template>
 
         
-        <router-link to="/partners" class="link">
+        <router-link to="/discounts" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title> عرض الشركاء - All Partners</v-list-item-title>
+            <v-list-item-title>{{$translate('All Discounts', 'كل التخفيضات')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
           </router-link>
 
 
-        <router-link to="/partners/create" class="link">
+        <router-link to="/discounts/create" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>إضافة شريك - Add Partner</v-list-item-title>
+            <v-list-item-title>{{$translate('Add a Discount', 'إضافة تخفيض')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         </router-link>  
@@ -187,29 +187,29 @@
       <v-list-group no-action>
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title><v-icon style="margin : 10dp">mdi-message</v-icon>  الرسائل - Messages</v-list-item-title>
+            <v-list-item-title><v-icon style="margin : 10dp">mdi-wallet-giftcard</v-icon>{{$translate('Coupons', 'الكوبونات')}}</v-list-item-title>
           </v-list-item-content>
         </template>
 
         
-        <router-link to="/messages/sent" class="link">
+        <router-link to="/coupons" class="link">
         <v-list-item link>
           <v-list-item-action>
-            <v-icon>mdi-message-text</v-icon>
+            <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title> المرسلة - Sent</v-list-item-title>
+            <v-list-item-title>{{$translate('All Coupons', 'كل الكوبونات')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
           </router-link>
 
-          <router-link to="/messages/recieved" class="link">
+          <router-link to="/coupons/create" class="link">
         <v-list-item link>
           <v-list-item-action>
-            <v-icon>mdi-inbox-arrow-down</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>  المستلمة - Recieved</v-list-item-title>
+            <v-list-item-title>{{$translate('Add a Coupon', 'إضافة كوبون')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
           </router-link>  

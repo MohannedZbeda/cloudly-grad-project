@@ -9,8 +9,13 @@ class Discount extends Model
 {
     use HasFactory;
 
-    public function discountable()
+    public function products()
     {
-        return $this->morphTo();
+        return $this->morphedByMany(Product::class, 'discountable');
+    }
+
+    public function packages()
+    {
+        return $this->morphedByMany(Package::class, 'discountable');
     }
 }

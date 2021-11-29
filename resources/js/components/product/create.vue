@@ -6,11 +6,15 @@
                         <v-toolbar-title>{{$translate('Register a Product', 'إضافة منتج')}}</v-toolbar-title>
                      </v-toolbar>
                      <v-card-text>
+                       <p v-if="noAttributes" style="color:red">{{$translate(
+                         'There are no attributes for this category, Please add some', 
+                         'لا توجد خصائص لهذا التصنيف، يرجى الإضافة')}}</p>
                         <v-form>
                           <v-select
                             :items="categories"
                             item-text="en_name"
                             item-value="id"
+                            @input="getAttributes"
                             :label="$translate('Product Category', 'تصنيف المنتج')"
                             v-model="form.category_id"
                             outlined
@@ -29,7 +33,22 @@
                               outlined
                               v-model="form.en_name"
                             ></v-text-field>
-                            
+                            <v-divider style="background-color: black"></v-divider>
+                            <br> <br>
+                            <v-text-field
+                              v-for="attribute in form.attributes"
+                              :key="attribute.id"
+                              :label="$translate(attribute.en_name, attribute.ar_name)"
+                              outlined
+                              v-model="attribute.value"
+                            ></v-text-field>
+
+                            <v-text-field
+                              :label="$translate('Price', 'السعر')"
+                              outlined
+                              type="number"
+                              v-model="form.price"
+                            ></v-text-field>
                         </v-form>
                      </v-card-text>
                      <v-card-actions>
@@ -48,12 +67,14 @@ export default {
     name: 'product.create',
     data() {
         return {
-         categories : [],
+         categories: [],
+         noAttributes: false,
          form: {
-           ar_name: '',
-           en_name: '',
-           category_id: ''
-           
+          ar_name: '',
+          en_name: '',
+          category_id: '',
+          attributes: [],
+          price: null
          }
         }
     },
@@ -63,9 +84,29 @@ export default {
       });
     },
     methods: {
+       getAttributes() {
+         const payload = {
+           id : this.form.category_id
+         }
+         ProductService.GetAttributes(payload).then(response => {
+           if(!response.data.attributes.length) {
+             this.noAttributes = true;
+             this.form.attributes = [];
+             return;
+           }
+           this.noAttributes = false;
+           this.form.attributes = response.data.attributes.map(attribute => {
+             return {
+               id: attribute.id,
+               ar_name: attribute.ar_name,
+               en_name: attribute.en_name,
+               value: ''
+             }
+           });
+         });
+       },
         create() {
           ProductService.CreateProduct(this.form).then((response) => {
-            console.log(response.data);
             this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
               this.$translate('Product registered successfully', 'تمت إضافة المنتج بنجاح'), 
@@ -73,9 +114,6 @@ export default {
              this.$router.push('/products') 
             });
           });
-        },
-        getText(en, ar) {
-          return this.$translate(en, ar);
         }
     }
 }

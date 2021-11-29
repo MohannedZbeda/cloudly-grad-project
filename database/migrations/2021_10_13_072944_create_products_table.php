@@ -14,15 +14,13 @@ class CreateProductsTable extends Migration
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('CASCADE');
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
+            $table->double('price');
+            //$table->boolean('refundable')->default(true);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    
     public function down()
     {
         Schema::dropIfExists('products');

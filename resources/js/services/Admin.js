@@ -9,11 +9,11 @@ export default class {
     }
 
     static async GetAuthUser() {
-        let response = await API.get(prefix + '/auth-admin');
+        let response = await API.get(`${prefix}/auth-admin`);
         return response.data.user;
     }
     static async GetUser(id) {
-        return API.get(prefix + '/admin/' + id);
+        return API.get(`${prefix}/admin/${id}`);
     }
 
     static async CreateUser(payload) {
@@ -25,7 +25,7 @@ export default class {
     }
 
     static async ChangeState(payload) {
-        return API.post(prefix + '/change-state', payload);
+        return API.post(`${prefix}/change-state`, payload);
     }
 
 }
