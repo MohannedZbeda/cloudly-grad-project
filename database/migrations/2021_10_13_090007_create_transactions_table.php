@@ -6,15 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTransactionsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+    
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->string('description');
             $table->foreignId('from_wallet_id')->references('id')->on('wallets')->onDelete('RESTRICT');
             $table->foreignId('to_wallet_id')->references('id')->on('wallets')->onDelete('RESTRICT');
             $table->double('amount');
@@ -24,11 +21,7 @@ class CreateTransactionsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
+    
     public function down()
     {
         Schema::dropIfExists('transactions');

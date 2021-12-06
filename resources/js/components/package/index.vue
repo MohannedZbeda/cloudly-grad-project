@@ -135,11 +135,47 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+
+
+<v-toolbar flat>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="add_vouchers_dialog"
+          max-width="500px"
+        >
+          
+          <v-card>
+            <v-card-title class="text-h5">{{$translate(`Add Vouchers to ${pack.en_name}`, `إضافة هدايا ل ${pack.ar_name}`)}}<br>
+            </v-card-title>
+            <v-card-text dir="rtl"> 
+              <b>{{$translate('Gifs are codes to be given to chosen users, When used, The codes give the chosen product',
+                'الهدايا هي عبارة عن رموز تعطى لمستخدمين مختارين, عندما يتم إستعمال هذه الأكواد, ستعطي المنتج المختار مجانا'
+                )}}</b><br><br>
+              <v-form>
+                <v-text-field
+                  :label="$translate('Quantity', 'الكمية')"
+                  outlined
+                  type="number"
+                  v-model="form.quantity"
+                ></v-text-field>
+  
+              </v-form>
+                
+            </v-card-text>
+             <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="addVouchers">{{$translate('Add Vouchers', 'إضافة الهدايا')}}</v-btn>
+              </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-
       <v-icon style="margin-right : 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
+      <v-icon style="margin-right: 10px" @click="showVoucherForm(item)">mdi-gift</v-icon>
+      <v-icon v-if="item.vouchers.length" style="margin-right: 10px" @click="copyVouchers(item.vouchers)">mdi-content-copy</v-icon>
     </template>
 
     <template v-slot:[`item.package_products`]="{ item }">
@@ -165,8 +201,12 @@ import PackageService from '../../services/Package';
       sending: false,
       dialog: false,
       discounts_dialog: false,
+      add_vouchers_dialog: false,
       packages: [],
-      pack: {} 
+      pack: {},
+       form: {
+        quantity: null
+      }
       } 
     },
 
@@ -184,7 +224,40 @@ import PackageService from '../../services/Package';
     this.pack = item;
     this.discounts_dialog = true;
     },
-
+   showVoucherForm(item){
+    this.pack = item;
+    this.add_vouchers_dialog = true;
+    },
+    copyVouchers(vouchers){
+      const el = document.createElement('textarea');
+      el.value = vouchers;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    },
+    addVouchers() {
+    if(this.sending)
+     return;
+    this.sending = true;
+    const payload = {
+      quantity: this.form.quantity,
+      package_id: this.pack.id
+    }
+    PackageService.AddVouchers(payload).then(response => {
+      this.packages = response.data.packages;
+      this.$swal(
+              this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
+              this.$translate('Vouchers generated successfully', 'تمت توليد الهدايا بنجاح'), 
+              'success');
+    }).finally(() => {
+      this.sending = false;
+      this.closeDialog();
+    });
+    },
     removeDiscount(id){
       if(this.sending)
       return; 
@@ -205,6 +278,7 @@ import PackageService from '../../services/Package';
     closeDialog() {
     this.dialog = false;
     this.discounts_dialog = false;
+    this.add_vouchers_dialog = false;
     this.pack = {};
     },
     goToEdit(id) {

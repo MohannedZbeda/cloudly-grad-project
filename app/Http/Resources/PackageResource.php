@@ -17,6 +17,7 @@ class PackageResource extends JsonResource
          'new_price' => $this->getDiscounts()['new_price'],
          'products' => ProductResource::collection($this->whenLoaded('products')),
          'discounts' => DiscountResource::collection($this->whenLoaded('discounts')),
+         'vouchers' => $this->getVouchers(),
          'created_at' => $this->created_at->toDateString()
         ];
     }

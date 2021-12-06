@@ -34,6 +34,11 @@ class Package extends Model
         return $this->morphToMany(Discount::class, 'discountable');
     }
 
+    public function invoice()
+    {
+        return $this->morphOne(InvoiceItem::class, 'invoiceable');
+    }
+
     public function vouchers()
     {
         return $this->morphMany(Voucher::class, 'voucherable');
@@ -43,4 +48,12 @@ class Package extends Model
         return $this->belongsToMany(Product::class, 'package_products');
     }
 
+    public function getVouchers()
+    {    $vouchers = [];
+         foreach ($this->vouchers->where('used', false) as $voucher) {
+             array_push($vouchers, $voucher->code);
+         }
+         $vouchers = implode(', ', $vouchers);
+         return $vouchers;
+    }
 }

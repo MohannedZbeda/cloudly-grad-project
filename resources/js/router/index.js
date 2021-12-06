@@ -18,6 +18,13 @@ import EditPackage from '../components/package/edit.vue';
 import DiscountIndex from '../components/discount/index.vue';
 import CreateDiscount from '../components/discount/create.vue';
 import EditDiscount from '../components/discount/edit.vue';
+import CouponIndex from '../components/coupon/index.vue';
+import CreateCoupon from '../components/coupon/create.vue';
+import EditCoupon from '../components/coupon/edit.vue';
+import FaqIndex from '../components/faq/index.vue';
+import CreateFaq from '../components/faq/create.vue';
+import EditFaq from '../components/faq/edit.vue';
+
 
 
 Vue.use(VueRouter)
@@ -117,6 +124,36 @@ const routes = [
     path: '/discounts/edit/:id',
     name: 'discount.edit',
     component : EditDiscount,        
+  },
+  {
+    path: '/coupons',
+    name: 'coupon.index',
+    component : CouponIndex,        
+  },
+  {
+    path: '/coupons/create',
+    name: 'coupon.create',
+    component : CreateCoupon,        
+  },
+  {
+    path: '/coupons/edit/:start_date/:end_date',
+    name: 'coupon.edit',
+    component : EditCoupon,        
+  },
+  {
+    path: '/faqs',
+    name: 'faq.index',
+    component : FaqIndex,        
+  },
+  {
+    path: '/faqs/create',
+    name: 'faq.create',
+    component : CreateFaq,        
+  },
+  {
+    path: '/faqs/edit/:id',
+    name: 'faq.edit',
+    component : EditFaq,        
   },
 
   

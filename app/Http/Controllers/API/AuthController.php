@@ -109,12 +109,14 @@ class AuthController extends Controller
         $user->api_token =  Str::random(60);
         $user->state = true;
         $user->save();
-        
+
         $user_info = new UserInfo();
         $user_info->user_id = $user->id;
         $user_info->phone = $request->phone;
         $user_info->save();
         
+        WalletController::addWallet($request, true, $user->id);
+
         $token = $user->createToken('auth_token')->plainTextToken;
         
         return response()

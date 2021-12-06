@@ -28,5 +28,9 @@ export default class {
         return API.post(`${prefix}/remove-discount`, payload);
     }
 
+    static async AddVouchers(payload) {
+        return API.post(`${prefix}/add-vouchers`, payload);
+    }
+
 
 }

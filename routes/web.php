@@ -9,6 +9,8 @@ use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\ValueController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\FAQController;
 
 Auth::routes(['register' => false]);
 
@@ -43,6 +45,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/get-categories', [ProductController::class, 'getCategories']);
         Route::post('/get-category-attributes', [ProductController::class, 'getAttributes']);
         Route::post('/remove-discount', [ProductController::class, 'removeDiscount']);
+        Route::post('/add-vouchers', [ProductController::class, 'addVouchers']);
         Route::get('/{id}', [ProductController::class, 'getProduct']);
         Route::post('/store', [ProductController::class, 'store']);
         Route::post('/update', [ProductController::class, 'update']);
@@ -55,6 +58,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/get-categories', [PackageController::class, 'getCategories']);
         Route::post('/get-category-attributes', [PackageController::class, 'getAttributes']);
         Route::post('/remove-discount', [PackageController::class, 'removeDiscount']);
+        Route::post('/add-vouchers', [PackageController::class, 'addVouchers']);
         Route::get('/{id}', [PackageController::class, 'getPackage']);
         Route::post('/store', [PackageController::class, 'store']);
         Route::post('/update', [PackageController::class, 'update']);
@@ -67,6 +71,25 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/store', [DiscountController::class, 'store']);
         Route::post('/update', [DiscountController::class, 'update']);
         Route::get('/{id}', [DiscountController::class, 'getDiscount']);
+        
+    });
+
+    Route::prefix('/coupons')->group(function () {
+        Route::get('/', [CouponController::class, 'index']);
+        Route::post('/', [CouponController::class, 'getCoupon']);
+        Route::get('/get-items', [DiscountController::class, 'getItems']);    
+        Route::post('/store', [CouponController::class, 'store']);
+        Route::post('/update', [CouponController::class, 'update']);
+        Route::get('/{id}', [DiscountController::class, 'getDiscount']);
+        
+    });
+
+    Route::prefix('/faqs')->group(function () {
+        Route::get('/', [FAQController::class, 'index']);
+        Route::post('/store', [FAQController::class, 'store']);
+        Route::post('/update', [FAQController::class, 'update']);
+        Route::delete('/delete/{id}', [FAQController::class, 'delete']);
+        Route::get('/{id}', [FAQController::class, 'getFAQ']);
         
     });
 

@@ -12,6 +12,9 @@ use Illuminate\Validation\Rule;
 use App\Http\Resources\CategoryResource;
 use App\Models\Attribute;
 use App\Models\ProductValue;
+use Illuminate\Support\Carbon;
+use App\Models\Voucher;
+
 
 class ProductController extends Controller
 {
@@ -37,6 +40,23 @@ class ProductController extends Controller
     {
         $product = Product::find($request->product_id);
         $product->discounts()->detach($request->discount_id);
+        $products = ProductResource::collection(Product::all());
+        return response()->json(['status_code' => 200, 'products' => $products])->setStatusCode(200);
+    }
+
+    public function addVouchers(Request $request)
+    {
+       $vouchers = [];
+        for ($i=0; $i <$request->quantity; $i++) { 
+         array_push($vouchers, [
+             'code' => 'PR-'.substr(str_shuffle("0123456789"), 0, 7),
+             'voucherable_id' => $request->product_id,
+             'voucherable_type' => Product::class,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now()
+         ]);
+        }
+        Voucher::insert($vouchers);
         $products = ProductResource::collection(Product::all());
         return response()->json(['status_code' => 200, 'products' => $products])->setStatusCode(200);
     }

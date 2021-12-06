@@ -31,4 +31,7 @@ export default class {
     static async RemoveDiscount(payload) {
         return API.post(`${prefix}/remove-discount`, payload);
     }
+    static async AddVouchers(payload) {
+        return API.post(`${prefix}/add-vouchers`, payload);
+    }
 }

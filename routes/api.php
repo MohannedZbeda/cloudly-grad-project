@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\HomeController;
+use App\Http\Controllers\API\WalletController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,13 @@ Route::prefix('/auth')->middleware('api.guest')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'reset_password']);    
 });
 
+Route::prefix('/wallets')->middleware('auth:sanctum')->group(function () {
+    Route::post('/add-wallet', [WalletController::class, 'addWallet']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/send-reset-email', [AuthController::class, 'send_reset_email']);
+    Route::post('/reset-password', [AuthController::class, 'reset_password']);    
+});
 Route::prefix('/home')->group(function () {
     Route::get('/home-page', [HomeController::class, 'index']);   
 });

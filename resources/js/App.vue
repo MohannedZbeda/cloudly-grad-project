@@ -209,38 +209,7 @@
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{$translate('Add a Coupon', 'إضافة كوبون')}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          </router-link>  
-      </v-list-group>
-
-      <v-list-group no-action>
-        <template v-slot:activator>
-          <v-list-item-content>
-            <v-list-item-title><v-icon style="margin : 10dp">mdi-briefcase</v-icon>  الوظائف - Jobs</v-list-item-title>
-          </v-list-item-content>
-        </template>
-
-        
-        <router-link to="/jobs" class="link">
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-briefcase-eye</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>  عرض كل الوظائف - All Jobs</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          </router-link>
-
-          <router-link to="/jobs/create" class="link">
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-briefcase-plus</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>  إضافة وظيفة - Add Job</v-list-item-title>
+            <v-list-item-title>{{$translate('Add Coupons', 'إضافة كوبونات')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
           </router-link>  
@@ -249,30 +218,30 @@
 <v-list-group no-action>
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title><v-icon style="margin : 10dp">mdi-download</v-icon>  التنزيلات - downloadable Content</v-list-item-title>
+            <v-list-item-title><v-icon style="margin : 10dp">mdi-frequently-asked-questions</v-icon>{{$translate('FAQs', 'الأسئلة الشائعة')}}</v-list-item-title>
           </v-list-item-content>
         </template>
 
         
-        <router-link to="/downloads" class="link">
+        <router-link to="/faqs" class="link">
         <v-list-item link>
           <v-list-item-action>
-            <v-icon>mdi-download-multiple</v-icon>
+            <v-icon>mdi-format-list-bulleted</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title> عرض التنزيلات - Show Downloadable Content</v-list-item-title>
+            <v-list-item-title>{{$translate('All FAQs', 'كل الأسئلة')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
           </router-link>
 
 
-        <router-link to="/downloads/create" class="link">
+        <router-link to="/faqs/create" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>إضافة تنزيل - Add Downloadable Content</v-list-item-title>
+            <v-list-item-title>{{$translate('Add Question', 'إضافة سؤال')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         </router-link>  
@@ -284,7 +253,7 @@
         
       
 
-        <router-link to="/emails" class="link">
+        <!-- <router-link to="/emails" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-email</v-icon>
@@ -294,7 +263,7 @@
           </v-list-item-content>
         </v-list-item>
           </router-link>
-
+            -->
           <v-list-item link @click="drawer = false; $store.commit('logout')">
           <v-list-item-action>
             <v-icon>mdi-logout</v-icon>
@@ -302,7 +271,7 @@
           <v-list-item-content>
             <v-list-item-title>{{$translate('Logout', 'تسجيل الخروج')}}</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> 
       </v-list>
     </v-navigation-drawer>
     <v-app-bar app color="primary" dark

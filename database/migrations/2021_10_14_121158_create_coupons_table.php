@@ -11,9 +11,11 @@ class CreateCouponsTable extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->string('key');
-            $table->double('amount')->min(0)->max(100);
+            $table->string('code');
+            $table->double('discount_percentage')->min(0)->max(100);
             $table->boolean('used')->default(false);
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

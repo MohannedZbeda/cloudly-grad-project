@@ -17,6 +17,7 @@ class ProductResource extends JsonResource
             'new_price' => $this->getDiscounts()['new_price'],
             'attributes' => ValueResource::collection($this->whenLoaded('values')),
             'discounts' => DiscountResource::collection($this->whenLoaded('discounts')),
+            'vouchers' => $this->getVouchers(),
 
             // 'refundable' => [
             //   'ar' => $this->refundable ? 'قابل للإرجاع' : 'غير قابل للإرجاع',

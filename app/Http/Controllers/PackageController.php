@@ -7,6 +7,8 @@ use App\Models\Package;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
+use App\Models\Voucher;
 class PackageController extends Controller
 {
     public function index()
@@ -75,6 +77,23 @@ class PackageController extends Controller
     {
         $package = Package::find($request->package_id);
         $package->discounts()->detach($request->discount_id);
+        $packages = PackageResource::collection(Package::all());
+        return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
+    }
+
+    public function addVouchers(Request $request)
+    {
+       $vouchers = [];
+        for ($i=0; $i <$request->quantity; $i++) { 
+         array_push($vouchers, [
+             'code' => 'PA-'.substr(str_shuffle("0123456789"), 0, 7),
+             'voucherable_id' => $request->package_id,
+             'voucherable_type' => Package::class,
+             'created_at' => Carbon::now(),
+             'updated_at' => Carbon::now()
+         ]);
+        }
+        Voucher::insert($vouchers);
         $packages = PackageResource::collection(Package::all());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
     }

@@ -33,6 +33,11 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function invoice()
+    {
+        return $this->morphOne(InvoiceItem::class, 'invoiceable');
+    }
+
     public function values() {
         return $this->hasMany(ProductValue::class);
     }
@@ -44,6 +49,20 @@ class Product extends Model
     public function discounts()
     {
         return $this->morphToMany(Discount::class, 'discountable');
+    }
+
+    public function vouchers()
+    {
+        return $this->morphMany(Voucher::class, 'voucherable');
+    }
+
+    public function getVouchers()
+    {    $vouchers = [];
+         foreach ($this->vouchers->where('used', false) as $voucher) {
+             array_push($vouchers, $voucher->code);
+         }
+         $vouchers = implode(', ', $vouchers);
+         return $vouchers;
     }
     
 }

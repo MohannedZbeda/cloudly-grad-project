@@ -55,7 +55,7 @@
                             ></v-text-field>
                             <br> <br>
                                <!-- <p class="mt-2" style="color:#d63031" v-if="errors.end_date">  <v-icon color="#d63031" >mdi-calendar-range</v-icon> تاريخ إنتهاء الصلاحية - Expiry Date</p>  -->
-                              <p class="mt-2">  <v-icon >mdi-calendar-range</v-icon> تاريخ إنتهاء الصلاحية - Expiry Date</p> 
+                              <p class="mt-2">  <v-icon >mdi-calendar-range</v-icon>{{$translate('End Date', 'تاريخ إنتهاء الصلاحية')}}</p> 
                               <!-- <p v-if="errors.end_date" style="color : #d63031">{{errors.end_date}}</p>  -->
 
                               <v-date-picker
