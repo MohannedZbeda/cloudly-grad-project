@@ -35,14 +35,18 @@
                             ></v-text-field>
                             <v-divider style="background-color: black"></v-divider>
                             <br> <br>
-                            <v-text-field
-                              v-for="attribute in form.attributes"
-                              :key="attribute.id"
-                              :label="$translate(attribute.en_name, attribute.ar_name)"
-                              outlined
-                              v-model="attribute.value"
-                            ></v-text-field>
-
+                            <div v-for="attribute in form.attributes" :key="attribute.id">
+                              <v-text-field
+                                :label="$translate(attribute.en_name, attribute.ar_name)"
+                                outlined
+                                v-model="attribute.value"
+                              >
+                                <template v-slot:prepend>
+                                  <v-icon style="color:#c0392b; cursor:pointer" @click="removeAttribute(attribute.id)">mdi-window-close</v-icon>                          
+                                </template>
+                              </v-text-field>
+                              
+                            </div> 
                             <v-text-field
                               :label="$translate('Price', 'السعر')"
                               outlined
@@ -105,6 +109,13 @@ export default {
            });
          });
        },
+       removeAttribute(id) {
+         if(this.form.attributes.length <= 1)
+          return;
+          this.form.attributes = this.form.attributes.filter(attribute => {
+            return attribute.id != id;
+          });
+      },
         create() {
           ProductService.CreateProduct(this.form).then((response) => {
             this.$swal(

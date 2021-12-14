@@ -16,7 +16,7 @@ class PackageApiResource extends JsonResource
             'en_name' => $this->en_name,
             'old_price' => $this->price,
             'new_price' => $this->getDiscounts()['new_price'],
-            'products' => ProductResource::collection($this->whenLoaded('products')),
+            'products' => ProductApiResource::collection($this->whenLoaded('products')),
             'discounts' => $this->getDiscounts()['discounts'],
             'created_at' => $this->created_at->toDateString()
            ];

@@ -38,6 +38,11 @@ class Product extends Model
         return $this->morphOne(InvoiceItem::class, 'invoiceable');
     }
 
+    public function carts()
+    {
+        return $this->morphMany(CartItem::class, 'cartable');
+    }
+
     public function values() {
         return $this->hasMany(ProductValue::class);
     }

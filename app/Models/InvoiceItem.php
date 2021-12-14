@@ -9,8 +9,13 @@ class InvoiceItem extends Model
 {
     use HasFactory;
 
-   public function item()
+   public function invoiceable()
     {
         return $this->morphTo();
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

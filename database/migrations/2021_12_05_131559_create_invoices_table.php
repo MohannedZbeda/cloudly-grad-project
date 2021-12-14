@@ -11,7 +11,9 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->boolean('paid')->default(0);
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('RESTRICT');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -34,6 +34,11 @@ class Package extends Model
         return $this->morphToMany(Discount::class, 'discountable');
     }
 
+    public function carts()
+    {
+        return $this->morphMany(CartItem::class, 'cartable');
+    }
+
     public function invoice()
     {
         return $this->morphOne(InvoiceItem::class, 'invoiceable');

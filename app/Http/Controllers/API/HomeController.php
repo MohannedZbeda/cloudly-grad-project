@@ -9,11 +9,14 @@ use App\Http\Resources\API\CategoryApiResource;
 use App\Http\Resources\API\ProductApiResource;
 use App\Http\Resources\API\PackageApiResource;
 use App\Models\Product;
+use Error;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        try {
         $packages = PackageApiResource::collection(Package::with(['products', 'discounts'])->get()); 
         $categories = CategoryApiResource::collection(Category::with('products')->get());
         $products = ProductApiResource::collection(Product::with('discounts')->get());
@@ -24,4 +27,9 @@ class HomeController extends Controller
             'products' => $products
         ])->setStatusCode(200);
     }
+    catch(Error $error) {
+        DB::rollBack();
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'HomeController, Trying to get data to fill homepage'])->setStatusCode(500);  
+      }
+}
 }

@@ -9,22 +9,37 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
 use App\Models\Voucher;
+use Illuminate\Support\Facades\DB;
+use Error;
 class PackageController extends Controller
 {
     public function index()
     {
+        try {
         $packages = PackageResource::collection(Package::with(['products', 'discounts'])->get());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
     }
+      catch(Error $error) {
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to get all packages'])->setStatusCode(500);  
+      
+      }  
+}
 
     public function getPackage($id)
     {
+        try {
         $package = new PackageResource(Package::with('products')->find($id));
         return response()->json(['status_code' => 200, 'package' => $package])->setStatusCode(200);
-    }
+    }  
+    catch(Error $error) {
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to get a package for update'])->setStatusCode(500);  
+      
+      }  
+} 
 
     public function store(Request $request)
-    {
+    { 
+        try {
         $validator = Validator::make($request->all(), [
             'ar_name' => 'required|unique:packages,ar_name',
             'en_name' => 'required|unique:packages,en_name',
@@ -33,21 +48,30 @@ class PackageController extends Controller
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-    
-       $package = new Package();
-       $package->ar_name = $request->ar_name;
-       $package->en_name = $request->en_name;
-       $package->price = $request->price;
-       $package->save();
-       $package->products()->sync($request->products);
-
+      $package = DB::transaction(function() use($request) {
+        $package = new Package();
+        $package->ar_name = $request->ar_name;
+        $package->en_name = $request->en_name;
+        $package->price = $request->price;
+        $package->save();
+        $package->products()->sync($request->products);
+        return $package;
+      });
+       DB::commit();
        return response()->json(['status_code' => 201, 'message' => 'Package Created', 'package' => new PackageResource($package)])->setStatusCode(201);
 
 
     }
+    catch(Error $error) {
+        DB::rollBack();
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to create a package'])->setStatusCode(500);  
+      
+      }  
+ }
 
     public function update(Request $request)
     {
+        try {
         $validator = Validator::make($request->all(), [
             'ar_name' => [
               'required',
@@ -60,29 +84,42 @@ class PackageController extends Controller
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-    
-       $package = Package::find($request->id);
-       $package->ar_name = $request->ar_name;
-       $package->en_name = $request->en_name;
-       $package->price = $request->price;
-       $package->save();
-       $package->products()->sync($request->products);
-
+       $package = DB::transaction(function() use($request) {
+        $package = Package::find($request->id);
+        $package->ar_name = $request->ar_name;
+        $package->en_name = $request->en_name;
+        $package->price = $request->price;
+        $package->save();
+        $package->products()->sync($request->products);
+        return $package;
+       });
+       DB::commit();
        return response()->json(['status_code' => 200, 'message' => 'Package Updated', 'package' => new PackageResource($package)])->setStatusCode(200);
-
-
+    }
+    catch(Error $error) {
+        DB::rollBack();
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to update a package'])->setStatusCode(500);  
+      
+      }   
     }
 
     public function removeDiscount(Request $request)
     {
+        try {
         $package = Package::find($request->package_id);
         $package->discounts()->detach($request->discount_id);
         $packages = PackageResource::collection(Package::all());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
-    }
+    }  
+    catch(Error $error) {
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to remove a discount'])->setStatusCode(500);  
+      
+      }  
+}
 
     public function addVouchers(Request $request)
     {
+        try {
        $vouchers = [];
         for ($i=0; $i <$request->quantity; $i++) { 
          array_push($vouchers, [
@@ -93,10 +130,19 @@ class PackageController extends Controller
              'updated_at' => Carbon::now()
          ]);
         }
-        Voucher::insert($vouchers);
+        DB::transaction(function() use($vouchers) {
+            Voucher::insert($vouchers);
+        });
+        DB::commit();
         $packages = PackageResource::collection(Package::all());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
-    }
+    } 
+    catch(Error $error) {
+        DB::rollBack();
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to add vouchers'])->setStatusCode(500);  
+      
+      }   
+}
 
     
 }

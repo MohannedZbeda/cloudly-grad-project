@@ -12,11 +12,9 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->foreignId('from_wallet_id')->references('id')->on('wallets')->onDelete('RESTRICT');
-            $table->foreignId('to_wallet_id')->references('id')->on('wallets')->onDelete('RESTRICT');
+            $table->boolean('debit')->default(false);
+            $table->foreignId('wallet_id')->references('id')->on('wallets')->onDelete('RESTRICT');
             $table->double('amount');
-            $table->double('balance_after_credit');
-            $table->double('balance_after_debit');
             $table->timestamps();
         });
     }

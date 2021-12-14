@@ -21,8 +21,16 @@ class User extends Authenticatable
         return $this->hasOne(UserInfo::class);
     }
 
-    public function wallets() {
-        return $this->hasMany(Wallet::class);
+    public function wallet() {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function cart() {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function invoices() {
+        return $this->hasMany(Invoice::class);
     }
     
     
