@@ -8,6 +8,8 @@ use Error;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Transaction;
+use App\Models\Wallet;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -59,6 +61,12 @@ class InvoiceController extends Controller
     public function checkout(Request $request)
     {
       try {
+        $validator = Validator::make($request->all(), [
+            'invoice_id' => 'required|exists:invoices,id',
+            'wallet_id' => 'required|exists:wallets,id',
+        ]);
+        if($validator->fails()) 
+          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $invoice = Invoice::find($request->invoice_id);
         $invoice_total = $invoice->getTotal();
         if($invoice->paid) {
@@ -67,7 +75,7 @@ class InvoiceController extends Controller
                 'message' => 'Invoice is Already Paid'])
               ->setStatusCode(200);
         }
-        $wallet = auth('sanctum')->user()->wallet;
+        $wallet = Wallet::find($request->wallet_id);
         $wallet_balance = $wallet->getWalletBalance();
         if($invoice_total > $wallet_balance)
         return response()->json([

@@ -9,6 +9,8 @@ use App\Models\Package;
 use App\Models\Product;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
@@ -17,6 +19,12 @@ class CartController extends Controller
     {
       try {
         DB::transaction(function() use($id, $type, $quantity) {
+          $cartItem = CartItem::where('cartable_type', $type)->where('cartable_id', $id)->first();
+          if($cartItem) {
+            $cartItem->quantity+= $quantity;
+            $cartItem->save();
+            return;
+          }
           $cartID = auth('sanctum')->user()->cart->id;
           $cartItem = new CartItem();
           $cartItem->cart_id = $cartID;
@@ -78,6 +86,11 @@ class CartController extends Controller
     public function updateQuantity(Request $request)
     {
       try {
+        $validator = Validator::make($request->all(), [
+          'quantity' => 'required|numeric|min:1',
+      ]);
+      if($validator->fails()) 
+        return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
        $item = DB::transaction(function() use($request) {
         $item = CartItem::find($request->id);        
         $item->quantity = $request->quantity;

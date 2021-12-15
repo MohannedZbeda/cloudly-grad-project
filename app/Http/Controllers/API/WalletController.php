@@ -7,17 +7,31 @@ use App\Models\Transaction;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Error;
 
 class WalletController extends Controller
 {
     public static function addWallet(Request $request, $return = false, $id = null)
     {
+      if(!($return && $id)) {
+        $validator = Validator::make($request->all(), [
+          'type_id' => [
+            'required',
+            Rule::unique('wallet_types')
+            ->where('type_id', $request->type)
+            ->where('user_id', auth('sanctum')->user()->id)
+          ]
+      ]);
+      if($validator->fails()) 
+        return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
+      }
       try {
       $wallet = DB::transaction(function () use($request, $id){    
         $wallet = new Wallet();
+        $wallet->type_id = $request->type_id ?? 1;
         $wallet->user_id = $id ?? auth('sanctum')->user()->id;
-        $wallet->name = $request->wallet_name ?? 'Default';    
         $wallet->save();
         return $wallet;
       });
@@ -37,7 +51,7 @@ class WalletController extends Controller
     public static function chargeWallet(Request $request)
     {
         try {
-          $wallet = auth('sanctum')->user()->wallet;
+          $wallet = Wallet::find($request->wallet_id);
           $transaction = DB::transaction(function () use($request, $wallet){ 
             $transaction = new Transaction();
             $transaction->description = "Wallet Charge";
