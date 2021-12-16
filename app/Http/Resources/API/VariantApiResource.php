@@ -3,22 +3,20 @@
 namespace App\Http\Resources\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\ProductResource;
-
-class PackageApiResource extends JsonResource
+use App\Http\Resources\ValueResource;
+class VariantApiResource extends JsonResource
 {
-  
+   
     public function toArray($request)
     {
-        return [
+        return  [
             'id' => $this->id,
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
             'old_price' => $this->price,
             'new_price' => $this->getDiscounts()['new_price'],
-            'variants' => VariantApiResource::collection($this->whenLoaded('variants')),
-            'discounts' => $this->getDiscounts()['discounts'],
-            'created_at' => $this->created_at->toDateString()
-           ];
+            'attributes' => ValueResource::collection($this->values),
+            'discounts' => $this->getDiscounts()['discounts']
+        ];;
     }
 }

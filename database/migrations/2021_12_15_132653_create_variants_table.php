@@ -4,17 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductsTable extends Migration
+class CreateVariantsTable extends Migration
 {
     
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('variants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->references('id')->on('categories')->onDelete('CASCADE');
+            $table->foreignId('product_id')->references('id')->on('products')->onDelete('CASCADE');
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
-            //$table->boolean('refundable')->default(true);
+            $table->double('price');
             $table->timestamps();
         });
     }
@@ -22,6 +22,6 @@ class CreateProductsTable extends Migration
     
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('variants');
     }
 }

@@ -12,6 +12,7 @@ class CreateAttributesTable extends Migration
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('CASCADE');
+            $table->boolean('advanced')->default(false);
             $table->string('ar_name');
             $table->string('en_name');
             $table->timestamps();

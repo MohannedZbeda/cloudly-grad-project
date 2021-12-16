@@ -21,6 +21,11 @@
                               outlined
                               v-model="form.en_name"
                             ></v-text-field>
+
+                             <v-checkbox
+                             v-model="form.advanced"
+                             :label="$translate('Advanced Attribute ? ', 'خاصية متقدمة ؟')"
+                            ></v-checkbox>
                         </v-form>
                      </v-card-text>
                      <v-card-actions>
@@ -42,7 +47,8 @@ export default {
         category_id: this.$route.params.category_id,
         form: {
            ar_name: '',
-           en_name: ''
+           en_name: '',
+           advanced: false
          }
       }
     },
@@ -52,7 +58,7 @@ export default {
           category_id : this.category_id,
           ...this.form
           };
-          CategoryService.AddAttribute(payload).then( response => {
+          CategoryService.AddAttribute(payload).then(() => {
             this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
               this.$translate('Attribute registered successfully','تمت إضافة الخاصية بنجاح'), 

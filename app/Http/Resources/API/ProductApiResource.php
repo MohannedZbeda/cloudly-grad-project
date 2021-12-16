@@ -15,10 +15,11 @@ class ProductApiResource extends JsonResource
             'id' => $this->id,
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
-            'old_price' => $this->price,
-            'new_price' => $this->getDiscounts()['new_price'],
-            'attributes' => ValueResource::collection($this->values),
-            'discounts' => $this->getDiscounts()['discounts']
+            'category' => [
+              'ar_name' => $this->category->ar_name,
+              'en_name' => $this->category->en_name
+            ],
+            'variants' => VariantApiResource::collection($this->whenLoaded('variants'))
         ];
     }
 }

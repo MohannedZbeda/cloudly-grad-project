@@ -17,9 +17,9 @@ class HomeController extends Controller
     public function index()
     {
         try {
-        $packages = PackageApiResource::collection(Package::with(['products', 'discounts'])->get()); 
+        $packages = PackageApiResource::collection(Package::with(['variants', 'discounts'])->get()); 
         $categories = CategoryApiResource::collection(Category::with('products')->get());
-        $products = ProductApiResource::collection(Product::with('discounts')->get());
+        $products = ProductApiResource::collection(Product::with('variants')->get());
         return response()->json([
             'status_code' => 200,
             'categories' => $categories,

@@ -11,7 +11,7 @@ class CreateProductValues extends Migration
     {
         Schema::create('product_values', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->references('id')->on('products')->onDelete('RESTRICT');
+            $table->foreignId('variant_id')->references('id')->on('variants')->onDelete('RESTRICT');
             $table->foreignId('attribute_id')->references('id')->on('attributes')->onDelete('RESTRICT');
             $table->string('value');
             $table->timestamps();

@@ -49,8 +49,8 @@ class Package extends Model
         return $this->morphMany(Voucher::class, 'voucherable');
     }
 
-    public function products() {
-        return $this->belongsToMany(Product::class, 'package_products');
+    public function variants() {
+        return $this->belongsToMany(Variant::class, 'package_products');
     }
 
     public function getVouchers()
