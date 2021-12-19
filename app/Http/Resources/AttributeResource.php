@@ -13,7 +13,8 @@ class AttributeResource extends JsonResource
             'id' => $this->id,
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
-            'created_at' => $this->created_at->toDateString(),
+            'advanced' => $this->advanced,
+            'created_at' => $this->created_at->toDateString()
         ];
     }
 }

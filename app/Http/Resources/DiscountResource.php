@@ -16,7 +16,7 @@ class DiscountResource extends JsonResource
           'discount_percentage' => $this->discount_percentage,
           'created_at' => $this->created_at->toDateString(),
           'end_date' => Carbon::parse($this->end_date)->toDateString(),
-          'products' => ProductResource::collection($this->whenLoaded('products')),
+          'products' => ProductResource::collection($this->whenLoaded('variants')),
           'packages' => PackageResource::collection($this->whenLoaded('packages'))
         ];
     }

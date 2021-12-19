@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DiscountResource;
 use App\Http\Resources\PackageResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\VariantResource;
 use App\Models\Discount;
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -42,7 +44,7 @@ class DiscountController extends Controller
   public function getItems()
   {
      try {
-      $products = ProductResource::collection(Product::all());
+      $products = VariantResource::collection(Variant::all());
       $packages = PackageResource::collection(Package::all());
       return response()->json(['status_code' => 200, 'packages' => $packages, 'products' => $products])->setStatusCode(200); 
      } catch (Error $error) {
@@ -56,7 +58,7 @@ class DiscountController extends Controller
     {
       try {
         $validator = Validator::make($request->all(), [
-            'products' => 'required_without:packages|nullable|exists:products,id',
+            'products' => 'required_without:packages|nullable|exists:variants,id',
             'packages' => 'required_without:products|nullable|exists:packages,id',
             'end_date' => 'required|date|after:yesterday',
             'discount_amount' => 'required_without:discount_percentage|nullable|numeric',
@@ -71,7 +73,7 @@ class DiscountController extends Controller
           $discount->end_date = Carbon::parse($request->end_date);
           $discount->save();
           if($request->products)
-            $discount->products()->attach($request->products);
+            $discount->variants()->attach($request->products);
           if($request->packages)
             $discount->packages()->attach($request->packages);
           return $discount;

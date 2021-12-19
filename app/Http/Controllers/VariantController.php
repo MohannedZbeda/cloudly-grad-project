@@ -21,11 +21,11 @@ use Error;
 
 class VariantController extends Controller
 {
-    public function index()
+    public function index($product_id)
     {
     try {
-        $variants = VariantResource::collection(Variant::with(['values', 'discounts'])->get());
-        return response()->json(['status_code' => 200, 'products' => $variants])->setStatusCode(200);
+        $variants = VariantResource::collection(Variant::with(['values', 'discounts'])->where('product_id',$product_id)->get());
+        return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
     }
     catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get all variants'])->setStatusCode(500);  
@@ -131,7 +131,7 @@ class VariantController extends Controller
             $variant->save();
             foreach($request['attributes'] as $attribute) {
               $value = new ProductValue();
-              $value->product_id = $variant->id;
+              $value->variant_id = $variant->id;
               $value->attribute_id = $attribute['id'];
               $value->value = $attribute['value'];
               $value->save();

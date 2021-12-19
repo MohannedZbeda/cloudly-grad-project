@@ -1,4 +1,8 @@
 <template>
+  <div>
+    
+    <h2 style="text-align:center; margin-top: 2em">{{$translate('Product Variants', 'تفرعات المنتج')}}</h2> <br> 
+<v-btn style="margin-start: 4em"  class="primary" @click="goToCreate">{{$translate('Add a Variant', 'إضافة تفرع')}}</v-btn> <br> <br> 
   <v-data-table
     :headers="$translate([
          {
@@ -25,7 +29,7 @@
         {
           text: 'Price Before Discounts',
           sortable: false,
-          value: 'old_price',
+          value: 'price',
         },
         {
           text: 'Price After Discounts',
@@ -33,9 +37,9 @@
           value: 'new_price',
         },
         {
-          text: 'Category',
+          text: 'Product',
           sortable: false,
-          value: 'category',
+          value: 'product',
         },
         { text: 'Addition Date', value: 'created_at', sortable : true },
         { text: 'Actions', value: 'actions', sortable: false },
@@ -64,7 +68,7 @@
         {
           text: 'السعر قبل التخفيضات',
           sortable: false,
-          value: 'old_price',
+          value: 'price',
         },
         {
           text: 'السعر بعد التخفيضات',
@@ -72,21 +76,40 @@
           value: 'new_price',
         },
         {
-          text: 'التصنيف',
+          text: 'المنتج',
           sortable: false,
-          value: 'category',
+          value: 'product',
         },
         { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
         { text: 'العمليات', value: 'actions', sortable: false }
       ])"
-    :items="products"
+    :items="variants"
     sort-by="created_at"
-    class="elevation-1"
     calculated-width="true"
-    :no-data-text="$translate(`There's no products..`, 'لا يوجد منتجات..')"
-
+    :no-data-text="$translate(`There's no variants..`, 'لا يوجد منتجات..')"
   >
-  <template v-slot:top>
+
+    
+
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-icon style="margin-right: 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
+      <v-icon style="margin-right: 10px" @click="showVoucherForm(item)">mdi-gift</v-icon>
+      <v-icon v-if="item.vouchers.length" style="margin-right: 10px" @click="copyVouchers(item.vouchers)">mdi-content-copy</v-icon>
+
+    </template>
+
+    <template v-slot:[`item.attributes`]="{ item }">
+       <v-btn class="primary" @click="showAttributes(item)">{{$translate('View Attributes', 'عرض الخصائص')}}</v-btn>  
+    </template>
+
+    <template v-slot:[`item.discounts`]="{ item }">
+       <v-btn class="primary" @click="showDiscounts(item)">{{$translate('View Discounts', 'عرض التخفيضات')}}</v-btn>  
+    </template>
+
+    
+    
+  </v-data-table>
+  <template>
       <v-toolbar flat>
         <v-spacer></v-spacer>
         <v-dialog
@@ -95,11 +118,11 @@
         >
           
           <v-card>
-            <v-card-title class="text-h5">{{$translate(`${product.en_name}'s Attributes`, `خصائص ${product.ar_name}`)}}<br>
+            <v-card-title class="text-h5">{{$translate(`${variant.en_name}'s Attributes`, `خصائص ${variant.ar_name}`)}}<br>
             </v-card-title>
             <v-card-text dir="rtl"> 
               <ul>
-                <li v-for="attribute in product.attributes" :key="attribute.id">
+                <li v-for="attribute in variant.attributes" :key="attribute.id">
                   <b>{{$translate(attribute.attribute_en_name, attribute.attribute_ar_name)}}</b> : {{attribute.value}}
                 </li>
               </ul>
@@ -122,11 +145,11 @@
         >
           
           <v-card>
-            <v-card-title class="text-h5">{{$translate(`${product.en_name}'s Discounts`, `تخفيضات ${product.ar_name}`)}}<br>
+            <v-card-title class="text-h5">{{$translate(`${variant.en_name}'s Discounts`, `تخفيضات ${variant.ar_name}`)}}<br>
             </v-card-title>
             <v-card-text dir="rtl"> 
               <ul>
-                <li v-for="(discount, index) in product.discounts" :key="discount.id">
+                <li v-for="(discount, index) in variant.discounts" :key="discount.id">
                      <b>{{$translate(`Discount NO ${index + 1}`, `التخفيض رقم ${index + 1}`)}} : 
                       {{discount.discount_percentage ? `${discount.discount_percentage}%` : `${discount.discount_amount}LYD`}}
                         |  {{$translate('End Date', 'تاريخ إنتهاء الصلاحية')}} : {{discount.end_date}}
@@ -156,10 +179,10 @@
         >
           
           <v-card>
-            <v-card-title class="text-h5">{{$translate(`Add Vouchers to ${product.en_name}`, `إضافة هدايا ل ${product.ar_name}`)}}<br>
+            <v-card-title class="text-h5">{{$translate(`Add Vouchers to ${variant.en_name}`, `إضافة هدايا ل ${variant.ar_name}`)}}<br>
             </v-card-title>
             <v-card-text dir="rtl"> 
-              <b>{{$translate('Gifs are codes to be given to chosen users, When used, The codes give the chosen product',
+              <b>{{$translate('Gifs are codes to be given to chosen users, When used, The codes give the chosen variant',
                 'الهدايا هي عبارة عن رموز تعطى لمستخدمين مختارين, عندما يتم إستعمال هذه الأكواد, ستعطي المنتج المختار مجانا'
                 )}}</b><br><br>
               <v-form>
@@ -181,41 +204,22 @@
         </v-dialog>
       </v-toolbar>
    
-   
     </template>
-
-    
-
-    <template v-slot:[`item.actions`]="{ item }">
-      <v-icon style="margin-right: 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
-      <v-icon style="margin-right: 10px" @click="showVoucherForm(item)">mdi-gift</v-icon>
-      <v-icon v-if="item.vouchers.length" style="margin-right: 10px" @click="copyVouchers(item.vouchers)">mdi-content-copy</v-icon>
-    </template>
-
-    <template v-slot:[`item.attributes`]="{ item }">
-       <v-btn class="primary" @click="showAttributes(item)">{{$translate('View Attributes', 'عرض الخصائص')}}</v-btn>  
-    </template>
-
-    <template v-slot:[`item.discounts`]="{ item }">
-       <v-btn class="primary" @click="showDiscounts(item)">{{$translate('View Discounts', 'عرض التخفيضات')}}</v-btn>  
-    </template>
-
-    
-    
-  </v-data-table>
+</div>
 </template>
 <script>    
-import Productservice from '../../services/Product';
+import Variantservice from '../../services/Variant';
   export default {
-    name : 'product.index',
+    name : 'variant.index',
     data() {
       return {
+      id: this.$route.params.id,
       sending: false,
       dialog : false,
       discounts_dialog : false,
       add_vouchers_dialog : false,
-      products: [],
-      product : {},
+      variants: [],
+      variant : {},
       form: {
         quantity: null
       }
@@ -224,21 +228,24 @@ import Productservice from '../../services/Product';
     },
 
     beforeMount() {
-      Productservice.GetProducts().then(response => {
-        this.products = response.data.products
+      Variantservice.GetVariants(this.id).then(response => {
+        this.variants = response.data.variants
       });
     },
     methods: {
+    goToCreate() {
+      return this.$router.push(`/products/${this.id}/variants/create`);
+    },  
     showAttributes(item) {
-    this.product = item;
+    this.variant = item;
     this.dialog = true;
     },
     showDiscounts(item){
-    this.product = item;
+    this.variant = item;
     this.discounts_dialog = true;
     },
     showVoucherForm(item){
-    this.product = item;
+    this.variant = item;
     this.add_vouchers_dialog = true;
     },
     copyVouchers(vouchers){
@@ -257,12 +264,12 @@ import Productservice from '../../services/Product';
       if(this.sending)
       return; 
       const payload = {
-        product_id: this.product.id,
+        variant_id: this.variant.id,
         discount_id: id,
       };
       this.sending = true;
-     Productservice.RemoveDiscount(payload).then(response => {
-       this.products = response.data.products;
+     variantservice.RemoveDiscount(payload).then(response => {
+       this.variants = response.data.variants;
      }).finally(() => {
        this.sending = false;
        this.closeDialog();
@@ -275,10 +282,10 @@ import Productservice from '../../services/Product';
     this.sending = true;
     const payload = {
       quantity: this.form.quantity,
-      product_id: this.product.id
+      variant_id: this.variant.id
     }
-    Productservice.AddVouchers(payload).then(response => {
-      this.products = response.data.products;
+    Variantservice.AddVouchers(payload).then(response => {
+      this.variants = response.data.variants;
       this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
               this.$translate('Vouchers generated successfully', 'تمت توليد الهدايا بنجاح'), 
@@ -292,13 +299,13 @@ import Productservice from '../../services/Product';
     this.dialog = false;
     this.discounts_dialog = false;
     this.add_vouchers_dialog = false;
-    this.product = {};
+    this.variant = {};
     },
     goToEdit(id) {
-     this.$router.push('/products/edit/' + id);
+     this.$router.push(`/products/${this.id}/variants/edit/${id}`);
     },
     goToVariants(id) {
-     this.$router.push('/products/'+id+'/variants');
+     this.$router.push('/variants/'+id+'/variants');
     },
       
 

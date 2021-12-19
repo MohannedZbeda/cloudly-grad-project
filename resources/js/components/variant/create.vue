@@ -10,15 +10,6 @@
                          'There are no attributes for this product, Please add some', 
                          'لا توجد خصائص لهذا المنتج يرجى الإضافة')}}</p>
                         <v-form>
-                          <v-select
-                            :items="products"
-                            item-text="en_name"
-                            item-value="id"
-                            @input="getAttributes"
-                            :label="$translate('Product', 'المنتج')"
-                            v-model="form.category_id"
-                            outlined
-                          ></v-select>
                             <v-text-field
                               :label="$translate('AR Name', 'الإسم بالعربي')"
                               :placeholder="$translate('AR Variant Name', 'إسم المنتج بالعربي')"
@@ -71,12 +62,12 @@ export default {
     name: 'variant.create',
     data() {
         return {
+        id: this.$route.params.id,
          products: [],
          noAttributes: false,
          form: {
           ar_name: '',
           en_name: '',
-          product_id: '',
           attributes: [],
           price: null
          }
@@ -86,13 +77,11 @@ export default {
       VariantService.GetProducts().then(response => {
         this.products = response.data.products;
       });
+      this.getAttributes(this.id)
     },
     methods: {
-       getAttributes() {
-         const payload = {
-           id : this.form.product_id
-         }
-         VariantService.GetAttributes(payload).then(response => {
+       getAttributes(id) {
+         VariantService.GetAttributes({id}).then(response => {
            if(!response.data.attributes.length) {
              this.noAttributes = true;
              this.form.attributes = [];
@@ -117,19 +106,19 @@ export default {
           });
       },
         create() {
-          VariantService.CreateProduct(this.form).then(() => {
+          const payload = {
+           product_id: this.id,
+           ...this.form
+          };
+          VariantService.CreateVariant(payload).then(() => {
             this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
               this.$translate('Product registered successfully', 'تمت إضافة المنتج بنجاح'), 
               'success').then(() => {
-             this.$router.push('/variants') 
+             this.$router.push(`/products/${this.id}/variants`) 
             });
           });
         }
     }
 }
 </script>
-
-<style>
-
-</style>

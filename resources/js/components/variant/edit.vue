@@ -10,15 +10,6 @@
                          'There are no attributes for this product, Please add some', 
                          'لا توجد خصائص لهذا المنتج، يرجى الإضافة')}}</p>
                         <v-form>
-                          <v-select
-                            :items="products"
-                            item-text="en_name"
-                            item-value="id"
-                            @input="getAttributes"
-                            :label="$translate('Product', 'المنتج')"
-                            v-model="form.product_id"
-                            outlined
-                          ></v-select>
                             <v-text-field
                               :label="$translate('AR Name', 'الإسم بالعربي')"
                               :placeholder="$translate('AR Variant Name', 'إسم المنتج بالعربي')"
@@ -68,53 +59,39 @@ export default {
     data() {
         return {
          id: this.$route.params.id,
+         product_id: this.$route.params.product_id,
          categories : [],
          noAttributes: false,
          form: {
            ar_name: '',
            en_name: '',
            price: '',
-           product_id: '',
+           attributes: []
          }
         }
     },
     beforeMount() {
-      VariantService.GetProduct(this.id).then(response => {
-        this.form = response.data.product;
+      VariantService.GetVariant(this.id).then(response => {
+        this.form = response.data.variant;
+        this.form.attributes = response.data.variant.attributes.map(attribute => {
+        return {
+          id: attribute.id,
+          ar_name: attribute.attribute_ar_name,
+          en_name: attribute.attribute_en_name,
+          value: attribute.value
+        }
       });
-      VariantService.GetProducts().then(response => {
-        this.products = response.data.products;
       });
+      
     },
     methods: {
-       getAttributes() {
-         const payload = {
-           id : this.form.product_id
-         }
-         VariantService.GetAttributes(payload).then(response => {
-           if(!response.data.attributes.length) {
-             this.noAttributes = true;
-             this.form.attributes = [];
-             return;
-           }
-           this.form.attributes = response.data.attributes.map(attribute => {
-             return {
-               id: attribute.id,
-               ar_name: attribute.ar_name,
-               en_name: attribute.en_name,
-               value: ''
-             }
-           });
-           this.noAttributes = false;
-         });
-       },
         update() {
-          VariantService.UpdateProduct({id : this.id, ...this.form}).then(() => {
+          VariantService.UpdateVariant({id : this.id, product_id: this.product_id, ...this.form}).then(() => {
             this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
-              this.$translate('Product registered successfully', 'تمت إضافة المنتج بنجاح'), 
+              this.$translate('Product registered successfully', 'تمت تعديل المنتج بنجاح'), 
               'success').then(() => {
-             this.$router.push('/variants') 
+             this.$router.push(`/products/${this.product_id}/variants`); 
             });
           });
         }

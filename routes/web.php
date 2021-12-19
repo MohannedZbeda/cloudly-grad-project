@@ -11,6 +11,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FAQController;
+use App\Http\Controllers\VariantController;
 
 Auth::routes(['register' => false]);
 
@@ -43,12 +44,20 @@ Route::prefix('dashboard')->group(function () {
     Route::prefix('/products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::get('/get-categories', [ProductController::class, 'getCategories']);
-        Route::post('/get-category-attributes', [ProductController::class, 'getAttributes']);
-        Route::post('/remove-discount', [ProductController::class, 'removeDiscount']);
-        Route::post('/add-vouchers', [ProductController::class, 'addVouchers']);
         Route::get('/{id}', [ProductController::class, 'getProduct']);
         Route::post('/store', [ProductController::class, 'store']);
-        Route::post('/update', [ProductController::class, 'update']);
+        Route::post('/update', [ProductController::class, 'update']);        
+    });
+
+    Route::prefix('/variants')->group(function () {
+        Route::get('/{product_id}', [VariantController::class, 'index']);
+        Route::get('/get-products', [VariantController::class, 'getProducts']);
+        Route::post('/get-product-attributes', [VariantController::class, 'getAttributes']);
+        Route::post('/remove-discount', [VariantController::class, 'removeDiscount']);
+        Route::post('/add-vouchers', [VariantController::class, 'addVouchers']);
+        Route::get('/variant/{id}', [VariantController::class, 'getVariant']);
+        Route::post('/store', [VariantController::class, 'store']);
+        Route::post('/update', [VariantController::class, 'update']);
         
     });
 

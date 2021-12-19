@@ -13,7 +13,7 @@ class VariantResource extends JsonResource
             'id' => $this->id,
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
-            'old_price' => $this->price,
+            'price' => $this->price,
             'new_price' => $this->getDiscounts()['new_price'],
             'attributes' => ValueResource::collection($this->whenLoaded('values')),
             'discounts' => DiscountResource::collection($this->whenLoaded('discounts')),

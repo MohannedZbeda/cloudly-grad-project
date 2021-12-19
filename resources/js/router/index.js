@@ -6,6 +6,9 @@ import AdminIndex from '../components/admin/index.vue';
 import CreateProduct from '../components/product/create.vue';
 import EditProduct from '../components/product/edit.vue';
 import ProductIndex from '../components/product/index.vue';
+import CreateVariant from '../components/variant/create.vue';
+import EditVariant from '../components/variant/edit.vue';
+import VariantIndex from '../components/variant/index.vue';
 import CreateCategory from '../components/category/create.vue';
 import EditCategory from '../components/category/edit.vue';
 import CategoryIndex from '../components/category/index.vue';
@@ -60,6 +63,21 @@ const routes = [
     path: '/products/edit/:id',
     name: 'product.edit',
     component : EditProduct,        
+  },
+  {
+    path: '/products/:id/variants',
+    name: 'variant.index',
+    component : VariantIndex,        
+  },
+  {
+    path: '/products/:id/variants/create',
+    name: 'variant.create',
+    component : CreateVariant,        
+  },
+  {
+    path: '/products/:product_id/variants/edit/:id',
+    name: 'variant.edit',
+    component : EditVariant,        
   },
 
   {

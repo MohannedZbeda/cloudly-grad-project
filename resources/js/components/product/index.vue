@@ -60,8 +60,7 @@
 
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon style="margin-right: 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
-      <v-icon style="margin-right: 10px" @click="showVoucherForm(item)">mdi-gift</v-icon>
-      <v-icon v-if="item.vouchers.length" style="margin-right: 10px" @click="copyVouchers(item.vouchers)">mdi-content-copy</v-icon>
+      <v-icon style="margin-right: 10px" @click="goToVariants(item.id)">mdi-gift</v-icon>
     </template>
 
     <template v-slot:[`item.attributes`]="{ item }">
