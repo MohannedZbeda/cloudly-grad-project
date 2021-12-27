@@ -16,7 +16,7 @@ class PackageController extends Controller
     public function index()
     {
         try {
-        $packages = PackageResource::collection(Package::with(['products', 'discounts'])->get());
+        $packages = PackageResource::collection(Package::with('variants')->get());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
     }
       catch(Error $error) {
@@ -28,7 +28,7 @@ class PackageController extends Controller
     public function getPackage($id)
     {
         try {
-        $package = new PackageResource(Package::with('products')->find($id));
+        $package = new PackageResource(Package::with('variants')->find($id));
         return response()->json(['status_code' => 200, 'package' => $package])->setStatusCode(200);
     }  
     catch(Error $error) {
@@ -44,7 +44,7 @@ class PackageController extends Controller
             'ar_name' => 'required|unique:packages,ar_name',
             'en_name' => 'required|unique:packages,en_name',
             'price' => 'required|numeric',
-            'products' => 'required|array|exists:products,id'  
+            'variants' => 'required|array|exists:variants,id'  
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -54,7 +54,7 @@ class PackageController extends Controller
         $package->en_name = $request->en_name;
         $package->price = $request->price;
         $package->save();
-        $package->products()->sync($request->products);
+        $package->variants()->sync($request->variants);
         return $package;
       });
        DB::commit();
@@ -80,7 +80,7 @@ class PackageController extends Controller
               'required',
               Rule::unique('packages', 'en_name')->ignore($request->id)],
             'price' => 'required|numeric',
-            'products' => 'required|array|exists:products,id'  
+            'variants' => 'required|array|exists:variants,id'  
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -90,7 +90,7 @@ class PackageController extends Controller
         $package->en_name = $request->en_name;
         $package->price = $request->price;
         $package->save();
-        $package->products()->sync($request->products);
+        $package->variants()->sync($request->variants);
         return $package;
        });
        DB::commit();
@@ -103,15 +103,45 @@ class PackageController extends Controller
       }   
     }
 
-    public function removeDiscount(Request $request)
+    public function addDiscount(Request $request)
     {
         try {
+        $validator = Validator::make($request->all(), [
+          'discount_percentage' => 'required|between:0,100',
+          'package_id' => 'required|exists:packages,id'
+        ]);
+        if($validator->fails()) 
+          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $package = Package::find($request->package_id);
-        $package->discounts()->detach($request->discount_id);
+        DB::transaction(function() use($package, $request) {
+        $package->discount_percentage = $request->discount_percentage;
+        $package->save();
+        });
+        DB::commit();
         $packages = PackageResource::collection(Package::all());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
     }  
     catch(Error $error) {
+        DB::rollBack();
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to add a discount'])->setStatusCode(500);  
+      
+      }  
+}
+
+    public function removeDiscount(Request $request)
+    {
+        try {
+        $package = Package::find($request->package_id);
+        DB::transaction(function () use($package) {
+          $package->discount_percentage = null;
+          $package->save();
+        });
+        DB::commit();
+        $packages = PackageResource::collection(Package::all());
+        return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
+    }  
+    catch(Error $error) {
+      DB::rollBack();
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'PackageController, Trying to remove a discount'])->setStatusCode(500);  
       
       }  

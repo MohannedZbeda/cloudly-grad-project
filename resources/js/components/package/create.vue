@@ -6,20 +6,17 @@
                         <v-toolbar-title>{{$translate('Register a Package', 'إضافة باقة')}}</v-toolbar-title>
                      </v-toolbar>
                      <v-card-text>
-                       <!-- <p v-if="noAttributes" style="color:red">{{$translate(
-                         'There are no attributes for this category, Please add some', 
-                         'لا توجد خصائص لهذا التصنيف، يرجى الإضافة')}}</p> -->
                         <v-form>
                           <v-autocomplete
-                            v-model="form.products"
-                            :items="products"
+                            v-model="form.variants"
+                            :items="variants"
                             item-text="en_name"
                             item-value="id"
                             outlined
                             dense
                             chips
                             small-chips
-                            :label="$translate('Package Products', 'منتجات الباقة')"
+                            :label="$translate('Package variants', 'منتجات الباقة')"
                             multiple
                           ></v-autocomplete>
 
@@ -63,18 +60,18 @@ export default {
     name: 'package.create',
     data() {
         return {
-         products: [],
+         variants: [],
          form: {
           ar_name: '',
           en_name: '',
-          products: [],
+          variants: [],
           price: null
          }
         }
     },
     beforeMount() {
-      PackageService.GetProducts().then(response => {
-        this.products = response.data.products;
+      PackageService.GetVariants().then(response => {
+        this.variants = response.data.variants;
       });
     },
     methods: {

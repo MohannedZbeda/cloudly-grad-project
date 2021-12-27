@@ -53,6 +53,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/{product_id}', [VariantController::class, 'index']);
         Route::get('/get-products', [VariantController::class, 'getProducts']);
         Route::post('/get-product-attributes', [VariantController::class, 'getAttributes']);
+        Route::post('/add-discount', [VariantController::class, 'addDiscount']);
         Route::post('/remove-discount', [VariantController::class, 'removeDiscount']);
         Route::post('/add-vouchers', [VariantController::class, 'addVouchers']);
         Route::get('/variant/{id}', [VariantController::class, 'getVariant']);
@@ -63,9 +64,10 @@ Route::prefix('dashboard')->group(function () {
 
     Route::prefix('/packages')->group(function () {
         Route::get('/', [PackageController::class, 'index']);
-        Route::get('/get-products', [ProductController::class, 'index']);
+        Route::get('/get-variants', [VariantController::class, 'getVariants']);
         Route::get('/get-categories', [PackageController::class, 'getCategories']);
         Route::post('/get-category-attributes', [PackageController::class, 'getAttributes']);
+        Route::post('/add-discount', [PackageController::class, 'addDiscount']);
         Route::post('/remove-discount', [PackageController::class, 'removeDiscount']);
         Route::post('/add-vouchers', [PackageController::class, 'addVouchers']);
         Route::get('/{id}', [PackageController::class, 'getPackage']);

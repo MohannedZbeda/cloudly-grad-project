@@ -7,6 +7,7 @@ use App\Http\Resources\API\CartResource;
 use App\Models\CartItem;
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\Variant;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -46,12 +47,22 @@ class CartController extends Controller
     
     function addPackage(Request $request)
     {
+      $validator = Validator::make($request->all(), [
+        'id' => 'required|exists:packages,id'
+    ]);
+    if($validator->fails()) 
+      return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
       return $this->addToCart($request->id, Package::class, $request->quantity); 
     }
 
     function addProduct(Request $request)
     {  
-      return $this->addToCart($request->id, Product::class, $request->quantity); 
+      $validator = Validator::make($request->all(), [
+        'id' => 'required|exists:variants,id'
+    ]);
+    if($validator->fails()) 
+      return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
+      return $this->addToCart($request->id, Variant::class, $request->quantity); 
     }
 
     function removeFromCart(Request $request)

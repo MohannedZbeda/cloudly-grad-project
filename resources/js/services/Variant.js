@@ -28,6 +28,10 @@ export default class {
         return API.post(`${prefix}/update`, payload);
     }
 
+    static async AddDiscount(payload) {
+        return API.post(`${prefix}/add-discount`, payload);
+    }
+
     static async RemoveDiscount(payload) {
         return API.post(`${prefix}/remove-discount`, payload);
     }

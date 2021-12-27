@@ -33,11 +33,14 @@
                                 v-model="attribute.value"
                               >
                                 <template v-slot:prepend>
-                                  <v-icon style="color:#c0392b; cursor:pointer" @click="removeAttribute(attribute.id)">mdi-window-close</v-icon>                          
+                                  <v-icon v-if="attribute.advanced" style="color:#c0392b; cursor:pointer" @click="removeAttribute(attribute.id)">mdi-window-close</v-icon>                          
                                 </template>
                               </v-text-field>
                               
-                            </div> 
+                            </div>
+                            <br> <br> 
+                            <v-divider style="background-color: black"></v-divider>
+                             <br> <br>
                             <v-text-field
                               :label="$translate('Price', 'السعر')"
                               outlined
@@ -93,6 +96,7 @@ export default {
                id: attribute.id,
                ar_name: attribute.ar_name,
                en_name: attribute.en_name,
+               advanced: attribute.advanced,
                value: ''
              }
            });

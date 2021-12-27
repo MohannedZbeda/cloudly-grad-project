@@ -11,15 +11,15 @@
                          'لا توجد خصائص لهذا التصنيف، يرجى الإضافة')}}</p> -->
                         <v-form>
                           <v-autocomplete
-                            v-model="form.products"
-                            :items="products"
+                            v-model="form.variants"
+                            :items="variants"
                             item-text="en_name"
                             item-value="id"
                             outlined
                             dense
                             chips
                             small-chips
-                            :label="$translate('Package Products', 'منتجات الباقة')"
+                            :label="$translate('Package variants', 'منتجات الباقة')"
                             multiple
                           ></v-autocomplete>
 
@@ -64,29 +64,30 @@ export default {
     data() {
         return {
          id: this.$route.params.id,
-         products: [],
+         variants: [],
          form: {
           ar_name: '',
           en_name: '',
-          products: [],
-          price: null
-         }
+          variants: [],
+         price: null
+
+         },
         }
     },
     beforeMount() {
       PackageService.GetPackage(this.id).then(response => {
         this.form = response.data.package;
       });
-      PackageService.GetProducts().then(response => {
-        this.products = response.data.products;
+      PackageService.GetVariants().then(response => {
+        this.variants = response.data.variants;
       });
     },
     methods: {
         update() {
-          this.form.products =  this.form.products.map(product => product['id'] ? product['id'] : product);
+          this.form.variants = this.form.variants.map(variant => variant['id'] ? variant['id'] : variant);
           const payload = {
             id : this.id,
-            ...this.form
+            ...this.form,
           }
           PackageService.UpdateProduct(payload).then(() => {
             this.$swal(

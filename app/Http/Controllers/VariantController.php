@@ -5,26 +5,34 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AttributeResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use App\Http\Resources\CategoryResource;
 use App\Http\Resources\VariantResource;
-use App\Models\Attribute;
 use App\Models\ProductValue;
 use App\Models\Variant;
 use Illuminate\Support\Carbon;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\DB;
 use Error;
-
+use Illuminate\Validation\Rule;
 class VariantController extends Controller
 {
     public function index($product_id)
     {
     try {
-        $variants = VariantResource::collection(Variant::with(['values', 'discounts'])->where('product_id',$product_id)->get());
+        $variants = VariantResource::collection(Variant::with(['values'])->where('product_id',$product_id)->get());
+        return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
+    }
+    catch(Error $error) {
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get all variants'])->setStatusCode(500);  
+      
+      }    
+}
+
+public function getVariants()
+    {
+    try {
+        $variants = VariantResource::collection(Variant::all());
         return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
     }
     catch(Error $error) {
@@ -57,14 +65,44 @@ class VariantController extends Controller
       }   
 }
 
+public function addDiscount(Request $request)
+    {
+        try {
+        $validator = Validator::make($request->all(), [
+            'discount_percentage' => 'required|between:0,100',
+            'variant_id' => 'required|exists:variants,id'
+        ]);
+        if($validator->fails()) 
+            return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);    
+        $variant = Variant::find($request->variant_id);
+        DB::transaction(function() use($variant, $request) {
+        $variant->discount_percentage = $request->discount_percentage;
+        $variant->save();
+        });
+        DB::commit();
+        $variants = VariantResource::collection(Variant::all());
+        return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
+    }  
+    catch(Error $error) {
+        DB::rollBack();
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to add a discount'])->setStatusCode(500);  
+      
+      }  
+}
+
     public function removeDiscount(Request $request)
     {
         try {
         $variant = Variant::find($request->variant_id);
-        $variant->discounts()->detach($request->discount_id);
-        $variants = ProductResource::collection(Variant::all());
+        DB::transaction(function () use($variant){
+            $variant->discount_percentage = null;
+            $variant->save();
+        });
+        DB::commit();
+        $variants = VariantResource::collection(Variant::all());
         return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
     }  catch(Error $error) {
+        DB::rollBack();
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to remove a discount'])->setStatusCode(500);  
       
       }   
@@ -113,8 +151,8 @@ class VariantController extends Controller
         try {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
-            'ar_name' => 'required',
-            'en_name' => 'required',
+            'ar_name' => 'required|unique:variants,ar_name',
+            'en_name' => 'required|unique:variants,en_name',
             'price' => 'required|numeric',
             'attributes' => 'required|array',
             'attributes.*.value' => 'required',
@@ -151,8 +189,16 @@ class VariantController extends Controller
         try {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
-            'ar_name' => 'required|string',
-            'en_name' => 'required|string',
+            'ar_name' => [
+                'required',
+                'string',
+                Rule::unique('ar_name')->ignore($request->id)
+            ],
+            'en_name' => [
+                'required',
+                'string',
+                Rule::unique('en_name')->ignore($request->id)
+            ],
             'price' => 'required|numeric',
             'attributes' => 'required|array',
             'attributes.*.value' => 'required',

@@ -13,10 +13,10 @@ class PackageResource extends JsonResource
          'id' => $this->id,
          'ar_name' => $this->ar_name,
          'en_name' => $this->en_name,
-         'old_price' => $this->price,
-         'new_price' => $this->getDiscounts()['new_price'],
-         'products' => ProductResource::collection($this->whenLoaded('products')),
-         'discounts' => DiscountResource::collection($this->whenLoaded('discounts')),
+         'price' => $this->price,
+         'new_price' => $this->getDiscount(),
+         'variants' => VariantResource::collection($this->whenLoaded('variants')),
+         'discount' => $this->discount_percentage ? $this->discount_percentage.'%' : null,
          'vouchers' => $this->getVouchers(),
          'created_at' => $this->created_at->toDateString()
         ];

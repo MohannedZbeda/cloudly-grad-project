@@ -17,8 +17,8 @@ class CartResource extends JsonResource
         'en_name' => $this->cartable->en_name,
         'quantity' => $this->quantity,
         'old_price' => $this->cartable->price,
-        'new_price' => $this->cartable->getDiscounts()['new_price'],
-        'discounts' => $this->cartable->getDiscounts()['discounts']
+        'discount' => $this->cartable->discount_percentage . '%',
+        'new_price' => $this->cartable->getDiscount(),
     ];
     }
 }

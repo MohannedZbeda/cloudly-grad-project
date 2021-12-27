@@ -14,9 +14,9 @@ class VariantResource extends JsonResource
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
             'price' => $this->price,
-            'new_price' => $this->getDiscounts()['new_price'],
+            'new_price' => $this->getDiscount(),
             'attributes' => ValueResource::collection($this->whenLoaded('values')),
-            'discounts' => DiscountResource::collection($this->whenLoaded('discounts')),
+            'discount' => $this->discount_percentage ? $this->discount_percentage.'%' : null,
             'vouchers' => $this->getVouchers(),
 
             // 'refundable' => [

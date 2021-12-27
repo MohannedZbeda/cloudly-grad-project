@@ -14,6 +14,11 @@
           sortable: false,
           value: 'en_name',
         },
+        {
+          text: 'Advanced ?',
+          sortable: false,
+          value: 'en_type',
+        },
         { text: 'Addition Date', value: 'created_at', sortable : true },
         { text: 'Actions', value: 'actions', sortable: false }
       ], [
@@ -27,6 +32,11 @@
           text: 'الإسم بالإنجليزي',
           sortable: false,
           value: 'en_name',
+        },
+        {
+          text: 'خاصية متقدمة ؟',
+          sortable: false,
+          value: 'ar_type',
         },
         { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
         { text: 'العمليات', value: 'actions', sortable: false }

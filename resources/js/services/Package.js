@@ -12,8 +12,8 @@ export default class {
         return API.get(`${prefix}/${id}`);
     }
     
-    static async GetProducts() {
-        return API.get(`${prefix}/get-products`);
+    static async GetVariants() {
+        return API.get(`${prefix}/get-variants`);
     }
 
     static async CreateProduct(payload) {
@@ -26,6 +26,10 @@ export default class {
 
     static async RemoveDiscount(payload) {
         return API.post(`${prefix}/remove-discount`, payload);
+    }
+
+    static async AddDiscount(payload) {
+        return API.post(`${prefix}/add-discount`, payload);
     }
 
     static async AddVouchers(payload) {

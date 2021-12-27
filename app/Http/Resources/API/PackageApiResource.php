@@ -15,9 +15,9 @@ class PackageApiResource extends JsonResource
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
             'old_price' => $this->price,
-            'new_price' => $this->getDiscounts()['new_price'],
+            'new_price' => $this->getDiscount(),
+            'discount' => $this->discount_percentage ? $this->discount_percentage.'%' : null,
             'variants' => VariantApiResource::collection($this->whenLoaded('variants')),
-            'discounts' => $this->getDiscounts()['discounts'],
             'created_at' => $this->created_at->toDateString()
            ];
     }

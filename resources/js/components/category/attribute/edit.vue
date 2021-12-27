@@ -20,6 +20,11 @@
                               outlined
                               v-model="form.en_name"
                             ></v-text-field>
+
+                            <v-checkbox
+                             v-model="form.advanced"
+                             :label="$translate('Advanced Attribute ? ', 'خاصية متقدمة ؟')"
+                            ></v-checkbox>
                         </v-form>
                      </v-card-text>
                      <v-card-actions>
@@ -42,7 +47,8 @@ export default {
         category_id: this.$route.params.category_id,
         form: {
            ar_name: '',
-           en_name: ''
+           en_name: '',
+           advanced: false
          }
       }
     },
@@ -50,6 +56,7 @@ export default {
       CategoryService.GetAttribute(this.category_id, this.id).then(response => {
         this.form.ar_name = response.data.attribute.ar_name;
         this.form.en_name = response.data.attribute.en_name;
+        this.form.advanced = response.data.attribute.advanced;
      });
     },
     methods: {

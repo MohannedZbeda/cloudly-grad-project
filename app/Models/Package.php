@@ -10,28 +10,16 @@ class Package extends Model
     use HasFactory;
     
     
-    public function getDiscounts()
-    {
-      $discounts = [];
-      $new_price = $this->price;
-      foreach ($this->discounts as $discount) {
-          $new_price = $new_price -  $discount->discount_amount; 
-          $new_price= $new_price -  ($new_price * ($discount->discount_percentage / 100));
-          if($discount->discount_amount)
-           array_push($discounts, $discount->discount_amount. 'LYD');
-           else 
-           array_push($discounts, $discount->discount_percentage. '%');
-      }
-      return [
-
-          'new_price' => $new_price,
-           'discounts' => $discounts
-      ];
+    public function getDiscount()
+    { 
+        $new_price = $this->price -  ($this->price * ($this->discount_percentage / 100));        
+        return $new_price;    
     }
-    
-    public function discounts()
+
+
+    public function subscriptions()
     {
-        return $this->morphToMany(Discount::class, 'discountable');
+        return $this->morphToMany(Subscription::class, 'subscribeable');
     }
 
     public function carts()
@@ -55,7 +43,7 @@ class Package extends Model
 
     public function getVouchers()
     {    $vouchers = [];
-         foreach ($this->vouchers->where('used', false) as $voucher) {
+         foreach($this->vouchers->where('used', false) as $voucher) {
              array_push($vouchers, $voucher->code);
          }
          $vouchers = implode(', ', $vouchers);

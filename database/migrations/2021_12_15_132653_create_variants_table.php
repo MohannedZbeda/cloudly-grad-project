@@ -14,7 +14,8 @@ class CreateVariantsTable extends Migration
             $table->foreignId('product_id')->references('id')->on('products')->onDelete('CASCADE');
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
-            $table->double('price');
+            $table->double('price')->min(0);
+            $table->double('discount_percentage')->nullable();
             $table->timestamps();
         });
     }

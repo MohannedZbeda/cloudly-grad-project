@@ -22,17 +22,17 @@
           value: 'attributes',
         },
          {
-          text: 'Discounts',
+          text: 'Discount',
           sortable: false,
-          value: 'discounts',
+          value: 'discount',
         },
         {
-          text: 'Price Before Discounts',
+          text: 'Price Before Discount',
           sortable: false,
           value: 'price',
         },
         {
-          text: 'Price After Discounts',
+          text: 'Price After Discount',
           sortable: false,
           value: 'new_price',
         },
@@ -61,17 +61,17 @@
           value: 'attributes',
         },
         {
-          text: 'التخفيضات',
+          text: 'التخفيض',
           sortable: false,
-          value: 'discounts',
+          value: 'discount',
         },
         {
-          text: 'السعر قبل التخفيضات',
+          text: 'السعر قبل التخفيض',
           sortable: false,
           value: 'price',
         },
         {
-          text: 'السعر بعد التخفيضات',
+          text: 'السعر بعد التخفيض',
           sortable: false,
           value: 'new_price',
         },
@@ -102,8 +102,15 @@
        <v-btn class="primary" @click="showAttributes(item)">{{$translate('View Attributes', 'عرض الخصائص')}}</v-btn>  
     </template>
 
-    <template v-slot:[`item.discounts`]="{ item }">
-       <v-btn class="primary" @click="showDiscounts(item)">{{$translate('View Discounts', 'عرض التخفيضات')}}</v-btn>  
+    <template v-slot:[`item.discount`]="{ item }">  
+       <div v-if="item.discount">
+         <b>{{item.discount}}  |  </b>
+        <v-icon style="margin-right: 10px; color: #c0392b" @click="showDiscountDeleteForm(item)">mdi-delete</v-icon>
+       </div>
+       <div v-else>
+         <b>{{$translate('There is none', 'لايوجد')}}   | </b>
+        <v-icon style="color: #2ecc71" @click="showDiscountForm(item, false)">mdi-plus</v-icon>
+       </div>
     </template>
 
     
@@ -140,29 +147,19 @@
       <v-toolbar flat>
         <v-spacer></v-spacer>
         <v-dialog
-          v-model="discounts_dialog"
+          v-model="delete_discount_dialog"
           max-width="500px"
         >
           
           <v-card>
-            <v-card-title class="text-h5">{{$translate(`${variant.en_name}'s Discounts`, `تخفيضات ${variant.ar_name}`)}}<br>
+            <v-card-title class="text-h5">{{$translate('Delete Discount', 'حذف تخفيض')}}<br>
             </v-card-title>
             <v-card-text dir="rtl"> 
-              <ul>
-                <li v-for="(discount, index) in variant.discounts" :key="discount.id">
-                     <b>{{$translate(`Discount NO ${index + 1}`, `التخفيض رقم ${index + 1}`)}} : 
-                      {{discount.discount_percentage ? `${discount.discount_percentage}%` : `${discount.discount_amount}LYD`}}
-                        |  {{$translate('End Date', 'تاريخ إنتهاء الصلاحية')}} : {{discount.end_date}}
-                     <v-icon style="color:#c0392b" @click="removeDiscount(discount.id)">mdi-delete</v-icon>
-                     </b>
-                        
-                      
-                </li>
-              </ul>
-                
+              {{$translate(`Are you sure you want to delete ${variant.en_name}'s Discount ?`, `  هل أنت متأكد من أنك تريد حذف تخفيض المنتج ${variant.ar_name} `)}}
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="removeDiscount">{{$translate('Yes', 'نعم')}}</v-btn>
               <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -203,6 +200,36 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+
+      <v-toolbar flat>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="add_discount_dialog"
+          max-width="500px"
+        >
+          
+          <v-card>
+            <v-card-title class="text-h5">{{$translate(`Add Discount to ${variant.en_name}`, `إضافة تخفيض ل ${variant.ar_name}`)}}<br>
+            </v-card-title>
+            <v-card-text dir="rtl"> 
+              <v-form>
+                <v-text-field
+                  :label="$translate('Discount Percentage', 'نسبة التخفيض')"
+                  outlined
+                  type="number"
+                  v-model="form.discount_percentage"
+                ></v-text-field>
+  
+              </v-form>
+                
+            </v-card-text>
+             <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="addDiscount">{{$translate('Add Discount', 'إضافة التخفيض')}}</v-btn>
+              </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
    
     </template>
 </div>
@@ -216,12 +243,14 @@ import Variantservice from '../../services/Variant';
       id: this.$route.params.id,
       sending: false,
       dialog : false,
-      discounts_dialog : false,
+      delete_discount_dialog: false,
       add_vouchers_dialog : false,
+      add_discount_dialog: false,
       variants: [],
       variant : {},
       form: {
-        quantity: null
+        quantity: null,
+        discount_percentage: null
       }
 
       } 
@@ -240,13 +269,17 @@ import Variantservice from '../../services/Variant';
     this.variant = item;
     this.dialog = true;
     },
-    showDiscounts(item){
+    showDiscountForm(item) {
     this.variant = item;
-    this.discounts_dialog = true;
+    this.add_discount_dialog = true;
     },
     showVoucherForm(item){
     this.variant = item;
     this.add_vouchers_dialog = true;
+    },
+    showDiscountDeleteForm(item){
+    this.variant = item;
+    this.delete_discount_dialog = true;
     },
     copyVouchers(vouchers){
       const el = document.createElement('textarea');
@@ -260,16 +293,35 @@ import Variantservice from '../../services/Variant';
       document.body.removeChild(el);
     },
 
-    removeDiscount(id){
+    removeDiscount(){
       if(this.sending)
       return; 
       const payload = {
         variant_id: this.variant.id,
-        discount_id: id,
       };
       this.sending = true;
-     variantservice.RemoveDiscount(payload).then(response => {
+     Variantservice.RemoveDiscount(payload).then(response => {
        this.variants = response.data.variants;
+     }).finally(() => {
+       this.sending = false;
+       this.closeDialog();
+       });
+    },
+
+    addDiscount(){
+      if(this.sending)
+      return; 
+      const payload = {
+        variant_id: this.variant.id,
+        discount_percentage: this.form.discount_percentage
+      };
+      this.sending = true;
+     Variantservice.AddDiscount(payload).then(response => {
+       this.variants = response.data.variants;
+       this.$swal(
+          this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
+          this.$translate('Discount Added successfully', 'تم إضافة التخفيض بنجاح'), 
+          'success');
      }).finally(() => {
        this.sending = false;
        this.closeDialog();
@@ -287,25 +339,24 @@ import Variantservice from '../../services/Variant';
     Variantservice.AddVouchers(payload).then(response => {
       this.variants = response.data.variants;
       this.$swal(
-              this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
-              this.$translate('Vouchers generated successfully', 'تمت توليد الهدايا بنجاح'), 
-              'success');
+          this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
+          this.$translate('Vouchers generated successfully', 'تمت توليد الهدايا بنجاح'), 
+          'success');
     }).finally(() => {
       this.sending = false;
       this.closeDialog();
     });
     },
     closeDialog() {
-    this.dialog = false;
-    this.discounts_dialog = false;
-    this.add_vouchers_dialog = false;
+    this.dialog = 
+    this.discounts_dialog = 
+    this.add_vouchers_dialog = 
+    this.add_discount_dialog = 
+    this.delete_discount_dialog = false;
     this.variant = {};
     },
     goToEdit(id) {
      this.$router.push(`/products/${this.id}/variants/edit/${id}`);
-    },
-    goToVariants(id) {
-     this.$router.push('/variants/'+id+'/variants');
     },
       
 

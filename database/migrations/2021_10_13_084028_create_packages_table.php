@@ -14,6 +14,7 @@ class CreatePackagesTable extends Migration
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
             $table->double('price')->min(0);
+            $table->double('discount_percentage')->nullable();
             $table->timestamps();
         });
     }

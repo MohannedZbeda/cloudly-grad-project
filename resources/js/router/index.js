@@ -18,9 +18,6 @@ import EditAttribute from '../components/category/attribute/edit.vue';
 import PackageIndex from '../components/package/index.vue';
 import CreatePackage from '../components/package/create.vue';
 import EditPackage from '../components/package/edit.vue';
-import DiscountIndex from '../components/discount/index.vue';
-import CreateDiscount from '../components/discount/create.vue';
-import EditDiscount from '../components/discount/edit.vue';
 import CouponIndex from '../components/coupon/index.vue';
 import CreateCoupon from '../components/coupon/create.vue';
 import EditCoupon from '../components/coupon/edit.vue';
@@ -127,21 +124,6 @@ const routes = [
     path: '/packages/edit/:id',
     name: 'package.edit',
     component : EditPackage,        
-  },
-  {
-    path: '/discounts',
-    name: 'discount.index',
-    component : DiscountIndex,        
-  },
-  {
-    path: '/discounts/create',
-    name: 'discount.create',
-    component : CreateDiscount,        
-  },
-  {
-    path: '/discounts/edit/:id',
-    name: 'discount.edit',
-    component : EditDiscount,        
   },
   {
     path: '/coupons',

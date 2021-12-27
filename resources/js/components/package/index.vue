@@ -13,22 +13,22 @@
           value: 'en_name',
         },
         {
-          text: 'Products',
+          text: 'variants',
           sortable: false,
-          value: 'package_products',
+          value: 'package_variants',
         },
         {
-          text: 'Discounts',
+          text: 'Discount',
           sortable: false,
-          value: 'discounts',
+          value: 'discount',
         },
         {
-          text: 'Price Before Discounts',
+          text: 'Price Before Discount',
           sortable: false,
-          value: 'old_price',
+          value: 'price',
         },
         {
-          text: 'Price After Discounts',
+          text: 'Price After Discount',
           sortable: false,
           value: 'new_price',
         },
@@ -49,20 +49,20 @@
          {
           text: 'المنتجات',
           sortable: false,
-          value: 'package_products',
+          value: 'package_variants',
         },
         {
-          text: 'التخفيضات',
+          text: 'التخفيض',
           sortable: false,
-          value: 'discounts',
+          value: 'discount',
         },
          {
-          text: 'السعر قبل التخفيضات',
+          text: 'السعر قبل التخفيض',
           sortable: false,
-          value: 'old_price',
+          value: 'price',
         },
         {
-          text: 'السعر بعد التخفيضات',
+          text: 'السعر بعد التخفيض',
           sortable: false,
           value: 'new_price',
         },
@@ -85,12 +85,12 @@
         >
           
           <v-card>
-            <v-card-title class="text-h5">{{$translate(`${pack.en_name}'s Products`, `منتجات  ${pack.ar_name}`)}}<br>
+            <v-card-title class="text-h5">{{$translate(`${pack.en_name}'s variants`, `منتجات  ${pack.ar_name}`)}}<br>
             </v-card-title>
             <v-card-text dir="rtl"> 
               <ul>
-                <li v-for="product in pack.products" :key="product.id">
-                  <b>{{$translate(product.en_name, product.ar_name)}}</b>
+                <li v-for="variant in pack.variants" :key="variant.id">
+                  <b>{{$translate(variant.en_name, variant.ar_name)}}</b>
                 </li>
               </ul>
                 
@@ -103,40 +103,6 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
-      <v-toolbar flat>
-        <v-spacer></v-spacer>
-        <v-dialog
-          v-model="discounts_dialog"
-          max-width="500px"
-        >
-          
-          <v-card>
-            <v-card-title class="text-h5">{{$translate(`${pack.en_name}'s Discounts`, `تخفيضات ${pack.ar_name}`)}}<br>
-            </v-card-title>
-            <v-card-text dir="rtl"> 
-              <ul>
-                <li v-for="(discount, index) in pack.discounts" :key="discount.id">
-                     <b>{{$translate(`Discount NO ${index + 1}`, `التخفيض رقم ${index + 1}`)}} : 
-                      {{discount.discount_percentage ? `${discount.discount_percentage}%` : `${discount.discount_amount}LYD`}}
-                       | {{$translate('End Date', 'تاريخ إنتهاء الصلاحية')}} : {{discount.end_date}}
-                     <v-icon style="color:#c0392b" @click="removeDiscount(discount.id)">mdi-delete</v-icon>
-                     </b>
-                        
-                      
-                </li>
-              </ul>
-                
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-
-
 <v-toolbar flat>
         <v-spacer></v-spacer>
         <v-dialog
@@ -169,7 +135,58 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+      <v-toolbar flat>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="delete_discount_dialog"
+          max-width="500px"
+        >
+          
+          <v-card>
+            <v-card-title class="text-h5">{{$translate('Delete Discount', 'حذف تخفيض')}}<br>
+            </v-card-title>
+            <v-card-text dir="rtl"> 
+              {{$translate(`Are you sure you want to delete ${pack.en_name}'s Discount ?`, `  هل أنت متأكد من أنك تريد حذف تخفيض المنتج ${pack.ar_name} `)}}
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="removeDiscount">{{$translate('Yes', 'نعم')}}</v-btn>
+              <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
 
+<v-toolbar flat>
+        <v-spacer></v-spacer>
+        <v-dialog
+          v-model="add_discount_dialog"
+          max-width="500px"
+        >
+          
+          <v-card>
+            <v-card-title class="text-h5">{{$translate(`Add Discount to ${pack.en_name}`, `إضافة تخفيض ل ${pack.ar_name}`)}}<br>
+            </v-card-title>
+            <v-card-text dir="rtl"> 
+              <v-form>
+                <v-text-field
+                  :label="$translate('Discount Percentage', 'نسبة التخفيض')"
+                  outlined
+                  type="number"
+                  v-model="form.discount_percentage"
+                ></v-text-field>
+  
+              </v-form>
+                
+            </v-card-text>
+             <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" @click="addDiscount">{{$translate('Add Discount', 'إضافة التخفيض')}}</v-btn>
+              </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
@@ -178,12 +195,19 @@
       <v-icon v-if="item.vouchers.length" style="margin-right: 10px" @click="copyVouchers(item.vouchers)">mdi-content-copy</v-icon>
     </template>
 
-    <template v-slot:[`item.package_products`]="{ item }">
-       <v-btn class="primary" @click="showProducts(item)">{{$translate('View Products', 'عرض المنتجات')}}</v-btn>  
+    <template v-slot:[`item.package_variants`]="{ item }">
+       <v-btn class="primary" @click="showVariants(item)">{{$translate('View variants', 'عرض المنتجات')}}</v-btn>  
     </template>
 
-    <template v-slot:[`item.discounts`]="{ item }">
-       <v-btn class="primary" @click="showDiscounts(item)">{{$translate('View Discounts', 'عرض التخفيضات')}}</v-btn>  
+    <template v-slot:[`item.discount`]="{ item }">  
+       <div v-if="item.discount">
+         <b>{{item.discount}}  |  </b>
+        <v-icon style="margin-right: 10px; color: #c0392b" @click="showDiscountDeleteForm(item)">mdi-delete</v-icon>
+       </div>
+       <div v-else>
+         <b>{{$translate('There is none', 'لايوجد')}}   | </b>
+        <v-icon style="color: #2ecc71" @click="showDiscountForm(item, false)">mdi-plus</v-icon>
+       </div>
     </template>
 
     
@@ -200,12 +224,14 @@ import PackageService from '../../services/Package';
       return {
       sending: false,
       dialog: false,
-      discounts_dialog: false,
-      add_vouchers_dialog: false,
+      delete_discount_dialog: false,
+      add_vouchers_dialog : false,
+      add_discount_dialog: false,
       packages: [],
       pack: {},
        form: {
-        quantity: null
+        quantity: null,
+        discount_percentage: null
       }
       } 
     },
@@ -216,17 +242,21 @@ import PackageService from '../../services/Package';
       });
     },
     methods: {
-    showProducts(item){
+    showVariants(item){
     this.pack = item;
     this.dialog = true;
     },
-    showDiscounts(item){
+    showDiscountForm(item) {
     this.pack = item;
-    this.discounts_dialog = true;
+    this.add_discount_dialog = true;
     },
    showVoucherForm(item){
     this.pack = item;
     this.add_vouchers_dialog = true;
+    },
+    showDiscountDeleteForm(item){
+    this.pack = item;
+    this.delete_discount_dialog = true;
     },
     copyVouchers(vouchers){
       const el = document.createElement('textarea');
@@ -265,7 +295,7 @@ import PackageService from '../../services/Package';
         package_id: this.pack.id,
         discount_id: id,
       };
-      this.sending = true;
+     this.sending = true;
      PackageService.RemoveDiscount(payload).then(response => {
        this.packages = response.data.packages;
      }).finally(() => {
@@ -273,12 +303,31 @@ import PackageService from '../../services/Package';
        this.closeDialog();
        });
     },
-
-
+    addDiscount(){
+      if(this.sending)
+      return; 
+      const payload = {
+        package_id: this.pack.id,
+        discount_percentage: this.form.discount_percentage
+    };
+    this.sending = true;
+     PackageService.AddDiscount(payload).then(response => {
+       this.packages = response.data.packages;
+       this.$swal(
+          this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
+          this.$translate('Discount Added successfully', 'تم إضافة التخفيض بنجاح'), 
+          'success');
+     }).finally(() => {
+       this.sending = false;
+       this.closeDialog();
+       });
+    },
     closeDialog() {
-    this.dialog = false;
-    this.discounts_dialog = false;
-    this.add_vouchers_dialog = false;
+    this.dialog = 
+    this.discounts_dialog = 
+    this.add_vouchers_dialog = 
+    this.add_discount_dialog = 
+    this.delete_discount_dialog = false;
     this.pack = {};
     },
     goToEdit(id) {

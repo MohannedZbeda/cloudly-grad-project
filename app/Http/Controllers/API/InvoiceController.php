@@ -7,7 +7,9 @@ use App\Http\Resources\API\InvoiceResource;
 use Error;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\Subscription;
 use App\Models\Transaction;
+use App\Models\Variant;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -91,6 +93,16 @@ class InvoiceController extends Controller
           $transaction->save();
           $invoice->paid = true;
           $invoice->save();
+          $sub = new Subscription();
+          $sub->user_id = auth('sanctum')->user()->id;
+          $sub->save();
+          foreach ($invoice->items as $item) {
+            for ($i=0; $i < $item->quantity; $i++) { 
+              if($item->invoiceable_type == Variant::class)
+                $sub->variants()->attach($item->invoiceable_id);
+              else $sub->packages()->attach($item->invoiceable_id);
+            }
+            }
         });
 
         DB::commit();

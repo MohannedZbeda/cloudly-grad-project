@@ -60,11 +60,10 @@
 
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon style="margin-right: 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
-      <v-icon style="margin-right: 10px" @click="goToVariants(item.id)">mdi-gift</v-icon>
     </template>
 
     <template v-slot:[`item.attributes`]="{ item }">
-       <v-btn class="primary" @click="goToVariants(item.id)">{{$translate('View Attributes', 'عرض الخصائص')}}</v-btn>  
+       <v-btn class="primary" @click="goToVariants(item.id)">{{$translate('View Variants', 'عرض التفرعات')}}</v-btn>  
     </template>
     
   </v-data-table>
