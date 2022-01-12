@@ -24,7 +24,8 @@ import EditCoupon from '../components/coupon/edit.vue';
 import FaqIndex from '../components/faq/index.vue';
 import CreateFaq from '../components/faq/create.vue';
 import EditFaq from '../components/faq/edit.vue';
-
+import CycleIndex from '../components/cycle/index.vue'
+import CreateCycle from '../components/cycle/create.vue'
 
 
 Vue.use(VueRouter)
@@ -154,6 +155,15 @@ const routes = [
     path: '/faqs/edit/:id',
     name: 'faq.edit',
     component : EditFaq,        
+  },{
+    path: '/cycles',
+    name: 'cycle.index',
+    component : CycleIndex,        
+  },
+  {
+    path: '/cycles/create',
+    name: 'cycle.create',
+    component : CreateCycle,        
   },
 
   

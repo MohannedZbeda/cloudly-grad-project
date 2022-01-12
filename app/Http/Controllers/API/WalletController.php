@@ -13,9 +13,9 @@ use Error;
 
 class WalletController extends Controller
 {
-    public static function addWallet(Request $request, $return = false, $id = null)
+    public function addWallet(Request $request)
     {
-      if(!($return && $id)) {
+      try {
         $validator = Validator::make($request->all(), [
           'type_id' => [
             'required',
@@ -26,21 +26,19 @@ class WalletController extends Controller
       ]);
       if($validator->fails()) 
         return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-      }
-      try {
-      $wallet = DB::transaction(function () use($request, $id){    
+      
+      
+      $wallet = DB::transaction(function () use($request){    
         $wallet = new Wallet();
-        $wallet->type_id = $request->type_id ?? 1;
-        $wallet->user_id = $id ?? auth('sanctum')->user()->id;
+        $wallet->type_id = $request->type_id;
+        $wallet->user_id = auth('sanctum')->user()->id;
         $wallet->save();
         return $wallet;
       });
       DB::commit();
-      if($return) {
-        return;
-      }
       return response()->json(['status_code' => 201, 'wallet' => $wallet]);
-    }
+    } 
+  
     catch(Error $error) {
       DB::rollBack();
       return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'WalletController, Trying to create user wallet'])->setStatusCode(500);  

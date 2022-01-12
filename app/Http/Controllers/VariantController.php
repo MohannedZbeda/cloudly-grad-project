@@ -20,7 +20,7 @@ class VariantController extends Controller
     public function index($product_id)
     {
     try {
-        $variants = VariantResource::collection(Variant::with(['values'])->where('product_id',$product_id)->get());
+        $variants = VariantResource::collection(Variant::with(['values', 'cycles'])->where('product_id',$product_id)->get());
         return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
     }
     catch(Error $error) {
@@ -139,7 +139,7 @@ public function addDiscount(Request $request)
     public function getVariant($id)
     {
         try {
-        $variant = new VariantResource(Variant::with('values')->find($id));
+        $variant = new VariantResource(Variant::with(['values', 'cycles'])->find($id));
         return response()->json(['status_code' => 200, 'variant' => $variant])->setStatusCode(200);
     }  catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get a variant for update'])->setStatusCode(500);  
@@ -156,7 +156,8 @@ public function addDiscount(Request $request)
             'price' => 'required|numeric',
             'attributes' => 'required|array',
             'attributes.*.value' => 'required',
-            'attributes.*.id' => 'required|exists:attributes,id'
+            'attributes.*.id' => 'required|exists:attributes,id',
+            'cycles' => 'required|array|exists:subscribtion_cycles,id'
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -174,6 +175,7 @@ public function addDiscount(Request $request)
               $value->value = $attribute['value'];
               $value->save();
             }
+            $variant->cycles()->attach($request->cycles);
             return $variant;    
         });    
         DB::commit();
@@ -192,17 +194,19 @@ public function addDiscount(Request $request)
             'ar_name' => [
                 'required',
                 'string',
-                Rule::unique('ar_name')->ignore($request->id)
+                Rule::unique('variants', 'ar_name')->ignore($request->id)
             ],
             'en_name' => [
                 'required',
                 'string',
-                Rule::unique('en_name')->ignore($request->id)
+                Rule::unique('variants', 'en_name')->ignore($request->id)
             ],
             'price' => 'required|numeric',
             'attributes' => 'required|array',
             'attributes.*.value' => 'required',
-            'attributes.*.id' => 'required|exists:attributes,id'
+            'attributes.*.id' => 'required|exists:attributes,id',
+            'cycles' => 'required|array|exists:subscribtion_cycles,id'
+
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -218,6 +222,8 @@ public function addDiscount(Request $request)
               $value->value = $attribute['value'];
               $value->save();
             }
+
+            $variant->cycles()->sync($request->cycles);
             return $variant;
         });
         DB::commit();

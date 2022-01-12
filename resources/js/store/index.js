@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-//import API from '../services/API';
-import axios from 'axios';
+import API from '../services/API';
 Vue.use(Vuex);
 
 
@@ -21,9 +20,8 @@ export default new Vuex.Store({
       state.language = state.language == 'en' ? 'ar' : 'en';   
     },
 
-    logout(state) {  
-      axios.post('/logout').then(response => {
-        console.log(response);
+    logout() {  
+      API.post('/logout').then(() => {
         window.location.reload();
       });
     },

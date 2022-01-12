@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\UserInfo;
+use App\Models\Wallet;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -110,7 +111,7 @@ class AuthController extends Controller
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AuthController, Trying to reset user password'])->setStatusCode(500);   
      }
         }
-        
+    
     public function register(Request $request) {
         try {
         $validator = Validator::make($request->all(), [
@@ -129,7 +130,7 @@ class AuthController extends Controller
             ]
         ]);
         if($validator->fails()) 
-          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
+          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $user = DB::transaction(function() use($request) {
             $user = new User();
             $user->name =  $request->name;
@@ -145,11 +146,19 @@ class AuthController extends Controller
             $user_info->phone = $request->phone;
             $user_info->save();
             
-            WalletController::addWallet($request, true, $user->id);
+            Wallet::insert([
+              'type_id' => 1,
+              'user_id' => $user->id
+            ], 
+            [
+              'type_id' => 1,
+              'user_id' => $user->id
+            ]);
             
             $user_cart = new Cart();
             $user_cart->user_id =  $user->id;
             $user_cart->save();
+            $user->attachRole('customer');
             return $user;
         });
         

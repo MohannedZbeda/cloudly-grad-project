@@ -12,17 +12,16 @@ class WalletTypeSeeder extends Seeder
     {
         DB::table('wallet_types')->insert([
             'ar_name' => 'المحفظة الإفتراضية',
-            'en_name' => 'Default Wallet',
+            'en_name' => 'Balance Wallet',
+            'type_name' => 'balance_wallet',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ], [
+            'ar_name' => 'محفظة الحجز',
+            'en_name' => 'Reservation Wallet',
+            'type_name' => 'reservation_wallet',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
-
-        DB::table('wallet_types')->insert([
-            'ar_name' => 'محفظة الدولار',
-            'en_name' => 'Dollar Wallet',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ]);
-
     }
 }

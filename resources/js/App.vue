@@ -153,6 +153,38 @@
       <v-list-group no-action>
         <template v-slot:activator>
           <v-list-item-content>
+            <v-list-item-title><v-icon style="margin : 10dp">mdi-autorenew</v-icon>{{$translate('Payment Cycles', 'دورات الدفع')}}</v-list-item-title>
+          </v-list-item-content>
+        </template>
+
+        
+        <router-link to="/cycles" class="link">
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-format-list-bulleted</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{$translate('All Cycles', 'كل الدورات')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+          </router-link>
+
+
+        <router-link to="/cycles/create" class="link">
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{$translate('Add a Cycle', 'إضافة دورة')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        </router-link>  
+      </v-list-group>
+
+      <v-list-group no-action>
+        <template v-slot:activator>
+          <v-list-item-content>
             <v-list-item-title><v-icon style="margin : 10dp">mdi-sale</v-icon>{{$translate('Discounts', 'التخفيضات')}}</v-list-item-title>
           </v-list-item-content>
         </template>
@@ -248,22 +280,8 @@
       </v-list-group>
     </v-list>
       <v-list dense>
-    
-        
-        
-      
+          
 
-        <!-- <router-link to="/emails" class="link">
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-email</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>  اﻹيميلات - Emails</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          </router-link>
-            -->
           <v-list-item link @click="drawer = false; $store.commit('logout')">
           <v-list-item-action>
             <v-icon>mdi-logout</v-icon>

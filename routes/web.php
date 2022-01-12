@@ -10,22 +10,24 @@ use App\Http\Controllers\ValueController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CycleController;
 use App\Http\Controllers\FAQController;
 use App\Http\Controllers\VariantController;
 
 Auth::routes(['register' => false]);
 
-Route::prefix('dashboard')->group(function () {
-    Route::prefix('/admins')->group(function () {
+Route::prefix('dashboard')->middleware('auth')->group(function () {
+    Route::get('/get-auth-admin', [UserController::class, 'GetAuthUser']);
+    Route::prefix('/admins')->middleware('role:super_admin')->group(function () {
         Route::get('/', [UserController::class, 'index']);
-        Route::get('/auth-admin', [UserController::class, 'GetAuthUser']);
+        Route::get('/get-roles', [UserController::class, 'getRoles']);
         Route::get('/admin/{id}', [UserController::class, 'GetUser']);
         Route::post('/', [UserController::class, 'store']);    
         Route::put('/', [UserController::class, 'update']);    
         Route::post('/change-state', [UserController::class, 'changeState']);
     });
     
-    Route::prefix('/categories')->group(function () {
+    Route::prefix('/categories')->middleware('role:super_admin|marketing_admin')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [CategoryController::class, 'index']);
         Route::get('/{id}', [CategoryController::class, 'getCategory']);
         Route::post('/store', [CategoryController::class, 'store']);
@@ -36,20 +38,19 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/attributes/update', [AttributeController::class, 'update']);
         Route::get('/attributes/{id}/values', [ValueController::class, 'index']);
         Route::post('/attributes/{id}/values/store', [ValueController::class, 'store']);
-        Route::post('/attributes/{id}/values/update', [ValueController::class, 'update']);
-        
+        Route::post('/attributes/{id}/values/update', [ValueController::class, 'update']);        
     });
 
     
-    Route::prefix('/products')->group(function () {
+    Route::prefix('/products')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::get('/get-categories', [ProductController::class, 'getCategories']);
         Route::get('/{id}', [ProductController::class, 'getProduct']);
         Route::post('/store', [ProductController::class, 'store']);
         Route::post('/update', [ProductController::class, 'update']);        
     });
-
-    Route::prefix('/variants')->group(function () {
+    
+    Route::prefix('/variants')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/{product_id}', [VariantController::class, 'index']);
         Route::get('/get-products', [VariantController::class, 'getProducts']);
         Route::post('/get-product-attributes', [VariantController::class, 'getAttributes']);
@@ -62,7 +63,7 @@ Route::prefix('dashboard')->group(function () {
         
     });
 
-    Route::prefix('/packages')->group(function () {
+    Route::prefix('/packages')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [PackageController::class, 'index']);
         Route::get('/get-variants', [VariantController::class, 'getVariants']);
         Route::get('/get-categories', [PackageController::class, 'getCategories']);
@@ -76,7 +77,14 @@ Route::prefix('dashboard')->group(function () {
         
     });
 
-    Route::prefix('/discounts')->group(function () {
+    Route::prefix('/cycles')->middleware('role:super_admin|marketing_admin')->group(function () {
+        Route::get('/', [CycleController::class, 'index']);
+        Route::get('/get-cycles', [CycleController::class, 'getCycles']);
+        Route::post('/store', [CycleController::class, 'store']);
+        Route::post('/change-state', [CycleController::class, 'changeState']);
+    });
+    
+    Route::prefix('/discounts')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [DiscountController::class, 'index']);
         Route::get('/get-items', [DiscountController::class, 'getItems']);    
         Route::post('/store', [DiscountController::class, 'store']);
@@ -85,7 +93,7 @@ Route::prefix('dashboard')->group(function () {
         
     });
 
-    Route::prefix('/coupons')->group(function () {
+    Route::prefix('/coupons')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [CouponController::class, 'index']);
         Route::post('/', [CouponController::class, 'getCoupon']);
         Route::get('/get-items', [DiscountController::class, 'getItems']);    
@@ -95,7 +103,7 @@ Route::prefix('dashboard')->group(function () {
         
     });
 
-    Route::prefix('/faqs')->group(function () {
+    Route::prefix('/faqs')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [FAQController::class, 'index']);
         Route::post('/store', [FAQController::class, 'store']);
         Route::post('/update', [FAQController::class, 'update']);
@@ -108,5 +116,5 @@ Route::prefix('dashboard')->group(function () {
         return Auth::logout();
     }); 
 }); 
-Route::get('/{any}', [App\Http\Controllers\MainController::class, 'index'])->where('any', '.*');
+Route::middleware('auth')->get('/{any}', [App\Http\Controllers\MainController::class, 'index'])->where('any', '.*');
 

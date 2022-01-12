@@ -32,26 +32,24 @@
                               :placeholder="$translate('Enter a password', 'أدخل الرقم السري')"
                               outlined
                               v-model="form.password"
-                            ></v-text-field> 
-                             
-                             <v-checkbox
-                             v-model="form.state"
-                             :label="$translate('Activate Account ? ', 'تفعيل الحساب ؟')"
-                            ></v-checkbox>
+                            ></v-text-field>
+
+                            <v-autocomplete
+                            v-model="form.role"
+                            :items="roles"
+                            item-text="display_name"
+                            item-value="id"
+                            outlined
+                            chips
+                            small-chips
+                            :label="$translate('Admin Role', 'دور المشرف')"
+                          ></v-autocomplete>
+
+                          <v-checkbox
+                            v-model="form.state"
+                            :label="$translate('Activate Account ? ', 'تفعيل الحساب ؟')"
+                          ></v-checkbox>
                             
-                             <v-radio-group v-model="form.avatar">
-                                <v-radio
-                                  key="1"
-                                  :label="$translate('Male Avatar', 'أفاتار رجالي')"
-                                  value="/images/man.png"
-                                ></v-radio>
-                                <v-radio
-                                  key="2"
-                                  :label="$translate('Female Avatar', 'أفاتار نسائي')"
-                                  value="/images/woman.png"
-                                ></v-radio>
-                                <v-img height="40px" width="40px" :src="form.avatar"></v-img>
-                              </v-radio-group>
                            
                         </v-form>
                      </v-card-text>
@@ -71,15 +69,21 @@ export default {
     name: 'admin.create',
     data() {
         return {
+         roles: [],
          form: {
+           role: null,  
            name: '',
            email: '',
            username: '',
            password: '',
-           state : 0,
-           avatar : '/images/man.png'
+           state : 0
          }
         }
+    },
+    beforeMount() {
+      AdminService.GetRoles().then(response => {
+        this.roles = response.data.roles;
+      });
     },
     methods: {
         async create() {

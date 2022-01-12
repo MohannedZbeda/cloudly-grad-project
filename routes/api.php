@@ -20,9 +20,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::middleware('auth:sanctum')->post('/user', function (Request $request) {
-    return 'Protected Route';
-});
 Route::prefix('/auth')->middleware('api.guest')->group(function () {
     Route::get('/token', [AuthController::class, 'genToken']);
     Route::post('/register', [AuthController::class, 'register']);
@@ -31,12 +28,12 @@ Route::prefix('/auth')->middleware('api.guest')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'reset_password']);    
 });
 
-Route::prefix('/wallets')->middleware('auth:sanctum')->group(function () {
+Route::prefix('/wallets')->middleware(['auth:sanctum', 'role:customer'])->group(function () {
     Route::post('/add-wallet', [WalletController::class, 'addWallet']);
     Route::post('/charge', [WalletController::class, 'chargeWallet']);
 });
 
-Route::prefix('/carts')->middleware('auth:sanctum')->group(function () {
+Route::prefix('/carts')->middleware('auth:sanctum', 'role:customer')->group(function () {
     Route::get('/get-items', [CartController::class, 'getCartItems']);
     Route::post('/add-package', [CartController::class, 'addPackage']);
     Route::post('/add-product', [CartController::class, 'addProduct']);
@@ -44,7 +41,7 @@ Route::prefix('/carts')->middleware('auth:sanctum')->group(function () {
     Route::post('/update-quantity', [CartController::class, 'updateQuantity']);
 });
 
-Route::prefix('/invoices')->middleware('auth:sanctum')->group(function () {
+Route::prefix('/invoices')->middleware('auth:sanctum', 'role:customer')->group(function () {
     Route::get('/issue-invoice', [InvoiceController::class, 'issueInvoice']);
     Route::post('/checkout', [InvoiceController::class, 'checkout']);
 });
@@ -53,4 +50,4 @@ Route::prefix('/home')->group(function () {
     Route::get('/home-page', [HomeController::class, 'index']);   
 });
 
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum', 'role:customer')->post('/logout', [AuthController::class, 'logout']);

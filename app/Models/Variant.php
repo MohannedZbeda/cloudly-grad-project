@@ -21,6 +21,11 @@ class Variant extends Model
         return $this->morphOne(InvoiceItem::class, 'invoiceable');
     }
 
+    public function cycles()
+    {
+        return $this->morphToMany(SubscriptionCycle::class, 'cycleable');
+    }
+
     public function carts()
     {
         return $this->morphMany(CartItem::class, 'cartable');

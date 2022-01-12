@@ -16,6 +16,7 @@ class VariantResource extends JsonResource
             'price' => $this->price,
             'new_price' => $this->getDiscount(),
             'attributes' => ValueResource::collection($this->whenLoaded('values')),
+            'cycles' => CycleResource::collection($this->whenLoaded('cycles')),
             'discount' => $this->discount_percentage ? $this->discount_percentage.'%' : null,
             'vouchers' => $this->getVouchers(),
 

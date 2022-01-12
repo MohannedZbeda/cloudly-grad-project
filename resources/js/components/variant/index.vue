@@ -133,7 +133,14 @@
                   <b>{{$translate(attribute.attribute_en_name, attribute.attribute_ar_name)}}</b> : {{attribute.value}}
                 </li>
               </ul>
-                
+                <v-divider style="background-color: black"></v-divider>
+                <br> <br>
+                <h2>{{$translate('Payment Cycles', 'دورات الدفع')}}</h2>
+                <ul>
+                <li v-for="cycle in variant.cycles" :key="cycle.id">
+                  <b>{{$translate(cycle.en_name, cycle.ar_name)}}</b>
+                </li>
+              </ul>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>

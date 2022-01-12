@@ -37,6 +37,11 @@ class Package extends Model
         return $this->morphMany(Voucher::class, 'voucherable');
     }
 
+    public function cycles()
+    {
+        return $this->morphToMany(SubscriptionCycle::class, 'cycleable');
+    }
+
     public function variants() {
         return $this->belongsToMany(Variant::class, 'package_products');
     }

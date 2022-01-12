@@ -24,6 +24,25 @@
                               outlined
                               v-model="form.en_name"
                             ></v-text-field>
+
+                            <v-autocomplete
+                            v-model="form.cycles"
+                            :items="cycles"
+                            :item-text="$translate('en_name', 'ar_name')"
+                            item-value="id"
+                            outlined
+                            dense
+                            chips
+                            small-chips
+                            :label="
+                                $translate(
+                                    'Available Payment Cycles',
+                                    'دورات الدفع المتاحة'
+                                )
+                            "
+                            multiple
+                        >
+                        </v-autocomplete>
                             <v-divider style="background-color: black"></v-divider>
                             <br> <br>
                             <div v-for="attribute in form.attributes" :key="attribute.id">
@@ -61,6 +80,7 @@
 
 <script>
 import VariantService from '../../services/Variant'
+import CycleService from '../../services/Cycle'
 export default {
     name: 'variant.edit',
     data() {
@@ -68,12 +88,14 @@ export default {
          id: this.$route.params.id,
          product_id: this.$route.params.product_id,
          categories : [],
+         cycles: [],
          noAttributes: false,
          form: {
            ar_name: '',
            en_name: '',
            price: '',
-           attributes: []
+           attributes: [],
+           cycles: []
          }
         }
     },
@@ -90,10 +112,14 @@ export default {
         }
       });
       });
+      CycleService.AllCycles().then(response => {
+        this.cycles = response.data.cycles;
+      });
       
     },
     methods: {
         update() {
+          this.form.cycles = this.form.cycles.map(cycle => cycle['id'] ? cycle['id'] : cycle);
           VariantService.UpdateVariant({id : this.id, product_id: this.product_id, ...this.form}).then(() => {
             this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 

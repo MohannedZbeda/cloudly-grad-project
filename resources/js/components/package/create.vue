@@ -34,6 +34,25 @@
                               outlined
                               v-model="form.en_name"
                             ></v-text-field>
+
+                            <v-autocomplete
+                            v-model="form.cycles"
+                            :items="cycles"
+                            :item-text="$translate('en_name', 'ar_name')"
+                            item-value="id"
+                            outlined
+                            dense
+                            chips
+                            small-chips
+                            :label="
+                                $translate(
+                                    'Available Payment Cycles',
+                                    'دورات الدفع المتاحة'
+                                )
+                            "
+                            multiple
+                        >
+                        </v-autocomplete>
                             <v-divider style="background-color: black"></v-divider>
                             <br> <br>
                             <v-text-field
@@ -56,15 +75,18 @@
 
 <script>
 import PackageService from '../../services/Package'
+import CycleService from '../../services/Cycle'
 export default {
     name: 'package.create',
     data() {
         return {
+         cycles: [],
          variants: [],
          form: {
           ar_name: '',
           en_name: '',
           variants: [],
+          cycles: [],
           price: null
          }
         }
@@ -72,6 +94,9 @@ export default {
     beforeMount() {
       PackageService.GetVariants().then(response => {
         this.variants = response.data.variants;
+      });
+      CycleService.AllCycles().then(response => {
+        this.cycles = response.data.cycles;
       });
     },
     methods: {

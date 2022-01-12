@@ -12,21 +12,10 @@ return [
     'truncate_tables' => true,
 
     'roles_structure' => [
-        'super_admin' => [
-            'users' => 'c,r,u,d',
-            'payments' => 'c,r,u,d',
-            'profile' => 'r,u'
-        ],
-        'admin' => [
-            'users' => 'c,r,u,d',
-            'profile' => 'r,u'
-        ],
-        'customer' => [
-            'wallets' => 'c,r,u,d',
-            'carts' => 'c,r,u,d',
-            'invoices' => 'c,r',
-            
-        ]
+        'super_admin' => [],
+        'sales_admin' => [],
+        'marketing_admin' => [],
+        'customer' => []
     ],
 
     'permissions_map' => [

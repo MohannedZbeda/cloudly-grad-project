@@ -16,7 +16,7 @@ class PackageController extends Controller
     public function index()
     {
         try {
-        $packages = PackageResource::collection(Package::with('variants')->get());
+        $packages = PackageResource::collection(Package::with(['variants', 'cycles'])->get());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
     }
       catch(Error $error) {
@@ -28,7 +28,7 @@ class PackageController extends Controller
     public function getPackage($id)
     {
         try {
-        $package = new PackageResource(Package::with('variants')->find($id));
+        $package = new PackageResource(Package::with(['variants', 'cycles'])->find($id));
         return response()->json(['status_code' => 200, 'package' => $package])->setStatusCode(200);
     }  
     catch(Error $error) {
@@ -44,7 +44,8 @@ class PackageController extends Controller
             'ar_name' => 'required|unique:packages,ar_name',
             'en_name' => 'required|unique:packages,en_name',
             'price' => 'required|numeric',
-            'variants' => 'required|array|exists:variants,id'  
+            'variants' => 'required|array|exists:variants,id',  
+            'cycles' => 'required|array|exists:subscribtion_cycles,id'  
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -55,6 +56,7 @@ class PackageController extends Controller
         $package->price = $request->price;
         $package->save();
         $package->variants()->sync($request->variants);
+        $package->cycles()->sync($request->cycles);
         return $package;
       });
        DB::commit();
@@ -80,7 +82,8 @@ class PackageController extends Controller
               'required',
               Rule::unique('packages', 'en_name')->ignore($request->id)],
             'price' => 'required|numeric',
-            'variants' => 'required|array|exists:variants,id'  
+            'variants' => 'required|array|exists:variants,id',  
+            'cycles' => 'required|array|exists:subscribtion_cycles,id'  
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -91,6 +94,7 @@ class PackageController extends Controller
         $package->price = $request->price;
         $package->save();
         $package->variants()->sync($request->variants);
+        $package->cycles()->sync($request->cycles);
         return $package;
        });
        DB::commit();

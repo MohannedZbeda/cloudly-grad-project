@@ -13,6 +13,7 @@ class CreateWalletTypes extends Migration
             $table->id();
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
+            $table->string('type_name')->unique();
             $table->timestamps();
         });
     }

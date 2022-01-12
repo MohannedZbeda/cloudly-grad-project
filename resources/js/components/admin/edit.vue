@@ -26,7 +26,16 @@
                               outlined
                               v-model="form.username"
                             ></v-text-field>
-
+                            <v-autocomplete
+                              v-model="form.role_id"
+                              :items="roles"
+                              item-text="display_name"
+                              item-value="id"
+                              outlined
+                              chips
+                              small-chips
+                              :label="$translate('Admin Role', 'دور المشرف')"
+                            ></v-autocomplete>
                             <v-text-field
                               :label="$translate('Password', 'الرقم السري')"
                               :placeholder="$translate('Enter a password', 'أدخل الرقم السري')"
@@ -38,26 +47,12 @@
                              v-model="form.state"
                              :label="$translate('Activate Account ? ', 'تفعيل الحساب ؟')"
                             ></v-checkbox>
-                            
-                             <v-radio-group v-model="form.avatar">
-                                <v-radio
-                                  key="1"
-                                  :label="$translate('Male Avatar', 'أفاتار رجالي')"
-                                  value="/images/man.png"
-                                ></v-radio>
-                                <v-radio
-                                  key="2"
-                                  :label="$translate('Female Avatar', 'أفاتار نسائي')"
-                                  value="/images/woman.png"
-                                ></v-radio>
-                                <v-img height="40px" width="40px" :src="form.avatar"></v-img>
-                              </v-radio-group>
-                           
+                             
                         </v-form>
                      </v-card-text>
                      <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" @click="create">{{$translate('Save Changes', 'حفظ التغييرات')}}</v-btn>
+                        <v-btn color="primary" @click="update">{{$translate('Save Changes', 'حفظ التغييرات')}}</v-btn>
                      </v-card-actions>
                   </v-card>
             </v-layout>
@@ -72,23 +67,28 @@ export default {
     data() {
         return {
          id: this.$route.params.id,
+         roles: [],
          form: {
            name: '',
            email: '',
            username: '',
+           role_id: null,
            password: '',
-           state : 0,
-           avatar : '/images/man.png'
+           state : 0
          }
         }
     },
     beforeMount() {
      AdminService.GetUser(this.id).then(response => {
         this.form = response.data.admin;
-     });  
+     }); 
+
+     AdminService.GetRoles().then(response => {
+        this.roles = response.data.roles;
+      });
     },
     methods: {
-        async create() {
+        async update() {
           AdminService.UpdateUser({payload : this.id, ...this.form}).then(() => {
             this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 

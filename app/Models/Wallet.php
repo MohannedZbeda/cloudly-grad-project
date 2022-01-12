@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Error;
 
 class Wallet extends Model
@@ -14,9 +15,32 @@ class Wallet extends Model
      
     try {
           $balance = $this->transactions->sum(function($t) { 
-            return $t->debit ? $t->amount : $t->amount * -1; 
+            return $t->credit ? $t->amount : $t->amount * -1; 
         });
           return $balance;
+        } catch(Error $error) {
+           return throw $error;     
+        }  
+   }
+
+   public function reserveBalance($from_id, $amount)
+   { 
+    try { 
+      DB::transaction(function() use($from_id, $amount) {
+          $transaction = new Transaction();
+          $transaction->wallet_id = $this->id;
+          $transaction->credit = false;
+          $transaction->amount = $amount;
+          $transaction->description = 'Balance Reserved for subscription';
+          $transaction->save();
+
+          $transaction = new Transaction();
+          $transaction->wallet_id = $from_id;
+          $transaction->credit = true;
+          $transaction->amount = $amount;
+          $transaction->description = 'Reserved Balance stored in customer reservation wallet';
+          $transaction->save();
+      });
         } catch(Error $error) {
            return throw $error;     
         }  

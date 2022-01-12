@@ -65,7 +65,6 @@ class InvoiceController extends Controller
       try {
         $validator = Validator::make($request->all(), [
             'invoice_id' => 'required|exists:invoices,id',
-            'wallet_id' => 'required|exists:wallets,id',
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -77,20 +76,19 @@ class InvoiceController extends Controller
                 'message' => 'Invoice is Already Paid'])
               ->setStatusCode(200);
         }
-        $wallet = Wallet::find($request->wallet_id);
-        $wallet_balance = $wallet->getWalletBalance();
+        $balance_wallet = auth('sanctum')->user()->wallets->where('type_name', 'balance_wallet');
+        $reservation_wallet = auth('sanctum')->user()->wallets->where('type_name', 'reservation_wallet');
+        $wallet_balance = $balance_wallet->getWalletBalance();
         if($invoice_total > $wallet_balance)
         return response()->json([
             'status_code' => 200, 
             'code' => 'INSUFFICIENT_BALANCE', 
             'message' => 'You dont have enough balance to pay for this invoice, You need '. $invoice_total - $wallet_balance. ' more LYDs'])
           ->setStatusCode(200);
-        DB::transaction(function() use($wallet, $invoice){
-          $transaction = new Transaction();
-          $transaction->wallet_id = $wallet->id;
-          $transaction->description = "Customer Paid for invoice NO ". $invoice->id ;
-          $transaction->amount = $invoice->getTotal();
-          $transaction->save();
+
+        $reservation_wallet->reserveBalance($balance_wallet->id, $invoice_total);
+        
+        DB::transaction(function() use($invoice) {   
           $invoice->paid = true;
           $invoice->save();
           $sub = new Subscription();
@@ -109,7 +107,7 @@ class InvoiceController extends Controller
         return response()->json([
           'status_code' => 200, 
           'message' => 'Invoice Paid', 
-          'wallet_balance' => $wallet->getWalletBalance()])
+          'wallet_balance' => $balance_wallet->getWalletBalance()])
         ->setStatusCode(200);
        
       }

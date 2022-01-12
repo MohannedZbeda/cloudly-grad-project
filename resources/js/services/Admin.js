@@ -8,8 +8,12 @@ export default class {
         return API.get(prefix);
     }
 
+    static async GetRoles() {
+        return API.get(`${prefix}/get-roles`);
+    }
+
     static async GetAuthUser() {
-        let response = await API.get(`${prefix}/auth-admin`);
+        let response = await API.get(`/get-auth-admin`);
         return response.data.user;
     }
     static async GetUser(id) {
