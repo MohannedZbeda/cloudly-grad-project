@@ -7,6 +7,8 @@ use App\Models\Cart;
 use App\Models\User;
 use App\Models\UserInfo;
 use App\Models\Wallet;
+use App\Models\WalletType;
+use Carbon\Carbon;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -147,12 +149,16 @@ class AuthController extends Controller
             $user_info->save();
             
             Wallet::insert([
-              'type_id' => 1,
-              'user_id' => $user->id
-            ], 
-            [
-              'type_id' => 1,
-              'user_id' => $user->id
+              'type_id' => WalletType::where('type_name', 'balance_wallet')->first()->id,
+              'user_id' => $user->id,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now()
+            ]);
+            Wallet::insert([
+              'type_id' => WalletType::where('type_name', 'reservation_wallet')->first()->id,
+              'user_id' => $user->id,
+              'created_at' => Carbon::now(),
+              'updated_at' => Carbon::now()
             ]);
             
             $user_cart = new Cart();

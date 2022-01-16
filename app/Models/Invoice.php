@@ -19,7 +19,7 @@ class Invoice extends Model
     public function getTotal()
     {   $total = 0;
         foreach($this->items as $item) {
-          $total+= $item->invoiceable->getDiscounts()['new_price'] * $item->quantity;
+          $total+= $item->invoiceable->getDiscount() * $item->quantity;
         }
         return $total;
     }

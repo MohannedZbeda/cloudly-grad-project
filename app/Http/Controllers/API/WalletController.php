@@ -49,12 +49,13 @@ class WalletController extends Controller
     public static function chargeWallet(Request $request)
     {
         try {
-          $wallet = Wallet::find($request->wallet_id);
+          $user = auth('sanctum')->user();
+          $wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
           $transaction = DB::transaction(function () use($request, $wallet){ 
             $transaction = new Transaction();
             $transaction->description = "Wallet Charge";
             $transaction->wallet_id = $wallet->id;
-            $transaction->debit = true;
+            $transaction->credit = true;
             $transaction->amount = $request->amount;
             $transaction->save();
             return $transaction;

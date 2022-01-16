@@ -14,7 +14,7 @@ class Wallet extends Model
    {
      
     try {
-          $balance = $this->transactions->sum(function($t) { 
+          $balance = Transaction::where('wallet_id', $this->id)->sum(function($t) { 
             return $t->credit ? $t->amount : $t->amount * -1; 
         });
           return $balance;
@@ -28,17 +28,17 @@ class Wallet extends Model
     try { 
       DB::transaction(function() use($from_id, $amount) {
           $transaction = new Transaction();
-          $transaction->wallet_id = $this->id;
+          $transaction->wallet_id = $from_id;
           $transaction->credit = false;
           $transaction->amount = $amount;
-          $transaction->description = 'Balance Reserved for subscription';
+          $transaction->description = 'Amount Reserved for subscription';
           $transaction->save();
 
           $transaction = new Transaction();
-          $transaction->wallet_id = $from_id;
+          $transaction->wallet_id = $this->id;
           $transaction->credit = true;
           $transaction->amount = $amount;
-          $transaction->description = 'Reserved Balance stored in customer reservation wallet';
+          $transaction->description = 'Reserved Amount stored in customer reservation wallet';
           $transaction->save();
       });
         } catch(Error $error) {
@@ -46,7 +46,7 @@ class Wallet extends Model
         }  
    }
     public function type() {
-      return $this->belongsTo(WalletType::class);
+      return $this->belongsTo(WalletType::class, 'type_id');
     }
 
     public function user() {

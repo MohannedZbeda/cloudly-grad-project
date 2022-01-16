@@ -159,18 +159,18 @@
 
         
         <router-link to="/cycles" class="link">
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-format-list-bulleted</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{$translate('All Cycles', 'كل الدورات')}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          </router-link>
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>mdi-format-list-bulleted</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>{{$translate('All Cycles', 'كل الدورات')}}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </router-link>
 
 
-        <router-link to="/cycles/create" class="link">
+      <router-link to="/cycles/create" class="link">
         <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-plus</v-icon>

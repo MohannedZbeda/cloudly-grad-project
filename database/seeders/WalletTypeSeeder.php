@@ -16,7 +16,9 @@ class WalletTypeSeeder extends Seeder
             'type_name' => 'balance_wallet',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
-        ], [
+        ]);
+        
+        DB::table('wallet_types')->insert([
             'ar_name' => 'محفظة الحجز',
             'en_name' => 'Reservation Wallet',
             'type_name' => 'reservation_wallet',
