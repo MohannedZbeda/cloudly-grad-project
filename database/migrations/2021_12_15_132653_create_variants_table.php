@@ -15,6 +15,8 @@ class CreateVariantsTable extends Migration
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
             $table->double('price')->min(0);
+            $table->boolean('customized')->default(false);
+            $table->string('customized_by')->nullable();
             $table->double('discount_percentage')->nullable();
             $table->timestamps();
         });

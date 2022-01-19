@@ -15,15 +15,11 @@ class VariantResource extends JsonResource
             'en_name' => $this->en_name,
             'price' => $this->price,
             'new_price' => $this->getDiscount(),
+            'customized_by' => $this->customized_by,
             'attributes' => ValueResource::collection($this->whenLoaded('values')),
             'cycles' => CycleResource::collection($this->whenLoaded('cycles')),
             'discount' => $this->discount_percentage ? $this->discount_percentage.'%' : null,
             'vouchers' => $this->getVouchers(),
-
-            // 'refundable' => [
-            //   'ar' => $this->refundable ? 'قابل للإرجاع' : 'غير قابل للإرجاع',
-            //   'en' => $this->refundable ? 'Yes' : 'No' 
-            // ],
             'created_at' => $this->created_at->toDateString(),
             'category_id' => $this->category_id,
             'product' => $this->product->en_name

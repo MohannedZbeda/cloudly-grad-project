@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\AttributeResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Category;
@@ -10,10 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\CategoryResource;
-use App\Models\Attribute;
-use App\Models\ProductValue;
-use Illuminate\Support\Carbon;
-use App\Models\Voucher;
 use Illuminate\Support\Facades\DB;
 use Error;
 
@@ -113,6 +108,12 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'ar_name' => 'required|unique:products,ar_name',
             'en_name' => 'required|unique:products,en_name',
+            'customizable' => 'required|boolean',
+            'custom_attributes' => 'required|array',
+            'custom_attributes.*.custom_price' => 'required|numeric',
+            'custom_attributes.*.unit_min' => 'required|numeric|min:1',
+            'custom_attributes.*.unit_max' => 'required|numeric|min:1',
+
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -121,7 +122,9 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->ar_name = $request->ar_name;
             $product->en_name = $request->en_name;
+            $product->customizable = $request->customizable;
             $product->save();
+            $product->customAttributes()->create($request->custom_attributes);
             return $product;    
         });    
         DB::commit();
@@ -146,7 +149,12 @@ class ProductController extends Controller
                 'required',
                 Rule::unique('products', 'en_name')->ignore($request->id)
                 
-            ]
+            ],
+            'customizable' => 'required|boolean',
+            'custom_attributes' => 'required|array',
+            'custom_attributes.*.custom_price' => 'required|numeric',
+            'custom_attributes.*.unit_min' => 'required|numeric|min:1',
+            'custom_attributes.*.unit_max' => 'required|numeric|min:1'
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -155,7 +163,9 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->ar_name = $request->ar_name;
             $product->en_name = $request->en_name;
+            $product->customizable = $request->customizable;
             $product->save();
+            $product->customAttributes()->update($request->custom_attributes);
             return $product;
         });
         DB::commit();

@@ -12,7 +12,7 @@
                         {{
                             $translate(
                                 "There are no attributes for this product, Please add some",
-                                "لا توجد خصائص لهذا المنتج يرجى الإضافة"
+                                "لا توجد خصائص لهذا المنتج, يرجى الإضافة"
                             )
                         }}
                     </p>
@@ -69,7 +69,7 @@
                             multiple
                         >
                         </v-autocomplete>
-
+                        
                         <v-divider style="background-color: black"></v-divider>
                         <br />
                         <br />

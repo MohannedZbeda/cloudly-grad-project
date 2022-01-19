@@ -17,5 +17,10 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function customAttributes()
+    {
+        return $this->hasMany(CustomAttribute::class);
+    }
     
 }

@@ -16,8 +16,8 @@ export default class {
         return API.get(`${prefix}/${id}`);
     }
 
-    static async GetAttributes(payload) {
-        return API.post(`${prefix}/get-category-attributes`, payload);
+    static async GetAttributes(id) {
+        return API.get(`categories/${id}/attributes`);
     }
 
     static async CreateProduct(payload) {

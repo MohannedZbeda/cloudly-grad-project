@@ -43,7 +43,7 @@ class AttributeController extends Controller
             'category_id' => 'required|exists:categories,id',
             'ar_name' => 'required|string',
             'en_name' => 'required|string',
-            'advanced' => 'required'
+            'advanced' => 'required|boolean'
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -72,7 +72,7 @@ class AttributeController extends Controller
             'category_id' => 'required|exists:categories,id',
             'ar_name' => 'required|string',
             'en_name' => 'required|string',
-            'advanced' => 'required'
+            'advanced' => 'required|boolean'
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);

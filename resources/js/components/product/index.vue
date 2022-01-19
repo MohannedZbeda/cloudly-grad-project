@@ -13,6 +13,11 @@
           value: 'en_name',
         },
         {
+          text: 'Customizable',
+          sortable: false,
+          value: 'customizable_text.en',
+        },
+        {
           text: 'Product attributes',
           sortable: false,
           value: 'attributes',
@@ -35,6 +40,11 @@
           text: 'الإسم بالإنجليزي',
           sortable: false,
           value: 'en_name',
+        },
+        {
+          text: 'قابل للتعديل',
+          sortable: false,
+          value: 'customizable_text.ar',
         },
         {
           text: 'خصائص المنتج',

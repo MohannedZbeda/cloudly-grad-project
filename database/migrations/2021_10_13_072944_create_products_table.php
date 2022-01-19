@@ -14,7 +14,7 @@ class CreateProductsTable extends Migration
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('CASCADE');
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
-            //$table->boolean('refundable')->default(true);
+            $table->boolean('customizable')->default(false);
             $table->timestamps();
         });
     }

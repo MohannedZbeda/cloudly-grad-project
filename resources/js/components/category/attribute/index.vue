@@ -15,6 +15,11 @@
           value: 'en_name',
         },
         {
+          text: 'Custom Price',
+          sortable: false,
+          value: 'custom_price',
+        },
+        {
           text: 'Advanced ?',
           sortable: false,
           value: 'en_type',
