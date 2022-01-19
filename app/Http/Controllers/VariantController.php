@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AttributeResource;
+use App\Http\Resources\CustomAttributeResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\VariantResource;
+use App\Models\CustomAttribute;
 use App\Models\ProductValue;
 use App\Models\Variant;
 use Illuminate\Support\Carbon;
@@ -20,8 +22,9 @@ class VariantController extends Controller
     public function index($product_id)
     {
     try {
+        $custom_attributes = CustomAttributeResource::collection(CustomAttribute::where('product_id', $product_id)->get());
         $variants = VariantResource::collection(Variant::with(['values', 'cycles'])->where('product_id',$product_id)->get());
-        return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
+        return response()->json(['status_code' => 200, 'variants' => $variants, 'custom_attributes' => $custom_attributes])->setStatusCode(200);
     }
     catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get all variants'])->setStatusCode(500);  

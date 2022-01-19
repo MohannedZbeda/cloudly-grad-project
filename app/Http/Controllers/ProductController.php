@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function index()
     {
     try {
-        $products = ProductResource::collection(Product::all());
+        $products = ProductResource::collection(Product::with('customAttributes')->get());
         return response()->json(['status_code' => 200, 'products' => $products])->setStatusCode(200);
     }
     catch(Error $error) {
@@ -38,59 +38,6 @@ class ProductController extends Controller
       
       }  
 }
-
-//     public function getAttributes(Request $request)
-//     {
-//         try {
-//         $categories = AttributeResource::collection(Attribute::where('category_id', $request->id)->get());
-//         return response()->json(['status_code' => 200, 'attributes' => $categories])->setStatusCode(200);
-//     }  catch(Error $error) {
-//         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to get attributes for product creation'])->setStatusCode(500);  
-      
-//       }   
-// }
-
-//     public function removeDiscount(Request $request)
-//     {
-//         try {
-//         $product = Product::find($request->product_id);
-//         $product->discounts()->detach($request->discount_id);
-//         $products = ProductResource::collection(Product::all());
-//         return response()->json(['status_code' => 200, 'products' => $products])->setStatusCode(200);
-//     }  catch(Error $error) {
-//         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to remove a discount'])->setStatusCode(500);  
-      
-//       }   
-// }
-
-//     public function addVouchers(Request $request)
-//     {
-//       try {
-//         $vouchers = [];
-//         for ($i=0; $i <$request->quantity; $i++) { 
-//          array_push($vouchers, [
-//              'code' => 'PR-'.substr(str_shuffle("0123456789"), 0, 7),
-//              'voucherable_id' => $request->product_id,
-//              'voucherable_type' => Product::class,
-//               'created_at' => Carbon::now(),
-//               'updated_at' => Carbon::now()
-//          ]);
-//         }
-//         DB::transaction(function() use($vouchers) {
-//             Voucher::insert($vouchers);
-//         });
-//         DB::commit();
-//         $products = ProductResource::collection(Product::all());
-//         return response()->json(['status_code' => 200, 'products' => $products])->setStatusCode(200);
-//     }  catch(Error $error) {
-//         DB::rollBack();
-//         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to generate vouchers'])->setStatusCode(500);  
-      
-//       }   
-
-// }
-
-
     public function getProduct($id)
     {
         try {
@@ -124,9 +71,20 @@ class ProductController extends Controller
             $product->en_name = $request->en_name;
             $product->customizable = $request->customizable;
             $product->save();
-            $product->customAttributes()->create($request->custom_attributes);
+            $attributes = array_map(function($attribute) use($product) {
+                return [
+                    'product_id' => $product->id,
+                    'attribute_id' => $attribute['attribute_id'],
+                    'custom_price' => $attribute['custom_price'],
+                    'unit_max' => $attribute['unit_max'],
+                    'unit_min' => $attribute['unit_min']
+    
+                ];
+            }, $request->custom_attributes);
+            DB::table('custom_attributes')->insert($attributes);
             return $product;    
         });    
+        
         DB::commit();
         return response()->json(['status_code' => 201, 'product' => new ProductResource($product)])->setStatusCode(201);
     }  catch(Error $error) {

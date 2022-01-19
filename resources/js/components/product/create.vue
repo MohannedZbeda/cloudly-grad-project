@@ -75,7 +75,7 @@
                         <v-container v-if="form.customizable">
                             <v-row
                                 v-for="attribute in form.custom_attributes"
-                                :key="attribute.id"
+                                :key="attribute.attribute_id"
                             >
                                 <v-col cols="6" sm="3" md="1">
                                     <h3 style="margin-top: 1em">
@@ -190,7 +190,7 @@ export default {
         getAttributes() {
             ProductService.GetAttributes(this.form.category_id).then(
                 response => {
-                    if (!response.data.custom_attributes.length) {
+                    if (!response.data.attributes.length) {
                         this.noAttributes = true;
                         this.form.custom_attributes = [];
                         return;
@@ -199,7 +199,7 @@ export default {
                     this.form.custom_attributes = response.data.attributes.map(
                         attribute => {
                             return {
-                                id: attribute.id,
+                                attribute_id: attribute.id,
                                 ar_name: attribute.ar_name,
                                 en_name: attribute.en_name,
                                 custom_price: null,
@@ -212,6 +212,14 @@ export default {
             );
         },
         create() {
+            this.form.custom_attributes = this.form.custom_attributes.map(attribute => {
+                return {
+                  attribute_id: attribute.attribute_id,
+                  custom_price: attribute.custom_price,
+                  unit_max: attribute.unit_max,
+                  unit_min: attribute.unit_min
+                };
+            });
             ProductService.CreateProduct(this.form).then(() => {
                 this.$swal(
                     this.$translate(
