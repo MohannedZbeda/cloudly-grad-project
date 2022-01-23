@@ -154,108 +154,103 @@
         <br />
         <br />
         <div v-if="custom_attributes">
-        <v-divider style="background-color: black"></v-divider>
-        <h2 style="text-align:center; margin-top: 2em">
-            {{
-                $translate(
-                    "Product Custom Attributes",
-                    "خصائص المنتج القابلة للتعديل المنتج"
-                )
-            }}
-        </h2>
-        <br />
-        <br />
-        <br />
-        <v-data-table
-            :headers="
-                $translate(
-                    [
-                        {
-                            text: 'AR Name',
-                            align: 'start',
-                            sortable: false,
-                            value: 'attribute.ar'
-                        },
-                        {
-                            text: 'EN Name',
-                            sortable: false,
-                            value: 'attribute.en'
-                        },
-                        {
-                            text: 'Custom Unit Price',
-                            sortable: false,
-                            value: 'custom_price'
-                        },
-                        {
-                            text: 'Maximum Units',
-                            sortable: false,
-                            value: 'unit_max'
-                        },
-                        {
-                            text: 'Minimum Units',
-                            sortable: false,
-                            value: 'unit_min'
-                        },
-                        {
-                            text: 'Actions',
-                            sortable: false,
-                            value: 'actions'
-                        }
-                    ],
-                    [
-                        {
-                            text: 'الإسم بالعربي',
-                            align: 'start',
-                            sortable: false,
-                            value: 'attribute.ar'
-                        },
-                        {
-                            text: 'الإسم بالإنجليزي',
-                            sortable: false,
-                            value: 'attribute.en'
-                        },
-                        {
-                            text: 'سعر الوحدة',
-                            sortable: false,
-                            value: 'custom_price'
-                        },
-                        {
-                            text: 'أقصى قيمة للوحدة',
-                            sortable: false,
-                            value: 'unit_max'
-                        },
-                        {
-                            text: 'أدنى قيمة للوحدة',
-                            sortable: false,
-                            value: 'unit_min'
-                        },
-                        { text: 'العمليات', value: 'actions', sortable: false }
-                    ]
-                )
-            "
-            :items="custom_attributes"
-            calculated-width="true"
-            :no-data-text="
-                $translate(`There's no attributes..`, 'لا يوجد خصائص..')
-            "
-        >
-            <template v-slot:[`item.actions`]="{ item }">
-                <v-icon style="margin-right: 10px" @click="goToEdit(item.id)"
-                    >mdi-pencil</v-icon
-                >
-                <v-icon
-                    style="margin-right: 10px"
-                    @click="showVoucherForm(item)"
-                    >mdi-gift</v-icon
-                >
-                <v-icon
-                    v-if="item.vouchers"
-                    style="margin-right: 10px"
-                    @click="copyVouchers(item.vouchers)"
-                    >mdi-content-copy</v-icon
-                >
-            </template>
-        </v-data-table>
+            <v-divider style="background-color: black"></v-divider>
+            <h2 style="text-align:center; margin-top: 2em">
+                {{
+                    $translate(
+                        "Product Customizble Attributes",
+                        "خصائص المنتج القابلة للتعديل"
+                    )
+                }}
+            </h2>
+            <br />
+            <br />
+            <br />
+            <v-data-table
+                :headers="
+                    $translate(
+                        [
+                            {
+                                text: 'AR Name',
+                                align: 'start',
+                                sortable: false,
+                                value: 'attribute.ar'
+                            },
+                            {
+                                text: 'EN Name',
+                                sortable: false,
+                                value: 'attribute.en'
+                            },
+                            {
+                                text: 'Custom Unit Price',
+                                sortable: false,
+                                value: 'custom_price'
+                            },
+                            {
+                                text: 'Maximum Units',
+                                sortable: false,
+                                value: 'unit_max'
+                            },
+                            {
+                                text: 'Minimum Units',
+                                sortable: false,
+                                value: 'unit_min'
+                            },
+                            {
+                                text: 'Actions',
+                                sortable: false,
+                                value: 'actions'
+                            }
+                        ],
+                        [
+                            {
+                                text: 'الإسم بالعربي',
+                                align: 'start',
+                                sortable: false,
+                                value: 'attribute.ar'
+                            },
+                            {
+                                text: 'الإسم بالإنجليزي',
+                                sortable: false,
+                                value: 'attribute.en'
+                            },
+                            {
+                                text: 'سعر الوحدة',
+                                sortable: false,
+                                value: 'custom_price'
+                            },
+                            {
+                                text: 'أقصى قيمة للوحدة',
+                                sortable: false,
+                                value: 'unit_max'
+                            },
+                            {
+                                text: 'أدنى قيمة للوحدة',
+                                sortable: false,
+                                value: 'unit_min'
+                            },
+                            {
+                                text: 'العمليات',
+                                value: 'actions',
+                                sortable: false
+                            }
+                        ]
+                    )
+                "
+                :items="custom_attributes"
+                calculated-width="true"
+                :no-data-text="
+                    $translate(`There's no attributes..`, 'لا يوجد خصائص..')
+                "
+            >
+                <template v-slot:[`item.actions`]="{ item }">
+                    <v-icon
+                        style="margin-right: 10px"
+                        @click="goToAttributeEdit(item.attribute.id)"
+                        >mdi-pencil</v-icon
+                    >
+                </template>
+            </v-data-table>
         </div>
         <template>
             <v-toolbar flat>
@@ -571,6 +566,9 @@ export default {
         },
         goToEdit(id) {
             this.$router.push(`/products/${this.id}/variants/edit/${id}`);
+        },
+        goToAttributeEdit(id) {
+            this.$router.push(`/products/${this.id}/custom-attributes/${id}`);
         }
     }
 };

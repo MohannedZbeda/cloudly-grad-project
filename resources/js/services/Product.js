@@ -16,6 +16,14 @@ export default class {
         return API.get(`${prefix}/${id}`);
     }
 
+    static async GetCustomAttribute(id) {
+        return API.get(`${prefix}/custom-attributes/${id}`);
+    }
+
+    static async UpdateCustomAttribute(payload) {
+        return API.post(`${prefix}/custom-attributes`, payload);
+    }
+
     static async GetAttributes(id) {
         return API.get(`categories/${id}/attributes`);
     }

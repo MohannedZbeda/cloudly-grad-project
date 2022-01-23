@@ -26,7 +26,7 @@ import CreateFaq from '../components/faq/create.vue';
 import EditFaq from '../components/faq/edit.vue';
 import CycleIndex from '../components/cycle/index.vue'
 import CreateCycle from '../components/cycle/create.vue'
-
+import EditCustomAttribute from '../components/variant/editattributevalue.vue';
 
 Vue.use(VueRouter)
 
@@ -76,6 +76,12 @@ const routes = [
     path: '/products/:product_id/variants/edit/:id',
     name: 'variant.edit',
     component : EditVariant,        
+  },
+
+  {
+    path: '/products/:product_id/custom-attributes/:id',
+    name: 'custom.edit',
+    component : EditCustomAttribute,        
   },
 
   {

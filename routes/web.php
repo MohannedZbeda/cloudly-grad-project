@@ -46,6 +46,8 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::get('/get-categories', [ProductController::class, 'getCategories']);
         Route::get('/{id}', [ProductController::class, 'getProduct']);
+        Route::get('/custom-attributes/{id}', [ProductController::class, 'getCustomAttributes']);
+        Route::post('/custom-attributes', [ProductController::class, 'updateCustomAttribute']);
         Route::post('/store', [ProductController::class, 'store']);
         Route::post('/update', [ProductController::class, 'update']);        
     });
