@@ -92,10 +92,10 @@ class ProductController extends Controller
                 'ar_name' => 'required|unique:products,ar_name',
                 'en_name' => 'required|unique:products,en_name',
                 'customizable' => 'required|boolean',
-                'custom_attributes' => 'required|array',
-                'custom_attributes.*.custom_price' => 'required|numeric',
-                'custom_attributes.*.unit_min' => 'required|numeric|min:1',
-                'custom_attributes.*.unit_max' => 'required|numeric|min:1',
+                'custom_attributes' => 'required__if:'.$request->customizable.'|array',
+                'custom_attributes.*.custom_price' => 'required__if:'.$request->customizable.'|numeric',
+                'custom_attributes.*.unit_min' => 'required__if:'.$request->customizable.'|numeric|min:1',
+                'custom_attributes.*.unit_max' => 'required__if:'.$request->customizable.'|numeric|min:1',
 
             ]);
             if ($validator->fails())
@@ -107,6 +107,7 @@ class ProductController extends Controller
                 $product->en_name = $request->en_name;
                 $product->customizable = $request->customizable;
                 $product->save();
+                if($request->custom_attributes) {
                 $attributes = array_map(function ($attribute) use ($product) {
                     return [
                         'product_id' => $product->id,
@@ -118,6 +119,7 @@ class ProductController extends Controller
                     ];
                 }, $request->custom_attributes);
                 DB::table('custom_attributes')->insert($attributes);
+            }
                 return $product;
             });
 
