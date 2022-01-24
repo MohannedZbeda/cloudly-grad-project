@@ -10,10 +10,10 @@ class CreateFAQSTable extends Migration
     {
         Schema::create('faqs', function (Blueprint $table) {
             $table->id();
-            $table->text('ar_question')->unique();
+            $table->text('ar_question');
             $table->text('ar_answer');
-            $table->text('en_question')->unique();
-            $table->text('en_answer')->unique();
+            $table->text('en_question');
+            $table->text('en_answer');
             $table->timestamps();
         });
     }
