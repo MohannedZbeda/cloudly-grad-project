@@ -8,7 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Variant extends Model
 {
     use HasFactory;
-    
+    public static function getPrice($attributes) {
+        $total = 0;
+        $product_attributes = $this->product->customAttributes;
+        foreach ($attributes as $attribute) {
+            $custom_attribute = $product_attributes->where('attribute_id', $attribute['attribute_id']);
+            $total +=  $custom_attribute->custom_price * $attribute['value'];
+        }
+        return $total;
+      }
     public function getDiscount()
     { 
         $new_price = $this->price -  ($this->price * ($this->discount_percentage / 100));        

@@ -37,6 +37,7 @@ Route::prefix('/carts')->middleware('auth:sanctum', 'role:customer')->group(func
     Route::get('/get-items', [CartController::class, 'getCartItems']);
     Route::post('/add-package', [CartController::class, 'addPackage']);
     Route::post('/add-product', [CartController::class, 'addProduct']);
+    Route::post('/add-custom-variant', [CartController::class, 'addCustomVariant']);
     Route::post('/delete-item', [CartController::class, 'removeFromCart']);
     Route::post('/update-quantity', [CartController::class, 'updateQuantity']);
 });

@@ -5,14 +5,18 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\CartResource;
 use App\Models\CartItem;
+use App\Models\CustomAttribute;
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\ProductValue;
 use App\Models\Variant;
+use Attribute;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\Random;
 
 class CartController extends Controller
 {
@@ -53,6 +57,33 @@ class CartController extends Controller
     if($validator->fails()) 
       return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
       return $this->addToCart($request->id, Package::class, $request->quantity); 
+    }
+
+    function addCustomVariant(Request $request)
+    {  
+      $validator = Validator::make($request->all(), [
+        'product_id' => 'required|exists:products,id',
+        'attributes.*.id' => 'required|exists:attributes,id',
+        'attributes.*.value' => 'required|numeric'
+    ]);
+    if($validator->fails()) 
+      return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
+      $variant = DB::transaction(function () use($request){
+          $variant = new Variant();
+          $variant->customized = true;
+          $variant->customized_by = auth('sanctum')->user()->name;
+          $variant->price = Variant::getPrice($request->attributes);
+          $variant->save();
+          foreach($request['attributes'] as $attribute) {
+            $value = new ProductValue();
+            $value->variant_id = $variant->id;
+            $value->attribute_id = $attribute['attribute_id'];
+            $value->value = $attribute['value'];
+            $value->save();
+          }
+          return $variant;
+      });
+      return $this->addToCart($variant->id, Variant::class, 3); 
     }
 
     function addProduct(Request $request)
