@@ -148,20 +148,33 @@ class ProductController extends Controller
                 ],
                 'customizable' => 'required|boolean',
                 'custom_attributes' => 'required|array',
-                'custom_attributes.*.custom_price' => 'required|numeric',
-                'custom_attributes.*.unit_min' => 'required|numeric|min:1',
-                'custom_attributes.*.unit_max' => 'required|numeric|min:1'
+                'custom_attributes.*.custom_price' => 'nullable|numeric',
+                'custom_attributes.*.unit_min' => 'nullable|numeric|min:1',
+                'custom_attributes.*.unit_max' => 'nullable|numeric|min:1'
             ]);
             if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
             $product = DB::transaction(function () use ($request) {
                 $product = Product::find($request->id);
+                $wasCustom = $product->customizable;
                 $product->category_id = $request->category_id;
                 $product->ar_name = $request->ar_name;
                 $product->en_name = $request->en_name;
                 $product->customizable = $request->customizable;
                 $product->save();
-                $product->customAttributes()->update($request->custom_attributes);
+                if(!$wasCustom && $request->custom_attributes) {
+                    $attributes = array_map(function ($attribute) use ($product) {
+                        return [
+                            'product_id' => $product->id,
+                            'attribute_id' => $attribute['attribute_id'],
+                            'custom_price' => $attribute['custom_price'],
+                            'unit_max' => $attribute['unit_max'],
+                            'unit_min' => $attribute['unit_min']
+    
+                        ];
+                    }, $request->custom_attributes);
+                    DB::table('custom_attributes')->insert($attributes);
+                }
                 return $product;
             });
             DB::commit();

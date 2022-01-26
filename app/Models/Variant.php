@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product;
 
 class Variant extends Model
 {
     use HasFactory;
-    public static function getPrice($attributes) {
+    public static function getPrice($id, $attributes) {
         $total = 0;
-        $product_attributes = $this->product->customAttributes;
+        $product_attributes = CustomAttribute::where('product_id', $id)->get();
         foreach ($attributes as $attribute) {
-            $custom_attribute = $product_attributes->where('attribute_id', $attribute['attribute_id']);
-            $total +=  $custom_attribute->custom_price * $attribute['value'];
+            $custom_attribute = $product_attributes->where('attribute_id', $attribute->attribute_id)->first();
+            $total +=  $custom_attribute->custom_price * $attribute->value;
         }
         return $total;
       }

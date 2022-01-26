@@ -1,0 +1,9 @@
+Go to AuthenticatesUsers.php inside vendors/laravel/backend-AuthenticatesUsers
+got to function username and change its return value from email to username (as below)
+
+
+
+#    public function username()
+#    {
+#        return 'username';
+#    }

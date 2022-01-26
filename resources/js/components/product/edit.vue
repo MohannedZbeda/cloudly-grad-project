@@ -8,7 +8,7 @@
                     }}</v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                    <p v-if="noAttributes" style="color:red">
+                   <p v-if="noAttributes" style="color:red">
                         {{
                             $translate(
                                 "There are no attributes for this product, Please add some",
@@ -70,58 +70,86 @@
                         <br />
                         <v-divider style="background-color: black"></v-divider>
                         <br />
-                        <div v-if="form.customizable">
-                            <v-text-field
-                                :label="
-                                    $translate('Custom Price', 'سعر الوحدة')
-                                "
-                                :placeholder="
-                                    $translate(
-                                        'Custom price per unit',
-                                        'سعر الوحدة'
-                                    )
-                                "
-                                outlined
-                                type="number"
-                                v-model="form.custom_price"
-                            ></v-text-field>
 
-                            <v-text-field
-                                :label="
-                                    $translate(
-                                        'Unit Maximum',
-                                        'أقصى قيمة للوحدة'
-                                    )
-                                "
-                                :placeholder="
-                                    $translate(
-                                        'Maximum adjustment per unit',
-                                        'أقصى قيمة يسمح بإضافتها لهذه الخاصية'
-                                    )
-                                "
-                                outlined
-                                type="number"
-                                v-model="form.unit_max"
-                            ></v-text-field>
+                        <v-container v-if="form.customizable">
+                            <v-row
+                                v-for="attribute in form.custom_attributes"
+                                :key="attribute.attribute_id"
+                            >
+                                <v-col cols="6" sm="3" md="1">
+                                    <h3 style="margin-top: 1em">
+                                        {{
+                                            $translate(
+                                                attribute.en_name,
+                                                attribute.ar_name
+                                            )
+                                        }}
+                                        :
+                                    </h3>
+                                </v-col>
 
-                            <v-text-field
-                                :label="
-                                    $translate(
-                                        'Unit Minimum',
-                                        'أدنى قيمة للوحدة'
-                                    )
-                                "
-                                :placeholder="
-                                    $translate(
-                                        'Minimum adjustment per unit',
-                                        'أدنى قيمة يسمح بإضافتها لهذه الخاصية'
-                                    )
-                                "
-                                outlined
-                                type="number"
-                                v-model="form.unit_min"
-                            ></v-text-field>
-                        </div>
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-text-field
+                                        :label="
+                                            $translate(
+                                                'Custom Price',
+                                                'سعر الوحدة'
+                                            )
+                                        "
+                                        :placeholder="
+                                            $translate(
+                                                'Custom price per unit',
+                                                'سعر الوحدة'
+                                            )
+                                        "
+                                        outlined
+                                        type="number"
+                                        v-model="attribute.custom_price"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-text-field
+                                        :label="
+                                            $translate(
+                                                'Unit Maximum',
+                                                'أقصى قيمة للوحدة'
+                                            )
+                                        "
+                                        :placeholder="
+                                            $translate(
+                                                'Maximum adjustment per unit',
+                                                'أقصى قيمة يسمح بإضافتها لهذه الخاصية'
+                                            )
+                                        "
+                                        outlined
+                                        type="number"
+                                        v-model="attribute.unit_max"
+                                    ></v-text-field>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-text-field
+                                        :label="
+                                            $translate(
+                                                'Unit Minimum',
+                                                'أدنى قيمة للوحدة'
+                                            )
+                                        "
+                                        :placeholder="
+                                            $translate(
+                                                'Minimum adjustment per unit',
+                                                'أدنى قيمة يسمح بإضافتها لهذه الخاصية'
+                                            )
+                                        "
+                                        outlined
+                                        type="number"
+                                        v-model="attribute.unit_min"
+                                    ></v-text-field>
+                                </v-col>
+                                <br />
+                                <br />
+                            </v-row>
+                        </v-container>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -143,14 +171,13 @@ export default {
         return {
             id: this.$route.params.id,
             categories: [],
+            noAttributes: false,
             form: {
                 ar_name: "",
                 en_name: "",
                 category_id: "",
                 customizable: false,
-                custom_price: null,
-                unit_max: null,
-                unit_min: null
+                custom_attributes: []
             }
         };
     },
@@ -161,9 +188,35 @@ export default {
 
         ProductService.GetProduct(this.id).then(response => {
             this.form = response.data.product;
+            this.getAttributes();
+
         });
     },
     methods: {
+        getAttributes() {
+            ProductService.GetAttributes(this.form.category_id).then(
+                response => {
+                    if (!response.data.attributes.length) {
+                        this.noAttributes = true;
+                        this.form.custom_attributes = [];
+                        return;
+                    }
+                    this.noAttributes = false;
+                    this.form.custom_attributes = response.data.attributes.map(
+                        attribute => {
+                            return {
+                                attribute_id: attribute.id,
+                                ar_name: attribute.ar_name,
+                                en_name: attribute.en_name,
+                                custom_price: null,
+                                unit_max: null,
+                                unit_min: null
+                            };
+                        }
+                    );
+                }
+            );
+        },
         update() {
             ProductService.UpdateProduct({ id: this.id, ...this.form }).then(
                 () => {

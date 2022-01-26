@@ -70,15 +70,16 @@ class CartController extends Controller
       return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
       $variant = DB::transaction(function () use($request){
           $variant = new Variant();
+          $variant->product_id = $request->product_id;
           $variant->customized = true;
           $variant->customized_by = auth('sanctum')->user()->name;
-          $variant->price = Variant::getPrice($request->attributes);
+          $variant->price = Variant::getPrice($request->product_id, json_decode($request['attributes']));
           $variant->save();
-          foreach($request['attributes'] as $attribute) {
+          foreach(json_decode($request['attributes']) as $attribute) {
             $value = new ProductValue();
             $value->variant_id = $variant->id;
-            $value->attribute_id = $attribute['attribute_id'];
-            $value->value = $attribute['value'];
+            $value->attribute_id = $attribute->attribute_id;
+            $value->value = $attribute->value;
             $value->save();
           }
           return $variant;

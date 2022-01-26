@@ -16,7 +16,6 @@ class CreateCustomAttributes extends Migration
             $table->double('custom_price')->nullable();
             $table->integer('unit_max')->nullable();
             $table->integer('unit_min')->nullable();
-            $table->timestamps();
         });
     }
 

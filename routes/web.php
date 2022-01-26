@@ -8,7 +8,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\ValueController;
 use App\Http\Controllers\PackageController;
-use App\Http\Controllers\DiscountController;
+//use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CycleController;
 use App\Http\Controllers\FAQController;
@@ -86,22 +86,22 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::post('/change-state', [CycleController::class, 'changeState']);
     });
     
-    Route::prefix('/discounts')->middleware('role:super_admin|marketing_admin')->group(function () {
-        Route::get('/', [DiscountController::class, 'index']);
-        Route::get('/get-items', [DiscountController::class, 'getItems']);    
-        Route::post('/store', [DiscountController::class, 'store']);
-        Route::post('/update', [DiscountController::class, 'update']);
-        Route::get('/{id}', [DiscountController::class, 'getDiscount']);
+    // Route::prefix('/discounts')->middleware('role:super_admin|marketing_admin')->group(function () {
+    //     Route::get('/', [DiscountController::class, 'index']);
+    //     Route::get('/get-items', [DiscountController::class, 'getItems']);    
+    //     Route::post('/store', [DiscountController::class, 'store']);
+    //     Route::post('/update', [DiscountController::class, 'update']);
+    //     Route::get('/{id}', [DiscountController::class, 'getDiscount']);
         
-    });
+    // });
 
     Route::prefix('/coupons')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [CouponController::class, 'index']);
         Route::post('/', [CouponController::class, 'getCoupon']);
-        Route::get('/get-items', [DiscountController::class, 'getItems']);    
+        //Route::get('/get-items', [DiscountController::class, 'getItems']);    
         Route::post('/store', [CouponController::class, 'store']);
         Route::post('/update', [CouponController::class, 'update']);
-        Route::get('/{id}', [DiscountController::class, 'getDiscount']);
+        //Route::get('/{id}', [DiscountController::class, 'getDiscount']);
         
     });
 
