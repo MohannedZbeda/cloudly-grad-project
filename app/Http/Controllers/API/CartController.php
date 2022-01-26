@@ -20,20 +20,13 @@ use Nette\Utils\Random;
 
 class CartController extends Controller
 {
-    function addToCart($id, $type, $quantity)
+    function addToCart($id, $type)
     {
       try {
-        DB::transaction(function() use($id, $type, $quantity) {
-          $cartItem = CartItem::where('cartable_type', $type)->where('cartable_id', $id)->first();
-          if($cartItem) {
-            $cartItem->quantity+= $quantity;
-            $cartItem->save();
-            return;
-          }
+        DB::transaction(function() use($id, $type) {
           $cartID = auth('sanctum')->user()->cart->id;
           $cartItem = new CartItem();
           $cartItem->cart_id = $cartID;
-          $cartItem->quantity = $quantity;
           $cartItem->cartable_id =  $id;
           $cartItem->cartable_type = $type;
           $cartItem->save();
@@ -56,7 +49,7 @@ class CartController extends Controller
     ]);
     if($validator->fails()) 
       return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-      return $this->addToCart($request->id, Package::class, $request->quantity); 
+      return $this->addToCart($request->id, Package::class); 
     }
 
     function addCustomVariant(Request $request)
@@ -84,7 +77,7 @@ class CartController extends Controller
           }
           return $variant;
       });
-      return $this->addToCart($variant->id, Variant::class, 3); 
+      return $this->addToCart($variant->id, Variant::class); 
     }
 
     function addProduct(Request $request)
@@ -94,7 +87,7 @@ class CartController extends Controller
     ]);
     if($validator->fails()) 
       return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-      return $this->addToCart($request->id, Variant::class, $request->quantity); 
+      return $this->addToCart($request->id, Variant::class); 
     }
 
     function removeFromCart(Request $request)
@@ -126,27 +119,27 @@ class CartController extends Controller
           return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CartController, Trying to remove an item from the cart'])->setStatusCode(500);  
         } 
     }
-    public function updateQuantity(Request $request)
-    {
-      try {
-        $validator = Validator::make($request->all(), [
-          'quantity' => 'required|numeric|min:1',
-      ]);
-      if($validator->fails()) 
-        return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-       $item = DB::transaction(function() use($request) {
-        $item = CartItem::find($request->id);        
-        $item->quantity = $request->quantity;
-        $item->save();
-       });
-       DB::commit();
-       return response()->json(['status_code' => 200, 'item' => new CartResource($item)])->setStatusCode(200); 
-      }
-      catch(Error $error) {
-        DB::rollBack();
-        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CartController, Trying to update item quantity'])->setStatusCode(500);  
-      }
-    }
+    // public function updateQuantity(Request $request)
+    // {
+    //   try {
+    //     $validator = Validator::make($request->all(), [
+    //       'quantity' => 'required|numeric|min:1',
+    //   ]);
+    //   if($validator->fails()) 
+    //     return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
+    //    $item = DB::transaction(function() use($request) {
+    //     $item = CartItem::find($request->id);        
+    //     $item->quantity = $request->quantity;
+    //     $item->save();
+    //    });
+    //    DB::commit();
+    //    return response()->json(['status_code' => 200, 'item' => new CartResource($item)])->setStatusCode(200); 
+    //   }
+    //   catch(Error $error) {
+    //     DB::rollBack();
+    //     return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CartController, Trying to update item quantity'])->setStatusCode(500);  
+    //   }
+    // }
 
     
 }

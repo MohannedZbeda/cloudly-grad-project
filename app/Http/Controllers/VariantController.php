@@ -23,7 +23,7 @@ class VariantController extends Controller
     {
     try {
         $custom_attributes = CustomAttributeResource::collection(CustomAttribute::where('product_id', $product_id)->get());
-        $variants = VariantResource::collection(Variant::with(['values', 'cycles'])->where('product_id',$product_id)->get());
+        $variants = VariantResource::collection(Variant::with(['values', 'cycles'])->where('product_id',$product_id)->where('customized', false)->get());
         return response()->json(['status_code' => 200, 'variants' => $variants, 'custom_attributes' => $custom_attributes])->setStatusCode(200);
     }
     catch(Error $error) {
