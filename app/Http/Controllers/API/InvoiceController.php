@@ -40,7 +40,7 @@ class InvoiceController extends Controller
         foreach ($user_cart->items as $item) {
           array_push($invoice_items, [
             'invoice_id' => $invoice->id,
-            'quantity' => $item->quantity,
+            'duration' => $item->duration,
             'invoiceable_id' => $item->cartable_id,
             'invoiceable_type' => $item->cartable_type,
           ]);

@@ -153,7 +153,7 @@
         </v-data-table>
         <br />
         <br />
-        <div v-if="custom_attributes">
+        <div v-if="custom_attributes.length">
             <v-divider style="background-color: black"></v-divider>
             <h2 style="text-align:center; margin-top: 2em">
                 {{

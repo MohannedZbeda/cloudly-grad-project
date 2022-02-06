@@ -19,7 +19,9 @@ class HomeController extends Controller
         try {
         $packages = PackageApiResource::collection(Package::with(['variants', 'discounts'])->get()); 
         $categories = CategoryApiResource::collection(Category::with('products')->get());
-        $products = ProductApiResource::collection(Product::with('variants')->get());
+        $products = ProductApiResource::collection(Product::with(['variants' => function($q) {
+            $q->where('customized', false);
+        }])->get());
         return response()->json([
             'status_code' => 200,
             'categories' => $categories,

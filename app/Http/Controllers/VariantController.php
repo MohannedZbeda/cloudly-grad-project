@@ -24,7 +24,8 @@ class VariantController extends Controller
     try {
         $custom_attributes = CustomAttributeResource::collection(CustomAttribute::where('product_id', $product_id)->get());
         $variants = VariantResource::collection(Variant::with(['values', 'cycles'])->where('product_id',$product_id)->where('customized', false)->get());
-        return response()->json(['status_code' => 200, 'variants' => $variants, 'custom_attributes' => $custom_attributes])->setStatusCode(200);
+        $custom_variants = VariantResource::collection(Variant::where('product_id',$product_id)->where('customized', true)->get());
+        return response()->json(['status_code' => 200, 'variants' => $variants,  'custom_attributes' => $custom_attributes])->setStatusCode(200);
     }
     catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get all variants'])->setStatusCode(500);  
