@@ -16,6 +16,12 @@ class SubscriptionCycle extends Model
         return $this->morphedByMany(Variant::class, 'cycleable');
     }
 
+    public function durations()
+    {
+        return $this->belongsToMany(SubscribtionDuration::class, 'duration_cycles', 'cycle_id');
+    }
+
+
     
     public function packages()
     {

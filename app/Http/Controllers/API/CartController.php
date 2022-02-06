@@ -56,7 +56,7 @@ class CartController extends Controller
     {  
       $validator = Validator::make($request->all(), [
         'product_id' => 'required|exists:products,id',
-        'attributes.*.id' => 'required|exists:attributes,id',
+        'attributes.*.attribute_id' => 'required|exists:attributes,id',
         'attributes.*.value' => 'required|numeric'
     ]);
     if($validator->fails()) 
@@ -65,7 +65,7 @@ class CartController extends Controller
           $variant = new Variant();
           $variant->product_id = $request->product_id;
           $variant->customized = true;
-          $variant->customized_by = auth('sanctum')->user()->name;
+        $variant->customized_by = auth('sanctum')->user()->name;
           $variant->price = Variant::getPrice($request->product_id, json_decode($request['attributes']));
           $variant->save();
           foreach(json_decode($request['attributes']) as $attribute) {
