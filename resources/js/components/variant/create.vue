@@ -17,14 +17,7 @@
                         }}
                     </p>
 
-                    <p v-if="noCycles" style="color:red">
-                        {{
-                            $translate(
-                                "There are no payment cycles, Please add some before creating a product",
-                                "لا توجد دورات دفع مضافة, يرجى الإضافة"
-                            )
-                        }}
-                    </p>
+                   
                     <v-form>
                         <v-text-field
                             :label="$translate('AR Name', 'الإسم بالعربي')"
@@ -51,24 +44,6 @@
                             v-model="form.en_name"
                         ></v-text-field>
 
-                        <v-autocomplete
-                            v-model="form.cycles"
-                            :items="cycles"
-                            :item-text="$translate('en_name', 'ar_name')"
-                            item-value="id"
-                            outlined
-                            dense
-                            chips
-                            small-chips
-                            :label="
-                                $translate(
-                                    'Available Payment Cycles',
-                                    'دورات الدفع المتاحة'
-                                )
-                            "
-                            multiple
-                        >
-                        </v-autocomplete>
                         
                         <v-divider style="background-color: black"></v-divider>
                         <br />
@@ -123,21 +98,16 @@
 
 <script>
 import VariantService from "../../services/Variant";
-import CycleService from "../../services/Cycle";
 export default {
     name: "variant.create",
     data() {
         return {
             id: this.$route.params.id,
-            cycleForm: false,
             products: [],
-            cycles: [],
             noAttributes: false,
-            noCycles: false,
             form: {
                 ar_name: "",
                 en_name: "",
-                cycles: [],
                 attributes: [],
                 price: null
             }
@@ -146,15 +116,6 @@ export default {
     beforeMount() {
         VariantService.GetProducts().then(response => {
             this.products = response.data.products;
-        });
-        CycleService.AllCycles().then(response => {
-            if (!response.data.cycles.length) {
-              this.noCycles = true;
-              this.form.cycles = [];
-              return;
-            } 
-            this.noCycles = false;
-            this.cycles = response.data.cycles;
         });
         this.getAttributes(this.id);
     },

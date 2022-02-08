@@ -12,7 +12,8 @@ class CreateInvoiceItemsTable extends Migration
         Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('invoice_id')->references('id')->on('invoices')->onDelete('RESTRICT');
-            $table->integer('quantity');
+            $table->foreignId('cycle_id')->references('id')->on('subscribtion_cycles')->onDelete('RESTRICT');
+            $table->integer('duration')->min(0);
             $table->bigInteger('invoiceable_id')->unsigned();
             $table->string('invoiceable_type');
             $table->timestamps();

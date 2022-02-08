@@ -16,6 +16,7 @@ class ProductResource extends JsonResource
             'customizable' => $this->customizable,
             'customizable_text' => $this->customizable ? ['ar' =>  'نعم', 'en' => 'Yes'] : ['ar' => 'لا', 'en' => 'No'],
             'custom_attributes' => CustomAttributeResource::collection($this->whenLoaded('customAttributes')),
+            'cycles' => CycleResource::collection($this->whenLoaded('cycles')),
             'created_at' => $this->created_at->toDateString(),
             'category_id' => $this->category_id,
             'category' => $this->category->en_name

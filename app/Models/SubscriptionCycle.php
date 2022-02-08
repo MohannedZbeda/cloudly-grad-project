@@ -11,9 +11,9 @@ class SubscriptionCycle extends Model
     protected $table = 'subscribtion_cycles';
 
 
-    public function variants()
+    public function products()
     {
-        return $this->morphedByMany(Variant::class, 'cycleable');
+        return $this->morphedByMany(Product::class, 'cycleable');
     }
 
     public function durations()
@@ -26,5 +26,10 @@ class SubscriptionCycle extends Model
     public function packages()
     {
         return $this->morphedByMany(Package::class, 'cycleable');
+    }
+
+    public function invoiceItems()
+    {
+        return $this->hasMany(InvoiceItem::class, 'cycle_id');
     }
 }

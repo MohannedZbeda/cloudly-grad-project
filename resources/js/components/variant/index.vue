@@ -252,6 +252,85 @@
                 </template>
             </v-data-table>
         </div>
+        <br />
+        <br />
+        <div v-if="cycles.length">
+            <v-divider style="background-color: black"></v-divider>
+            <h2 style="text-align:center; margin-top: 2em">
+                {{
+                    $translate(
+                        "Product payment cycles",
+                        "دورات الدفع المتاحة للمنتج"
+                    )
+                }}
+            </h2>
+            <br />
+            <br />
+            <br />
+            <v-data-table
+                :headers="
+                    $translate(
+                        [
+                            {
+                                text: 'AR Name',
+                                align: 'start',
+                                sortable: false,
+                                value: 'ar_name'
+                            },
+                            {
+                                text: 'EN Name',
+                                sortable: false,
+                                value: 'en_name'
+                            },
+                            {
+                                text: 'Cycle Months',
+                                sortable: false,
+                                value: 'months'
+                            },
+                            {
+                                text: 'State',
+                                value: 'state',
+                                sortable: false
+                            }
+                        ],
+                        [
+                            {
+                                text: 'الإسم بالعربي',
+                                align: 'start',
+                                sortable: false,
+                                value: 'ar_name'
+                            },
+                            {
+                                text: 'الإسم بالإنجليزي',
+                                sortable: false,
+                                value: 'en_name'
+                            },
+                            {
+                                text: 'عدد الأشهر',
+                                sortable: false,
+                                value: 'months'
+                            },
+                            {
+                                text: 'الحالة',
+                                value: 'state',
+                                sortable: false
+                            }
+                        ]
+                    )
+                "
+                :items="cycles"
+                calculated-width="true"
+                :no-data-text="
+                    $translate(`There are no cycles..`, 'لا يوجد دورات دفع, يرجى الإضافة..')
+                "
+            >
+                <template v-slot:[`item.state`]="{ item }">
+                    <v-icon :color="item.enabled ? '#2ecc71' : '#c0392b'"
+                        >mdi-checkbox-blank-circle</v-icon
+                    >
+                </template>
+            </v-data-table>
+        </div>
         <template>
             <v-toolbar flat>
                 <v-spacer></v-spacer>
@@ -278,26 +357,6 @@
                                         )
                                     }}</b>
                                     : {{ attribute.value }}
-                                </li>
-                            </ul>
-                            <v-divider
-                                style="background-color: black"
-                            ></v-divider>
-                            <br />
-                            <br />
-                            <h2>
-                                {{
-                                    $translate("Payment Cycles", "دورات الدفع")
-                                }}
-                            </h2>
-                            <ul>
-                                <li
-                                    v-for="cycle in variant.cycles"
-                                    :key="cycle.id"
-                                >
-                                    <b>{{
-                                        $translate(cycle.en_name, cycle.ar_name)
-                                    }}</b>
                                 </li>
                             </ul>
                         </v-card-text>
@@ -443,6 +502,7 @@ export default {
             add_discount_dialog: false,
             variants: [],
             custom_attributes: [],
+            cycles: [],
             variant: {},
             form: {
                 quantity: null,
@@ -455,6 +515,7 @@ export default {
         Variantservice.GetVariants(this.id).then(response => {
             this.variants = response.data.variants;
             this.custom_attributes = response.data.custom_attributes;
+            this.cycles = response.data.cycles;
         });
     },
     methods: {

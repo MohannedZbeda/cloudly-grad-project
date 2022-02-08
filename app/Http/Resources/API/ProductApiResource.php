@@ -2,8 +2,7 @@
 
 namespace App\Http\Resources\API;
 
-use App\Http\Resources\DiscountResource;
-use App\Http\Resources\ValueResource;
+use App\Http\Resources\CycleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductApiResource extends JsonResource
@@ -19,7 +18,8 @@ class ProductApiResource extends JsonResource
               'ar_name' => $this->category->ar_name,
               'en_name' => $this->category->en_name
             ],
-            'variants' => VariantApiResource::collection($this->whenLoaded('variants'))
+            'variants' => VariantApiResource::collection($this->whenLoaded('variants')),
+            'cycles' => CycleResource::collection($this->whenLoaded('cycles'))
         ];
     }
 }

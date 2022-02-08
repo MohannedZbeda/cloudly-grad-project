@@ -13,7 +13,7 @@ class Cart extends Model
     public function getTotal()
     {   $total = 0;
         foreach($this->items as $item) {
-          $total+= $item->cartable->getDiscount() * $item->quantity;
+          $total+= $item->cartable->getDiscount();
         }
         return $total;
     }

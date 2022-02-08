@@ -28,25 +28,25 @@ class InvoiceController extends Controller
     }
   }
 
-  public function issueInvoice()
+  public function issueInvoice(Request $request)
   {
     try {
-      $invoice = DB::transaction(function () {
-        $user_cart = auth('sanctum')->user()->cart;
+      $invoice = DB::transaction(function () use($request) {
         $invoice = new Invoice();
         $invoice->user_id = auth('sanctum')->user()->id;
         $invoice->save();
         $invoice_items = [];
-        foreach ($user_cart->items as $item) {
+        foreach ($request->attributes as $item) {
           array_push($invoice_items, [
             'invoice_id' => $invoice->id,
+            'cycle' => $request->cycle_id,
             'duration' => $item->duration,
-            'invoiceable_id' => $item->cartable_id,
-            'invoiceable_type' => $item->cartable_type,
+            'invoiceable_id' => $item->id,
+            'invoiceable_type' => $item->type
           ]);
         }
         InvoiceItem::insert($invoice_items);
-        DB::table('cart_items')->where('cart_id', $user_cart->id)->delete();
+        DB::table('cart_items')->where('cart_id', auth('sanctum')->user()->cart->id)->delete();
         return $invoice;
       });
 

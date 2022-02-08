@@ -77,7 +77,7 @@ class ProductController extends Controller
     public function getProduct($id)
     {
         try {
-            $product = new ProductResource(Product::find($id));
+            $product = new ProductResource(Product::with('cycles')->find($id));
             return response()->json(['status_code' => 200, 'product' => $product])->setStatusCode(200);
         } catch (Error $error) {
             return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to get a product for update'])->setStatusCode(500);
@@ -92,10 +92,12 @@ class ProductController extends Controller
                 'ar_name' => 'required|unique:products,ar_name',
                 'en_name' => 'required|unique:products,en_name',
                 'customizable' => 'required|boolean',
-                'custom_attributes' => 'required__if:'.$request->customizable.'|array',
-                'custom_attributes.*.custom_price' => 'required__if:'.$request->customizable.'|numeric',
-                'custom_attributes.*.unit_min' => 'required__if:'.$request->customizable.'|numeric|min:1',
-                'custom_attributes.*.unit_max' => 'required__if:'.$request->customizable.'|numeric|min:1',
+                'custom_attributes' => 'required_if:customizable,1|array',
+                'custom_attributes.*.custom_price' => 'required_if:customizable,1|numeric',
+                'custom_attributes.*.unit_min' => 'required_if:customizable,1|numeric|min:1',
+                'custom_attributes.*.unit_max' => 'required_if:customizable,1|numeric|min:1',
+                'cycles' => 'required|array|exists:subscribtion_cycles,id'
+
 
             ]);
             if ($validator->fails())
@@ -120,6 +122,7 @@ class ProductController extends Controller
                 }, $request->custom_attributes);
                 DB::table('custom_attributes')->insert($attributes);
             }
+            $product->cycles()->attach($request->cycles);
                 return $product;
             });
 
@@ -147,10 +150,12 @@ class ProductController extends Controller
 
                 ],
                 'customizable' => 'required|boolean',
-                'custom_attributes' => 'required|array',
-                'custom_attributes.*.custom_price' => 'nullable|numeric',
-                'custom_attributes.*.unit_min' => 'nullable|numeric|min:1',
-                'custom_attributes.*.unit_max' => 'nullable|numeric|min:1'
+                'custom_attributes' => 'required_if:customizable,1|array',
+                'custom_attributes.*.custom_price' => 'required_if:customizable,1|numeric',
+                'custom_attributes.*.unit_min' => 'required_if:customizable,1|numeric|min:1',
+                'custom_attributes.*.unit_max' => 'required_if:customizable,1|numeric|min:1',
+                'cycles' => 'required|array|exists:subscribtion_cycles,id'
+
             ]);
             if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -175,6 +180,7 @@ class ProductController extends Controller
                     }, $request->custom_attributes);
                     DB::table('custom_attributes')->insert($attributes);
                 }
+                $product->cycles()->sync($request->cycles);
                 return $product;
             });
             DB::commit();

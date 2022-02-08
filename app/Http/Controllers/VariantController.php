@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\AttributeResource;
 use App\Http\Resources\CustomAttributeResource;
+use App\Http\Resources\CycleResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -22,10 +23,11 @@ class VariantController extends Controller
     public function index($product_id)
     {
     try {
-        $custom_attributes = CustomAttributeResource::collection(CustomAttribute::where('product_id', $product_id)->get());
-        $variants = VariantResource::collection(Variant::with(['values', 'cycles'])->where('product_id',$product_id)->where('customized', false)->get());
-        $custom_variants = VariantResource::collection(Variant::where('product_id',$product_id)->where('customized', true)->get());
-        return response()->json(['status_code' => 200, 'variants' => $variants,  'custom_attributes' => $custom_attributes])->setStatusCode(200);
+        $product = Product::find($product_id);
+        $custom_attributes = CustomAttributeResource::collection($product->customAttributes);
+        $variants = VariantResource::collection(Variant::with(['values'])->where('product_id',$product_id)->where('customized', false)->get());
+        $cycles = CycleResource::collection($product->cycles);
+        return response()->json(['status_code' => 200, 'variants' => $variants, 'custom_attributes' => $custom_attributes, 'cycles' => $cycles])->setStatusCode(200);
     }
     catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get all variants'])->setStatusCode(500);  
@@ -73,7 +75,7 @@ public function addDiscount(Request $request)
     {
         try {
         $validator = Validator::make($request->all(), [
-            'discount_percentage' => 'required|between:0,100',
+            'discount_percentage' => 'required|numeric|min:1|max:100',
             'variant_id' => 'required|exists:variants,id'
         ]);
         if($validator->fails()) 
@@ -143,7 +145,7 @@ public function addDiscount(Request $request)
     public function getVariant($id)
     {
         try {
-        $variant = new VariantResource(Variant::with(['values', 'cycles'])->find($id));
+        $variant = new VariantResource(Variant::with('values')->find($id));
         return response()->json(['status_code' => 200, 'variant' => $variant])->setStatusCode(200);
     }  catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get a variant for update'])->setStatusCode(500);  
@@ -160,8 +162,7 @@ public function addDiscount(Request $request)
             'price' => 'required|numeric',
             'attributes' => 'required|array',
             'attributes.*.value' => 'required',
-            'attributes.*.id' => 'required|exists:attributes,id',
-            'cycles' => 'required|array|exists:subscribtion_cycles,id'
+            'attributes.*.id' => 'required|exists:attributes,id'
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -179,7 +180,6 @@ public function addDiscount(Request $request)
               $value->value = $attribute['value'];
               $value->save();
             }
-            $variant->cycles()->attach($request->cycles);
             return $variant;    
         });    
         DB::commit();
@@ -209,7 +209,6 @@ public function addDiscount(Request $request)
             'attributes' => 'required|array',
             'attributes.*.value' => 'required',
             'attributes.*.id' => 'required|exists:attributes,id',
-            'cycles' => 'required|array|exists:subscribtion_cycles,id'
 
         ]);
         if($validator->fails()) 
@@ -227,7 +226,6 @@ public function addDiscount(Request $request)
               $value->save();
             }
 
-            $variant->cycles()->sync($request->cycles);
             return $variant;
         });
         DB::commit();

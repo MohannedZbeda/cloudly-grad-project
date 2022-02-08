@@ -18,4 +18,9 @@ class InvoiceItem extends Model
     {
         return $this->belongsTo(Invoice::class);
     }
+
+    public function cycle()
+    {
+        return $this->belongsTo(SubscriptionCycle::class, 'cycle_id');
+    }
 }

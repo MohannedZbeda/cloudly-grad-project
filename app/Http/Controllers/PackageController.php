@@ -111,7 +111,7 @@ class PackageController extends Controller
     {
         try {
         $validator = Validator::make($request->all(), [
-          'discount_percentage' => 'required|between:0,100',
+          'discount_percentage' => 'required|numeric|min:0|max:100',
           'package_id' => 'required|exists:packages,id'
         ]);
         if($validator->fails()) 

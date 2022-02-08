@@ -8,11 +8,19 @@
                     }}</v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                    <p v-if="noAttributes" style="color:red">
+                    <p v-if="noAttributes && form.customizable" style="color:red">
                         {{
                             $translate(
                                 "There are no attributes for this product, Please add some",
                                 "لا توجد خصائص لهذا المنتج، يرجى الإضافة"
+                            )
+                        }}
+                    </p>
+                     <p v-if="noCycles" style="color:red">
+                        {{
+                            $translate(
+                                "There are no payment cycles, Please add some before creating a product",
+                                "لا توجد دورات دفع مضافة, يرجى الإضافة"
                             )
                         }}
                     </p>
@@ -52,6 +60,24 @@
                             outlined
                             v-model="form.en_name"
                         ></v-text-field>
+                        <v-autocomplete
+                            v-model="form.cycles"
+                            :items="cycles"
+                            :item-text="$translate('en_name', 'ar_name')"
+                            item-value="id"
+                            outlined
+                            dense
+                            chips
+                            small-chips
+                            :label="
+                                $translate(
+                                    'Available Payment Cycles',
+                                    'دورات الدفع المتاحة'
+                                )
+                            "
+                            multiple
+                        >
+                        </v-autocomplete>
                         <br />
                         <b>
                             {{
@@ -166,17 +192,21 @@
 
 <script>
 import ProductService from "../../services/Product";
+import CycleService from "../../services/Cycle";
 export default {
     name: "product.create",
     data() {
         return {
             categories: [],
+            cycles: [],
+            noCycles: false,
             noAttributes: false,
             form: {
                 ar_name: "",
                 en_name: "",
                 category_id: "",
                 customizable: false,
+                cycles: [],
                 custom_attributes: []
             }
         };
@@ -184,6 +214,15 @@ export default {
     beforeMount() {
         ProductService.GetCategories().then(response => {
             this.categories = response.data.categories;
+        });
+        CycleService.AllCycles().then(response => {
+            if (!response.data.cycles.length) {
+                this.noCycles = true;
+                this.form.cycles = [];
+                return;
+            }
+            this.noCycles = false;
+            this.cycles = response.data.cycles;
         });
     },
     methods: {
@@ -212,14 +251,16 @@ export default {
             );
         },
         create() {
-            this.form.custom_attributes = this.form.custom_attributes.map(attribute => {
-                return {
-                  attribute_id: attribute.attribute_id,
-                  custom_price: attribute.custom_price,
-                  unit_max: attribute.unit_max,
-                  unit_min: attribute.unit_min
-                };
-            });
+            this.form.custom_attributes = this.form.custom_attributes.map(
+                attribute => {
+                    return {
+                        attribute_id: attribute.attribute_id,
+                        custom_price: attribute.custom_price,
+                        unit_max: attribute.unit_max,
+                        unit_min: attribute.unit_min
+                    };
+                }
+            );
             ProductService.CreateProduct(this.form).then(() => {
                 this.$swal(
                     this.$translate(
