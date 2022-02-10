@@ -9,7 +9,8 @@ class ProductValue extends Model
 {
     use HasFactory;
     protected $table = 'product_values';
-    protected $fillable = array('variant_id', 'attribute_id', 'value');
+    protected $fillable = array('variant_id', 'attribute_id', 'value_id');
+    
     public function variant()
     {
         return $this->belongsTo(Variant::class);
@@ -17,5 +18,9 @@ class ProductValue extends Model
 
     public function attribute() {
         return $this->belongsTo(Attribute::class);
+    }
+
+    public function value() {
+        return $this->belongsTo(Value::class);
     }
 }

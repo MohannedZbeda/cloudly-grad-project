@@ -31,18 +31,20 @@ class InvoiceController extends Controller
   public function issueInvoice(Request $request)
   {
     try {
-      $invoice = DB::transaction(function () use($request) {
+      $cartItems = auth('sanctum')->user()->cart->items;
+      $invoice = DB::transaction(function () use($request, $cartItems) {
         $invoice = new Invoice();
         $invoice->user_id = auth('sanctum')->user()->id;
+        $invoice->total = auth('sanctum')->user()->cart->total;
         $invoice->save();
         $invoice_items = [];
-        foreach ($request->attributes as $item) {
+        foreach($request->attributes as $item) {
           array_push($invoice_items, [
             'invoice_id' => $invoice->id,
             'cycle' => $request->cycle_id,
             'duration' => $item->duration,
-            'invoiceable_id' => $item->id,
-            'invoiceable_type' => $item->type
+            'invoiceable_id' => $cartItems->where('id', $item->id)->cartable_id,
+            'invoiceable_type' => $cartItems->where('id', $item->id)->cartable_type
           ]);
         }
         InvoiceItem::insert($invoice_items);

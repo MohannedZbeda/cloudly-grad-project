@@ -15,7 +15,7 @@ class AttributeController extends Controller
     public function index($id)
     {
       try {
-      $attributes = AttributeResource::collection(Attribute::where('category_id', $id)->get());
+      $attributes = AttributeResource::collection(Attribute::with('values')->where('category_id', $id)->get());
       return response()->json(['status_code' => 200, 'attributes' => $attributes])->setStatusCode(200);
     }
      catch(Error $error) {

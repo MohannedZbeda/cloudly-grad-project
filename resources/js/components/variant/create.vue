@@ -48,30 +48,40 @@
                         <v-divider style="background-color: black"></v-divider>
                         <br />
                         <br />
-                        <div
-                            v-for="attribute in form.attributes"
-                            :key="attribute.id"
-                        >
-                            <v-text-field
-                                :label="
-                                    $translate(
-                                        attribute.en_name,
-                                        attribute.ar_name
-                                    )
-                                "
-                                outlined
-                                v-model="attribute.value"
+                        <v-row
+                                v-for="attribute in form.attributes"
+                                :key="attribute.id"
                             >
-                                <template v-slot:prepend>
-                                    <v-icon
-                                        v-if="attribute.advanced"
-                                        style="color:#c0392b; cursor:pointer"
-                                        @click="removeAttribute(attribute.id)"
-                                        >mdi-window-close</v-icon
-                                    >
-                                </template>
-                            </v-text-field>
-                        </div>
+                                <v-col cols="2" sm="2" md="1">
+                                    <h3 style="margin-top: 1em">
+                                        {{
+                                            $translate(
+                                                attribute.en_name,
+                                                attribute.ar_name
+                                            )
+                                        }}
+                                        : 
+                                    </h3>
+                                </v-col>
+                                        
+                                <v-col cols="2" sm="2" md="3">
+                                    <v-select
+                                        :label="
+                                            $translate(
+                                                'Value',
+                                                'القيمة'
+                                            )
+                                        "
+                                        outlined
+                                        :items="attribute.values"
+                                        item-text="value"
+                                        item-value="id"
+                                        v-model="attribute.value_id"
+                                    ></v-select>
+                                </v-col>
+                                <br />
+                                <br />
+                            </v-row>
                         <br />
                         <br />
                         <v-divider style="background-color: black"></v-divider>
@@ -103,7 +113,6 @@ export default {
     data() {
         return {
             id: this.$route.params.id,
-            products: [],
             noAttributes: false,
             form: {
                 ar_name: "",
@@ -114,9 +123,6 @@ export default {
         };
     },
     beforeMount() {
-        VariantService.GetProducts().then(response => {
-            this.products = response.data.products;
-        });
         this.getAttributes(this.id);
     },
     methods: {
@@ -135,7 +141,7 @@ export default {
                             ar_name: attribute.ar_name,
                             en_name: attribute.en_name,
                             advanced: attribute.advanced,
-                            value: ""
+                            values: attribute.values
                         };
                     }
                 );

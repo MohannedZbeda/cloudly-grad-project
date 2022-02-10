@@ -12,4 +12,10 @@ class Value extends Model
     public function variants() {
         return $this->belongsToMany(Variant::class);
     }
+
+    public function attribute() {
+        return $this->belongsTo(Attribute::class);
+    }
+
+    
 }

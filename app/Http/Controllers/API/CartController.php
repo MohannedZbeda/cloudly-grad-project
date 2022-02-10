@@ -23,12 +23,15 @@ class CartController extends Controller
     {
       try {
         DB::transaction(function() use($id, $type) {
-          $cartID = auth('sanctum')->user()->cart->id;
+          $cart = auth('sanctum')->user()->cart;
           $cartItem = new CartItem();
-          $cartItem->cart_id = $cartID;
+          $cartItem->cart_id = $cart->id;
           $cartItem->cartable_id =  $id;
           $cartItem->cartable_type = $type;
           $cartItem->save();
+          $cart->total = $cart->getTotal();
+          $cart->save();
+          
         });
         DB::commit();
         return response()->json(['status_code' => 200, 'message' => 'Added To cart'])->setStatusCode(200);     
@@ -112,7 +115,7 @@ class CartController extends Controller
         try {
           $cart = auth('sanctum')->user()->cart;
           $items = CartResource::collection($cart->items);
-          return response()->json(['status_code' => 200, 'items' => $items, 'total' => $cart->getTotal()])->setStatusCode(200); 
+          return response()->json(['status_code' => 200, 'items' => $items, 'total' => $cart->total])->setStatusCode(200); 
         } 
         catch(Error $error) {
           return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CartController, Trying to remove an item from the cart'])->setStatusCode(500);  

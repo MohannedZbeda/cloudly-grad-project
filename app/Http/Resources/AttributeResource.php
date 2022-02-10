@@ -16,6 +16,7 @@ class AttributeResource extends JsonResource
             'advanced' => $this->advanced,
             'ar_type' => $this->advanced ? 'متقدمة' : 'عادية',
             'en_type' => $this->advanced ? 'Advanced' : 'Basic',
+            'values' => ValueResource::collection($this->whenLoaded('values')),
             'created_at' => $this->created_at->toDateString()
         ];
     }

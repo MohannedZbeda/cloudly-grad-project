@@ -63,7 +63,7 @@ public function getVariants()
     {
         try {
         $product = Product::find($request->id);   
-        $attributes = AttributeResource::collection($product->category->attributes);
+        $attributes = AttributeResource::collection($product->category->attributes()->with('values')->get());
         return response()->json(['status_code' => 200, 'attributes' => $attributes])->setStatusCode(200);
     }  catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get attributes for variant creation'])->setStatusCode(500);  
@@ -161,7 +161,7 @@ public function addDiscount(Request $request)
             'en_name' => 'required|unique:variants,en_name',
             'price' => 'required|numeric',
             'attributes' => 'required|array',
-            'attributes.*.value' => 'required',
+            'attributes.*.value_id' => 'required|exists:values,id',
             'attributes.*.id' => 'required|exists:attributes,id'
         ]);
         if($validator->fails()) 
@@ -177,7 +177,7 @@ public function addDiscount(Request $request)
               $value = new ProductValue();
               $value->variant_id = $variant->id;
               $value->attribute_id = $attribute['id'];
-              $value->value = $attribute['value'];
+              $value->value_id = $attribute['value_id'];
               $value->save();
             }
             return $variant;    
@@ -207,7 +207,7 @@ public function addDiscount(Request $request)
             ],
             'price' => 'required|numeric',
             'attributes' => 'required|array',
-            'attributes.*.value' => 'required',
+            'attributes.*.value_id' => 'required|exists:values,id',
             'attributes.*.id' => 'required|exists:attributes,id',
 
         ]);
@@ -222,7 +222,7 @@ public function addDiscount(Request $request)
             $variant->save();
             foreach($request['attributes'] as $attribute) {
               $value = ProductValue::where('variant_id', $variant->id)->where('attribute_id', $attribute['id'])->first();
-              $value->value = $attribute['value'];
+              $value->value_id = $attribute['value_id'];
               $value->save();
             }
 

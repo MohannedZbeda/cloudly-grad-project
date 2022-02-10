@@ -14,6 +14,10 @@ class Attribute extends Model
     }
 
     public function values() {
+        return $this->hasMany(Value::class);
+    }
+
+    public function productValues() {
         return $this->hasMany(ProductValue::class);
     }
 }

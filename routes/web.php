@@ -8,7 +8,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\ValueController;
 use App\Http\Controllers\PackageController;
-//use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CycleController;
 use App\Http\Controllers\FAQController;
@@ -53,8 +52,8 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     });
     
     Route::prefix('/variants')->middleware('role:super_admin|marketing_admin')->group(function () {
-        Route::get('/{product_id}', [VariantController::class, 'index']);
         Route::get('/get-products', [VariantController::class, 'getProducts']);
+        Route::get('/{product_id}', [VariantController::class, 'index']);
         Route::post('/get-product-attributes', [VariantController::class, 'getAttributes']);
         Route::post('/add-discount', [VariantController::class, 'addDiscount']);
         Route::post('/remove-discount', [VariantController::class, 'removeDiscount']);

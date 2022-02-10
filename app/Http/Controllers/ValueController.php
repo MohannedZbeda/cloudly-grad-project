@@ -26,7 +26,7 @@ class ValueController extends Controller
       try { 
         $validator = Validator::make($request->all(), [
             'attribute_id' => 'required|exists:attributes,id',
-            'value' => 'required|string'
+            'value' => 'required'
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
@@ -51,7 +51,7 @@ class ValueController extends Controller
       try {
         $validator = Validator::make($request->all(), [
             'attribute_id' => 'required|exists:attributes,id',
-            'value' => 'required|string'
+            'value' => 'required'
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
