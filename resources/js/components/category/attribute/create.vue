@@ -39,7 +39,7 @@
                             :label="
                                 $translate(
                                     'Advanced Attribute ? ',
-                                    'خاصية متقدمة ؟'
+                                    'خاصية غير أساسية ؟'
                                 )
                             "
                         ></v-checkbox>

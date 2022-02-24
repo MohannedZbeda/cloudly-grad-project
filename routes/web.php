@@ -11,6 +11,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CycleController;
 use App\Http\Controllers\FAQController;
+use App\Http\Controllers\TestimonyController;
 use App\Http\Controllers\VariantController;
 
 Auth::routes(['register' => false]);
@@ -110,6 +111,12 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::post('/update', [FAQController::class, 'update']);
         Route::delete('/delete/{id}', [FAQController::class, 'delete']);
         Route::get('/{id}', [FAQController::class, 'getFAQ']);
+        
+    });
+
+    Route::prefix('/testimonies')->middleware('role:super_admin|marketing_admin')->group(function () {
+        Route::get('/', [TestimonyController::class, 'index']);
+        Route::post('/change-state', [TestimonyController::class, 'changeState']);
         
     });
 

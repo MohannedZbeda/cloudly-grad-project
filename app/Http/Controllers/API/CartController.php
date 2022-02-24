@@ -118,7 +118,7 @@ class CartController extends Controller
           return response()->json(['status_code' => 200, 'items' => $items, 'total' => $cart->total])->setStatusCode(200); 
         } 
         catch(Error $error) {
-          return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CartController, Trying to remove an item from the cart'])->setStatusCode(500);  
+          return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CartController, Trying to get cart items'])->setStatusCode(500);  
         } 
     }
     // public function updateQuantity(Request $request)

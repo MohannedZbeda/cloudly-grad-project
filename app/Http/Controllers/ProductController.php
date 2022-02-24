@@ -77,7 +77,7 @@ class ProductController extends Controller
     public function getProduct($id)
     {
         try {
-            $product = new ProductResource(Product::with('cycles')->find($id));
+            $product = new ProductResource(Product::with(['cycles', 'customAttributes'])->find($id));
             return response()->json(['status_code' => 200, 'product' => $product])->setStatusCode(200);
         } catch (Error $error) {
             return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to get a product for update'])->setStatusCode(500);
@@ -93,12 +93,10 @@ class ProductController extends Controller
                 'en_name' => 'required|unique:products,en_name',
                 'customizable' => 'required|boolean',
                 'custom_attributes' => 'required_if:customizable,1|array',
-                'custom_attributes.*.custom_price' => 'required_if:customizable,1|numeric',
-                'custom_attributes.*.unit_min' => 'required_if:customizable,1|numeric|min:1',
-                'custom_attributes.*.unit_max' => 'required_if:customizable,1|numeric|min:1',
+                'custom_attributes.*.custom_price' => $request->customizable ? 'required|numeric' : 'nullable',
+                'custom_attributes.*.unit_min' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
+                'custom_attributes.*.unit_max' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
                 'cycles' => 'required|array|exists:subscribtion_cycles,id'
-
-
             ]);
             if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -109,20 +107,21 @@ class ProductController extends Controller
                 $product->en_name = $request->en_name;
                 $product->customizable = $request->customizable;
                 $product->save();
-                if($request->custom_attributes) {
-                $attributes = array_map(function ($attribute) use ($product) {
-                    return [
-                        'product_id' => $product->id,
-                        'attribute_id' => $attribute['attribute_id'],
-                        'custom_price' => $attribute['custom_price'],
-                        'unit_max' => $attribute['unit_max'],
-                        'unit_min' => $attribute['unit_min']
+                $product->addMediaFromBase64($request->base64image)->toMediaCollection();
+                if ($request->custom_attributes) {
+                    $attributes = array_map(function ($attribute) use ($product) {
+                        return [
+                            'product_id' => $product->id,
+                            'attribute_id' => $attribute['attribute_id'],
+                            'custom_price' => $attribute['custom_price'],
+                            'unit_max' => $attribute['unit_max'],
+                            'unit_min' => $attribute['unit_min']
 
-                    ];
-                }, $request->custom_attributes);
-                DB::table('custom_attributes')->insert($attributes);
-            }
-            $product->cycles()->attach($request->cycles);
+                        ];
+                    }, $request->custom_attributes);
+                    DB::table('custom_attributes')->insert($attributes);
+                }
+                $product->cycles()->attach($request->cycles);
                 return $product;
             });
 
@@ -151,9 +150,9 @@ class ProductController extends Controller
                 ],
                 'customizable' => 'required|boolean',
                 'custom_attributes' => 'required_if:customizable,1|array',
-                'custom_attributes.*.custom_price' => 'required_if:customizable,1|numeric',
-                'custom_attributes.*.unit_min' => 'required_if:customizable,1|numeric|min:1',
-                'custom_attributes.*.unit_max' => 'required_if:customizable,1|numeric|min:1',
+                'custom_attributes.*.custom_price' => $request->customizable ? 'required|numeric' : 'nullable',
+                'custom_attributes.*.unit_min' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
+                'custom_attributes.*.unit_max' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
                 'cycles' => 'required|array|exists:subscribtion_cycles,id'
 
             ]);
@@ -167,7 +166,11 @@ class ProductController extends Controller
                 $product->en_name = $request->en_name;
                 $product->customizable = $request->customizable;
                 $product->save();
-                if(!$wasCustom && $request->custom_attributes) {
+                if($request->base64image) {
+                $product->clearMediaCollection();
+                $product->addMediaFromBase64($request->base64image)->toMediaCollection();
+                }
+                if (!$wasCustom && $request->custom_attributes && $request->customizable) {
                     $attributes = array_map(function ($attribute) use ($product) {
                         return [
                             'product_id' => $product->id,
@@ -175,7 +178,7 @@ class ProductController extends Controller
                             'custom_price' => $attribute['custom_price'],
                             'unit_max' => $attribute['unit_max'],
                             'unit_min' => $attribute['unit_min']
-    
+
                         ];
                     }, $request->custom_attributes);
                     DB::table('custom_attributes')->insert($attributes);

@@ -43,7 +43,7 @@
                             value: 'en_name'
                         },
                         {
-                            text: 'خاصية متقدمة ؟',
+                            text: 'خاصية أساسية ؟',
                             sortable: false,
                             value: 'ar_type'
                         },

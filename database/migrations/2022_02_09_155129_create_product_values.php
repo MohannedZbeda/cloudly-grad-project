@@ -14,7 +14,6 @@ class CreateProductValues extends Migration
             $table->foreignId('variant_id')->references('id')->on('variants')->onDelete('RESTRICT');
             $table->foreignId('attribute_id')->references('id')->on('attributes')->onDelete('RESTRICT');
             $table->foreignId('value_id')->references('id')->on('values')->onDelete('RESTRICT');
-            $table->timestamps();
         });
     }
 

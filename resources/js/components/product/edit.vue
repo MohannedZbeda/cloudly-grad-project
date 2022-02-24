@@ -72,6 +72,25 @@
                             multiple
                         >
                         </v-autocomplete>
+                        <v-file-input
+                            accept="image/png, image/jpeg, image/jpg"
+                            :placeholder="
+                                $translate('Product Image', 'صورة المنتج')
+                            "
+                            prepend-icon="mdi-image-filter-hdr"
+                            :label="$translate('Product Image', 'صورة المنتج')"
+                            v-model="image"
+                            outlined
+                        ></v-file-input>
+                        <br />
+                        <v-img
+                            style="margin: 0 10px"
+                            v-if="form.base64image"
+                            max-height="300"
+                            max-width="300"
+                            :src="form.base64image"
+                        ></v-img>
+                        <br />
                         <br />
                         <b>
                             {{
@@ -194,6 +213,7 @@ export default {
             id: this.$route.params.id,
             categories: [],
             cycles: [],
+            image: null,
             noAttributes: false,
             form: {
                 ar_name: "",
@@ -201,7 +221,8 @@ export default {
                 category_id: "",
                 customizable: false,
                 custom_attributes: [],
-                cycles: []
+                cycles: [],
+                base64image: null
             }
         };
     },
@@ -216,6 +237,17 @@ export default {
         });
     },
     methods: {
+        toBase64() {
+            if (!this.image) {
+                this.form.base64image = null;
+                return;
+            }
+            const reader = new FileReader();
+            reader.readAsDataURL(this.image);
+            reader.onload = () => {
+                this.form.base64image = reader.result;
+            };
+        },
         getAttributes() {
             ProductService.GetAttributes(this.form.category_id).then(
                 response => {
@@ -270,6 +302,13 @@ export default {
                     });
                 }
             );
+        }
+    },
+     watch: {
+        image: {
+            handler() {
+                this.toBase64();
+            }
         }
     }
 };

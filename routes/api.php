@@ -43,7 +43,7 @@ Route::prefix('/carts')->middleware('auth:sanctum', 'role:customer')->group(func
 });
 
 Route::prefix('/invoices')->middleware('auth:sanctum', 'role:customer')->group(function () {
-    Route::get('/issue-invoice', [InvoiceController::class, 'issueInvoice']);
+    Route::post('/issue-invoice', [InvoiceController::class, 'issueInvoice']);
     Route::post('/checkout', [InvoiceController::class, 'checkout']);
 });
 

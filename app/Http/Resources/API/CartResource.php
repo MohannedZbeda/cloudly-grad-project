@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\API;
 
+use App\Http\Resources\CycleResource;
+use App\Models\Variant;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CartResource extends JsonResource
@@ -16,6 +18,7 @@ class CartResource extends JsonResource
         'en_name' => $this->cartable->en_name,
         'old_price' => $this->cartable->price,
         'discount' => $this->cartable->discount_percentage ? $this->cartable->discount_perecntage. '%' : null,
+        'cycles' => CycleResource::collection($this->cartable_type == Variant::class ? $this->cartable->product->cycles : $this->cartable->cycles),
         'new_price' => $this->cartable->getDiscount(),
         'type' => $this->cartable_type
     ];

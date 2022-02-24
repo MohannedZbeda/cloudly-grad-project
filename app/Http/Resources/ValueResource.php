@@ -13,7 +13,7 @@ class ValueResource extends JsonResource
             'id' => $this->id,
             'attribute_ar_name' => $this->attribute->ar_name,
             'attribute_en_name' => $this->attribute->en_name,
-            'value' => $this->value->value
+            'value' => $this->value
         ];
     }
 }

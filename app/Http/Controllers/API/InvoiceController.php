@@ -31,23 +31,27 @@ class InvoiceController extends Controller
   public function issueInvoice(Request $request)
   {
     try {
+      //dd($request['attributes'], json_decode($request['attributes']));
       $cartItems = auth('sanctum')->user()->cart->items;
+      if(!$cartItems)
+        return response()->json(['status_code' => 422, 'message' => 'Empty Cart'])->setStatusCode(422);
+
       $invoice = DB::transaction(function () use($request, $cartItems) {
         $invoice = new Invoice();
         $invoice->user_id = auth('sanctum')->user()->id;
         $invoice->total = auth('sanctum')->user()->cart->total;
         $invoice->save();
         $invoice_items = [];
-        foreach($request->attributes as $item) {
+        foreach(json_decode($request['attributes']) as $item) {
           array_push($invoice_items, [
             'invoice_id' => $invoice->id,
-            'cycle' => $request->cycle_id,
+            'cycle_id' => $item->cycle_id,
             'duration' => $item->duration,
-            'invoiceable_id' => $cartItems->where('id', $item->id)->cartable_id,
-            'invoiceable_type' => $cartItems->where('id', $item->id)->cartable_type
+            'invoiceable_id' => $cartItems->where('id', $item->id)->first()->cartable_id,
+            'invoiceable_type' => $cartItems->where('id', $item->id)->first()->cartable_type
           ]);
         }
-        InvoiceItem::insert($invoice_items);
+        DB::table('invoice_items')->insert($invoice_items);
         DB::table('cart_items')->where('cart_id', auth('sanctum')->user()->cart->id)->delete();
         return $invoice;
       });

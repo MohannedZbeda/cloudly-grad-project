@@ -23,7 +23,7 @@
 
                             <v-checkbox
                              v-model="form.advanced"
-                             :label="$translate('Advanced Attribute ? ', 'خاصية متقدمة ؟')"
+                             :label="$translate('Advanced Attribute ? ', 'خاصية غير أساسية ؟')"
                             ></v-checkbox>
                         </v-form>
                      </v-card-text>

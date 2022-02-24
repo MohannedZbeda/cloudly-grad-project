@@ -39,7 +39,7 @@ class ValueController extends Controller
           return $value;
         });
         DB::commit();
-        return response()->json(['status_code' => 201, 'value' => new ValueResource($value)])->setStatusCode(201);
+        return response()->json(['status_code' => 201, 'value' => $value])->setStatusCode(201);
     } catch(Error $error) {
       DB::rollBack();
       return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ValueController, Trying to create a value'])->setStatusCode(500);  

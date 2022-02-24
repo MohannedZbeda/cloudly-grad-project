@@ -1,4 +1,5 @@
 <template>
+<div>
   <v-data-table
     :headers="$translate([
          {
@@ -70,6 +71,7 @@
 
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon style="margin-right: 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
+      <v-icon style="margin-right: 10px" @click="showImage(item)">mdi-image-size-select-actual</v-icon>
     </template>
 
     <template v-slot:[`item.attributes`]="{ item }">
@@ -77,6 +79,34 @@
     </template>
     
   </v-data-table>
+
+  <v-dialog
+          v-model="dialog"
+          max-width="500px"
+        >
+          
+          <v-card>
+            <v-card-title class="text-h6">
+             {{$translate(`${product.en_name}'s Image`, 
+             `صورة ${product.ar_name}`)}}
+            </v-card-title>
+            <v-card-text class="text-h6">
+             <v-img
+              :src="product.image"
+              :alt="$translate(product.en_name, product.ar_name)"
+              max-height="300"
+              max-width="300"
+             >
+             </v-img>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+  </div>
 </template>
 <script>    
 import Productservice from '../../services/Product';
@@ -85,7 +115,8 @@ import Productservice from '../../services/Product';
     data() {
       return {
       products: [],
-      product : {}
+      product : {},
+      dialog: false
     } 
     },
 
@@ -100,6 +131,16 @@ import Productservice from '../../services/Product';
     },
     goToVariants(id) {
       this.$router.push('/products/'+id+'/variants');
+    },
+
+    showImage(product) {
+      this.dialog = true;
+      this.product = product;
+    },
+
+    closeDialog() {
+      this.dialog = false;
+      this.product = {};
     },
       
 

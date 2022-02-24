@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Http\Resources\API\CategoryApiResource;
 use App\Http\Resources\API\ProductApiResource;
 use App\Http\Resources\API\PackageApiResource;
+use App\Http\Resources\FaqResource;
+use App\Models\FAQ;
 use App\Models\Product;
 use Error;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +20,7 @@ class HomeController extends Controller
     {
         try {
         $packages = PackageApiResource::collection(Package::with(['variants', 'discounts'])->get()); 
+        $faqs = FaqResource::collection(FAQ::all());
         $categories = CategoryApiResource::collection(Category::with('products')->get());
         $products = ProductApiResource::collection(Product::with(['variants' => function($q) {
             $q->where('customized', false);
@@ -26,7 +29,8 @@ class HomeController extends Controller
             'status_code' => 200,
             'categories' => $categories,
             'packages' => $packages,
-            'products' => $products
+            'products' => $products,
+            'faqs' => $faqs
         ])->setStatusCode(200);
     }
     catch(Error $error) {

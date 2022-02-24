@@ -16,7 +16,6 @@ class CreateInvoiceItemsTable extends Migration
             $table->integer('duration')->min(0);
             $table->bigInteger('invoiceable_id')->unsigned();
             $table->string('invoiceable_type');
-            $table->timestamps();
         });
     }
 

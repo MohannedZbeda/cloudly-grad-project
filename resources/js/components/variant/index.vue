@@ -356,7 +356,7 @@
                                             attribute.attribute_ar_name
                                         )
                                     }}</b>
-                                    : {{ attribute.value }}
+                                    : {{ attribute.value.value }}
                                 </li>
                             </ul>
                         </v-card-text>

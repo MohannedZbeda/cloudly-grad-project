@@ -8,7 +8,10 @@
                     }}</v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                    <p v-if="noAttributes && form.customizable" style="color:red">
+                    <p
+                        v-if="noAttributes && form.customizable"
+                        style="color:red"
+                    >
                         {{
                             $translate(
                                 "There are no attributes for this product, Please add some",
@@ -16,7 +19,7 @@
                             )
                         }}
                     </p>
-                     <p v-if="noCycles" style="color:red">
+                    <p v-if="noCycles" style="color:red">
                         {{
                             $translate(
                                 "There are no payment cycles, Please add some before creating a product",
@@ -78,6 +81,24 @@
                             multiple
                         >
                         </v-autocomplete>
+                        <v-file-input
+                            accept="image/png, image/jpeg, image/jpg"
+                            :placeholder="
+                                $translate('Product Image', 'صورة المنتج')
+                            "
+                            prepend-icon="mdi-image-filter-hdr"
+                            :label="$translate('Product Image', 'صورة المنتج')"
+                            v-model="image"
+                            outlined
+                        ></v-file-input>
+                        <br />
+                        <v-img
+                           style="margin: 0 10px"
+                            v-if="form.base64image"
+                            max-height="300"
+                            max-width="300"
+                            :src="form.base64image"
+                        ></v-img>
                         <br />
                         <b>
                             {{
@@ -181,9 +202,14 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" @click="create">{{
-                        $translate("Register Product", "إضافة منتج")
-                    }}</v-btn>
+                    <v-btn
+                        :disabled="allowSubmit"
+                        color="primary"
+                        @click="create"
+                        >{{
+                            $translate("Register Product", "إضافة منتج")
+                        }}</v-btn
+                    >
                 </v-card-actions>
             </v-card>
         </v-layout>
@@ -199,6 +225,7 @@ export default {
         return {
             categories: [],
             cycles: [],
+            image: null,
             noCycles: false,
             noAttributes: false,
             form: {
@@ -206,6 +233,7 @@ export default {
                 en_name: "",
                 category_id: "",
                 customizable: false,
+                base64image: null,
                 cycles: [],
                 custom_attributes: []
             }
@@ -226,6 +254,17 @@ export default {
         });
     },
     methods: {
+        toBase64() {
+            if (!this.image) {
+                this.form.base64image = null;
+                return;
+            }
+            const reader = new FileReader();
+            reader.readAsDataURL(this.image);
+            reader.onload = () => {
+                this.form.base64image = reader.result;
+            };
+        },
         getAttributes() {
             ProductService.GetAttributes(this.form.category_id).then(
                 response => {
@@ -261,6 +300,7 @@ export default {
                     };
                 }
             );
+
             ProductService.CreateProduct(this.form).then(() => {
                 this.$swal(
                     this.$translate(
@@ -276,6 +316,18 @@ export default {
                     this.$router.push("/products");
                 });
             });
+        }
+    },
+    watch: {
+        image: {
+            handler() {
+                this.toBase64();
+            }
+        }
+    },
+    computed: {
+        allowSubmit() {
+            return this.form.base64image == null;
         }
     }
 };
