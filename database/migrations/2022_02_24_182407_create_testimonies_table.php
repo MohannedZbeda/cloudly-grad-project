@@ -11,7 +11,7 @@ class CreateTestimoniesTable extends Migration
     {
         Schema::create('testimonies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->references('id')->on('customers');
+            $table->foreignId('customer_id')->references('id')->on('users');
             $table->text('statement');
             $table->boolean('shown')->default(false);
             $table->timestamps();

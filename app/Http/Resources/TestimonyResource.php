@@ -11,8 +11,10 @@ class TestimonyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'customer' => UserResource::collection($this->whenLoaded('customer')),
+            'customer_name' => $this->customer->name,
             'statement' => $this->statement,
+            'shown_text' => $this->shown ? ['ar' => 'مرئي', 'en' => 'Shown'] : ['ar' => 'مخفي', 'en' => 'Hidden'],
+            'shown' => $this->shown,
             'created_at' => $this->created_at->toDateString()
         ];
     }

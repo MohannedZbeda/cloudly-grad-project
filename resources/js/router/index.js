@@ -27,6 +27,7 @@ import EditFaq from '../components/faq/edit.vue';
 import CycleIndex from '../components/cycle/index.vue'
 import CreateCycle from '../components/cycle/create.vue'
 import EditCustomAttribute from '../components/variant/editattributevalue.vue';
+import TestimonyIndex from '../components/testimony/index.vue';
 
 Vue.use(VueRouter)
 
@@ -170,6 +171,11 @@ const routes = [
     path: '/cycles/create',
     name: 'cycle.create',
     component : CreateCycle,        
+  },
+  {
+    path: '/testimonies',
+    name: 'testimony.index',
+    component : TestimonyIndex,        
   },
 
   
