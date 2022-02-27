@@ -6,6 +6,7 @@ use App\Http\Controllers\API\WalletController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\InvoiceController;
 use App\Http\Controllers\API\TestimonyController;
+use App\Http\Controllers\API\StoreController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,11 @@ Route::prefix('/testimonies')->group(function () {
 
 Route::prefix('/home')->group(function () {
     Route::get('/home-page', [HomeController::class, 'index']);   
+});
+
+Route::prefix('/store')->group(function () {
+    Route::get('/', [StoreController::class, 'index']);   
+    Route::post('/search', [StoreController::class, 'search']);   
 });
 
 Route::middleware('auth:sanctum', 'role:customer')->post('/logout', [AuthController::class, 'logout']);
