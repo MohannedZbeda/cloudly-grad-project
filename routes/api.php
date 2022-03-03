@@ -4,9 +4,11 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\WalletController;
 use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\ContactController;
 use App\Http\Controllers\API\InvoiceController;
 use App\Http\Controllers\API\TestimonyController;
 use App\Http\Controllers\API\StoreController;
+use App\Http\Controllers\API\NewsletterEmailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +58,11 @@ Route::prefix('/testimonies')->group(function () {
 
 Route::prefix('/home')->group(function () {
     Route::get('/home-page', [HomeController::class, 'index']);   
+});
+
+Route::prefix('/contacts')->group(function () {
+    Route::post('/store', [ContactController::class, 'store']);   
+    Route::post('/add-email-to-newsletter', [NewsletterEmailController::class, 'store']);   
 });
 
 Route::prefix('/store')->group(function () {

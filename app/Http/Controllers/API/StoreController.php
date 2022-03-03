@@ -51,10 +51,13 @@ class StoreController extends Controller
                 $q->where('customized', false);
             }])->where('ar_name', 'LIKE', "%{$request->search_query}%")
                 ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get());
+            $categories_products = ProductApiResource::collection(Category::where('ar_name', 'LIKE', "%{$request->search_query}%")
+                ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get());
             return response()->json([
                 'status_code' => 200,
                 'packages' => $packages,
                 'products' => $products,
+                'categories'
             ])->setStatusCode(200);
         } catch (Error $error) {
             DB::rollBack();

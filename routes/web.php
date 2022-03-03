@@ -13,6 +13,7 @@ use App\Http\Controllers\CycleController;
 use App\Http\Controllers\FAQController;
 use App\Http\Controllers\TestimonyController;
 use App\Http\Controllers\VariantController;
+use App\Http\Controllers\NewsletterEmailController;
 
 Auth::routes(['register' => false]);
 
@@ -117,6 +118,11 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::prefix('/testimonies')->middleware('role:super_admin|marketing_admin')->group(function () {
         Route::get('/', [TestimonyController::class, 'index']);
         Route::post('/change-state', [TestimonyController::class, 'changeState']);
+        
+    });
+
+    Route::prefix('/emails')->middleware('role:super_admin|marketing_admin')->group(function () {
+        Route::get('/', [NewsletterEmailController::class, 'index']);
         
     });
 
