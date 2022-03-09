@@ -44,24 +44,24 @@ class StoreController extends Controller
             ]);
             if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-            $packages = PackageApiResource::collection(Package::with(['variants', 'discounts'])
+            $packages = Package::with(['variants', 'discounts'])
                 ->where('ar_name', 'LIKE', "%{$request->search_query}%")
-                ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get());
-            $products = ProductApiResource::collection(Product::with(['variants' => function ($q) {
+                ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get();
+            $products =  Product::with(['variants' => function ($q) {
                 $q->where('customized', false);
             }])->where('ar_name', 'LIKE', "%{$request->search_query}%")
-                ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get());
-            $categories_products = ProductApiResource::collection(Category::where('ar_name', 'LIKE', "%{$request->search_query}%")
-                ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get());
+                ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get();
+            $categories = Category::where('ar_name', 'LIKE', "%{$request->search_query}%")
+                ->orWhere('en_name', 'LIKE', "%{$request->search_query}%")->get();
             return response()->json([
                 'status_code' => 200,
-                'packages' => $packages,
-                'products' => $products,
-                'categories'
+                'packages' => PackageApiResource::collection($packages), 
+                'products' => ProductApiResource::collection($products), 
+                'categories' => CategoryApiResource::collection($categories), 
             ])->setStatusCode(200);
         } catch (Error $error) {
             DB::rollBack();
-            return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'StoreController, Trying to get data to fill the store'])->setStatusCode(500);
+            return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'StoreController, Trying to filter results'])->setStatusCode(500);
         }
     }
 }
