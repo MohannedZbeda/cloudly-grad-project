@@ -10,6 +10,7 @@ class ProductValue extends Model
     use HasFactory;
     protected $table = 'product_values';
     protected $fillable = array('variant_id', 'attribute_id', 'value_id');
+    public $timestamps = false;
     
     public function variant()
     {

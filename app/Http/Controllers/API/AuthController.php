@@ -128,7 +128,7 @@ class AuthController extends Controller
             'phone' => [
                 'required',
                 'string',
-                Rule::unique('user_info')->ignore($request->id, 'user_id')
+              Rule::unique('user_info')->ignore($request->id, 'user_id')
             ]
         ]);
         if($validator->fails()) 

@@ -31,7 +31,6 @@ class InvoiceController extends Controller
   public function issueInvoice(Request $request)
   {
     try {
-      //dd($request['attributes'], json_decode($request['attributes']));
       $cartItems = auth('sanctum')->user()->cart->items;
       if(!$cartItems)
         return response()->json(['status_code' => 422, 'message' => 'Empty Cart'])->setStatusCode(422);
@@ -79,7 +78,7 @@ class InvoiceController extends Controller
           'status_code' => 200,
           'message' => 'Invoice is Already Paid'
         ])
-          ->setStatusCode(200);
+        ->setStatusCode(200);
       }
       $user = auth('sanctum')->user();
       $balance_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
@@ -91,7 +90,7 @@ class InvoiceController extends Controller
           'code' => 'INSUFFICIENT_BALANCE',
           'message' => 'You dont have enough balance to pay for this invoice, You need ' . $invoice_total - $wallet_balance . ' more LYDs'
         ])
-          ->setStatusCode(200);
+        ->setStatusCode(200);
 
       $reservation_wallet->reserveBalance($balance_wallet->id, $invoice_total);
 

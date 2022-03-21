@@ -130,5 +130,6 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         return Auth::logout();
     }); 
 }); 
+
 Route::middleware('auth')->get('/{any}', [App\Http\Controllers\MainController::class, 'index'])->where('any', '.*');
 
