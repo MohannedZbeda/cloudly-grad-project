@@ -42,7 +42,7 @@ class Wallet extends Model
           $transaction->save();
       });
         } catch(Error $error) {
-           return throw $error;     
+           return $error;     
         }  
    }
     public function type() {
