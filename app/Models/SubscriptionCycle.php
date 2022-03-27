@@ -32,4 +32,9 @@ class SubscriptionCycle extends Model
     {
         return $this->hasMany(InvoiceItem::class, 'cycle_id');
     }
+
+    // public function subs()
+    // {
+    //     return $this->hasMany(Subsc::class, 'cycle_id');
+    // }
 }
