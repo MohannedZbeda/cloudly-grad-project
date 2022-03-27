@@ -180,7 +180,7 @@ class AuthController extends Controller
                 ->setStatusCode(201);
     }
     catch(Error $error) {
-        dd("error");
+        dd($error);
         DB::rollBack();
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AuthController, Trying to register a user'])->setStatusCode(500);   
      }
