@@ -180,8 +180,10 @@ class AuthController extends Controller
     }
     catch(Error $error) {
         DB::rollBack();
-        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AuthController, Trying to register a user'])->setStatusCode(500);   
-     }
+        //return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AuthController, Trying to register a user'])->setStatusCode(500);   
+        return response()->json(['status_code' => 500, 'location' => 'AuthController, Trying to register a user'])->setStatusCode(500);   
+        
+      }
     }
 
     public function login(Request $request)
