@@ -19,7 +19,7 @@ class Wallet extends Model
         });
           return $balance;
         } catch(Error $error) {
-           return throw $error;     
+           return $error;     
         }  
    }
 
