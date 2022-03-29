@@ -9,12 +9,18 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Subscription;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Variant;
 use App\Models\Wallet;
 use App\Models\WalletType;
 use Illuminate\Support\Facades\Validator;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Invoice as InvoiceLibrary;
+use LaravelDaily\Invoices\Classes\Buyer;
+use LaravelDaily\Invoices\Classes\InvoiceItem as InvoiceLibraryItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
@@ -31,29 +37,58 @@ class InvoiceController extends Controller
   public function issueInvoice(Request $request)
   {
     try {
-      $cartItems = auth('sanctum')->user()->cart->items;
-      if(!$cartItems)
+      $user = User::find(auth('sanctum')->user()->id);
+      $cartItems = $user->cart->items;
+      if(empty($cartItems->toArray()))
         return response()->json(['status_code' => 422, 'message' => 'Empty Cart'])->setStatusCode(422);
 
-      $invoice = DB::transaction(function () use($request, $cartItems) {
+      $invoice = DB::transaction(function () use($request, $cartItems, $user) {
         $invoice = new Invoice();
-        $invoice->user_id = auth('sanctum')->user()->id;
-        $invoice->total = auth('sanctum')->user()->cart->total;
+        $invoice->user_id = $user->id;
+        $invoice->total = $user->cart->total;
         $invoice->save();
         $invoice_items = [];
         foreach(json_decode($request['attributes']) as $item) {
           array_push($invoice_items, [
             'invoice_id' => $invoice->id,
             'cycle_id' => $item->cycle_id,
-            'duration' => $item->duration,
-            'invoiceable_id' => $cartItems->where('id', $item->id)->first()->cartable_id,
-            'invoiceable_type' => $cartItems->where('id', $item->id)->first()->cartable_type
+            'months' => $item->months,
+            'invoiceable_id' => $cartItems->where('id', $item->item_id)->first()->cartable_id,
+            'invoiceable_type' => $cartItems->where('id', $item->item_id)->first()->cartable_type
           ]);
         }
         DB::table('invoice_items')->insert($invoice_items);
-        DB::table('cart_items')->where('cart_id', auth('sanctum')->user()->cart->id)->delete();
-        return $invoice;
-      });
+        DB::table('cart_items')->where('cart_id', $user->cart->id)->delete();
+        $customer = new Buyer([
+          'name'  => $user->name,
+          'custom_fields' => [
+              'email' => $user->email,
+              'phone' => $user->info->phone
+          ],
+      ]);
+  
+      $items = $cartItems->map(function($item) {
+        return (new InvoiceLibraryItem())
+         ->title($item->ar_name . " / ". $item->en_name)
+         ->pricePerUnit($item->cartable->getDiscount());
+      }); 
+      
+      $client = new Party([
+        'name'          => 'TSIC Cloud Services',
+        'phone'         => '0913416229, 0944876494',
+    ]);
+      $user_invoice = InvoiceLibrary::make()
+        ->buyer($customer)
+        ->seller($client)
+        ->addItems($items)
+        ->save('public');
+          
+      $link = $user_invoice->url();
+      $user->addMediaFromUrl($link)->toMediaCollection('invoices');
+      Mail::to($user->email)->send(new \App\Mail\InvoiceIssued($user->name, $user->getMedia('invoices')->last()));
+        
+      return $invoice;
+    });
 
       DB::commit();
       return response()->json(['status_code' => 200, 'message' => 'Invoice Issued', 'invoice' => $invoice->with('items')->get(), 'total' => $invoice->getTotal()])->setStatusCode(200);
@@ -66,56 +101,83 @@ class InvoiceController extends Controller
   public function checkout(Request $request)
   {
     try {
-      $validator = Validator::make($request->all(), [
-        'invoice_id' => 'required|exists:invoices,id',
-      ]);
-      if ($validator->fails())
-        return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-      $invoice = Invoice::find($request->invoice_id);
-      $invoice_total = $invoice->getTotal();
-      if ($invoice->paid) {
-        return response()->json([
-          'status_code' => 200,
-          'message' => 'Invoice is Already Paid'
-        ])
-        ->setStatusCode(200);
-      }
-      $user = auth('sanctum')->user();
-      $balance_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
-      $reservation_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'reservation_wallet')->first();
-      $wallet_balance = $balance_wallet->getWalletBalance();
-      if ($invoice_total > $wallet_balance)
-        return response()->json([
-          'status_code' => 200,
-          'code' => 'INSUFFICIENT_BALANCE',
-          'message' => 'You dont have enough balance to pay for this invoice, You need ' . $invoice_total - $wallet_balance . ' more LYDs'
-        ])
-        ->setStatusCode(200);
+      //*** creating an invoice with the customer's cart ***//
+        $user = auth('sanctum')->user();
+      //   $customer = new Buyer([
+      //     'name'  => $user->name,
+      //     'custom_fields' => [
+      //         'email' => $user->email,
+      //         'phone' => $user->info->phone
+      //     ],
+      // ]);
 
-      $reservation_wallet->reserveBalance($balance_wallet->id, $invoice_total);
+      // $items = array_map(function($item) {
+      //   (new InvoiceLibraryItem())->title($item->ar_name . " / ". $item->en_name)
+      //    ->pricePerUnit($item->getDiscount())
+      //    ->discount($item->discount_percentage);
+      // }, $user->cart->items); 
+      
 
-      DB::transaction(function () use ($invoice) {
-        $invoice->paid = true;
-        $invoice->save();
-        $sub = new Subscription();
-        $sub->user_id = auth('sanctum')->user()->id;
-        $sub->save();
-        foreach ($invoice->items as $item) {
-          for ($i = 0; $i < $item->quantity; $i++) {
-            if ($item->invoiceable_type == Variant::class)
-              $sub->variants()->attach($item->invoiceable_id);
-            else $sub->packages()->attach($item->invoiceable_id);
-          }
-        }
-      });
+      // $invoice = InvoiceLibrary::make()
+      //     ->buyer($customer)
+      //     ->addItems($items);
+        
+      //return $invoice->stream();
 
-      DB::commit();
-      return response()->json([
-        'status_code' => 200,
-        'message' => 'Invoice Paid',
-        'wallet_balance' => $balance_wallet->getWalletBalance()
-      ])
-        ->setStatusCode(200);
+
+      /***/
+      
+
+      // $validator = Validator::make($request->all(), [
+      //   'invoice_id' => 'required|exists:invoices,id',
+      // ]);
+      //   if($validator->fails())
+      //     return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
+      // $invoice = Invoice::find($request->invoice_id);
+      // $invoice_total = $invoice->getTotal();
+      // if ($invoice->paid) {
+      //   return response()->json([
+      //     'status_code' => 200,
+      //     'message' => 'Invoice is Already Paid'
+      //   ])
+      //   ->setStatusCode(200);
+      // }
+      // $user = auth('sanctum')->user();
+      // $balance_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
+      // $reservation_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'reservation_wallet')->first();
+      // $wallet_balance = $balance_wallet->getWalletBalance();
+      // if ($invoice_total > $wallet_balance)
+      //   return response()->json([
+      //     'status_code' => 200,
+      //     'code' => 'INSUFFICIENT_BALANCE',
+      //     'message' => 'You dont have enough balance to pay for this invoice, You need ' . $invoice_total - $wallet_balance . ' more LYDs'
+      //   ])
+      //   ->setStatusCode(200);
+
+      // $reservation_wallet->reserveBalance($balance_wallet->id, $invoice_total);
+
+      // DB::transaction(function () use ($invoice) {
+      //   $invoice->paid = true;
+      //   $invoice->save();
+      //   $sub = new Subscription();
+      //   $sub->user_id = auth('sanctum')->user()->id;
+      //   $sub->save();
+      //   foreach ($invoice->items as $item) {
+      //     for ($i = 0; $i < $item->quantity; $i++) {
+      //       if ($item->invoiceable_type == Variant::class)
+      //         $sub->variants()->attach($item->invoiceable_id);
+      //       else $sub->packages()->attach($item->invoiceable_id);
+      //     }
+      //   }
+      // });
+
+      // DB::commit();
+      // return response()->json([
+      //   'status_code' => 200,
+      //   'message' => 'Invoice Paid',
+      //   'wallet_balance' => $balance_wallet->getWalletBalance()
+      // ])
+      //   ->setStatusCode(200);
     } catch (Error $error) {
       DB::rollBack();
       return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'InvoiceController, Trying to pay for invoice'])->setStatusCode(500);

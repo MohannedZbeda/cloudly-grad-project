@@ -37,7 +37,7 @@ Route::prefix('/wallets')->middleware(['auth:sanctum', 'role:customer'])->group(
     Route::post('/charge', [WalletController::class, 'chargeWallet']);
 });
 
-Route::prefix('/carts')->middleware('auth:sanctum', 'role:customer')->group(function () {
+Route::prefix('/carts')->middleware(['auth:sanctum', 'role:customer'])->group(function () {
     Route::get('/get-items', [CartController::class, 'getCartItems']);
     Route::post('/add-package', [CartController::class, 'addPackage']);
     Route::post('/add-product', [CartController::class, 'addProduct']);

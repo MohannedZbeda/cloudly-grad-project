@@ -131,5 +131,8 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     }); 
 }); 
 
+Route::get('/lol', function() {
+    return view('emails.invoice-issued');
+});
 Route::middleware('auth')->get('/{any}', [App\Http\Controllers\MainController::class, 'index'])->where('any', '.*');
 

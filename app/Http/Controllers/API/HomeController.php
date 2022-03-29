@@ -19,7 +19,7 @@ class HomeController extends Controller
     public function index()
     {
         try {
-        $packages = PackageApiResource::collection(Package::with(['variants', 'discounts'])->get()); 
+        $packages = PackageApiResource::collection(Package::with(['variants'])->get()); 
         $faqs = FaqResource::collection(FAQ::all());
         $categories = CategoryApiResource::collection(Category::with('products')->get());
         $products = ProductApiResource::collection(Product::with(['variants' => function($q) {
