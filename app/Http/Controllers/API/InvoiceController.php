@@ -53,7 +53,8 @@ class InvoiceController extends Controller
           ]);
         }
         DB::table('invoice_items')->insert($invoice_items);
-        $invoice->total =  $invoice->items->getTotal();
+        $invoice->total =  $invoice->getTotal();
+        $invoice->save();
         DB::table('cart_items')->where('cart_id', $user->cart->id)->delete();
 
 

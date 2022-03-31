@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>1stVault Cloud Services.</title>
+    <title>1stVault Cloud Services - Invoice</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/x-icon" />
@@ -40,7 +40,7 @@
         .invoice-box {
             max-width: 800px;
             margin: auto;
-            padding: 30px;
+            padding: 20px;
             border: 1px solid #eee;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
             font-size: 16px;
@@ -61,9 +61,9 @@
             vertical-align: top;
         }
 
-        .invoice-box table tr td:nth-child(2) {
+        /* .invoice-box table tr td:nth-child(2) {
             text-align: right;
-        }
+        } */
 
         .invoice-box table tr.top table td {
             padding-bottom: 20px;
@@ -97,7 +97,7 @@
             border-bottom: none;
         }
 
-        .invoice-box table tr.total td:nth-child(2) {
+        .total {
             border-top: 2px solid #eee;
             font-weight: bold;
         }
@@ -114,6 +114,8 @@
                 display: block;
                 text-align: center;
             }
+
+
         }
 
     </style>
@@ -123,7 +125,7 @@
 
     <h1>Dear {{ $user->name }}</h1>
     <h3>Your request has been recieved, Thank you for contacting us</h3><br /><br /><br />
-    <b>Invoice #: {{ $invoice->id }}<br /></b>
+    <b>Order #: {{ $invoice->id }}<br /> <br /></b>
 
     <div class="invoice-box">
         <table>
@@ -202,11 +204,15 @@
 
             <tr class="total">
                 <td></td>
+                <td></td>
+                <td></td>
 
                 <td>Total: {{ $invoice->total }}</td>
             </tr>
         </table>
     </div>
+    <br>
+    <br>
 </body>
 
 </html>
