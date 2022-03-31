@@ -2,8 +2,11 @@
 
 namespace App\Mail;
 
+use App\Http\Resources\API\InvoiceResource;
+use App\Http\Resources\UserResource;
+use App\Models\Invoice;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -12,12 +15,12 @@ class InvoiceIssued extends Mailable
     use Queueable, SerializesModels;
 
     
-    private $name;
-    private $file;
-    public function __construct($name, $file)
+    private $invoice;
+    private $user;
+    public function __construct(Invoice $invoice, User $user)
     {
-        $this->name = $name;
-        $this->file = $file;
+        $this->invoice = $invoice;
+        $this->user = $user;
        
 
     }
@@ -26,9 +29,6 @@ class InvoiceIssued extends Mailable
     public function build()
     {
         return $this->subject('TSIC Product Invoice')
-        ->view('emails.invoice-issued', ['name' =>$this->name])->attach($this->file, [
-            'as' => 'invoice.pdf',
-            'mime' => 'application/pdf'
-        ]);
+        ->view('emails.invoice-issued', ['invoice' => new InvoiceResource($this->invoice), 'user' => new UserResource($this->user->with('info'))]);
     }
 }

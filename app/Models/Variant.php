@@ -9,7 +9,8 @@ use App\Models\Product;
 class Variant extends Model
 {
     use HasFactory;
-    public static function getPrice($id, $attributes) {
+    public static function getPrice($id, $attributes)
+    {
         $total = 0;
         $product_attributes = CustomAttribute::where('product_id', $id)->get();
         foreach ($attributes as $attribute) {
@@ -17,11 +18,12 @@ class Variant extends Model
             $total +=  $custom_attribute->custom_price * $attribute->value;
         }
         return $total;
-      }
+    }
+
     public function getDiscount()
-    { 
-        $new_price = $this->price -  ($this->price * ($this->discount_percentage / 100));        
-        return $new_price;    
+    {
+        $new_price = $this->price -  ($this->price * ($this->discount_percentage / 100));
+        return $new_price;
     }
 
 
@@ -36,14 +38,17 @@ class Variant extends Model
         return $this->morphMany(CartItem::class, 'cartable');
     }
 
-    public function values() {
+    public function values()
+    {
         return $this->hasMany(ProductValue::class);
     }
 
-    public function packages() {
+    public function packages()
+    {
         return $this->belongsToMany(Package::class, 'package_products');
     }
-    public function product() {
+    public function product()
+    {
         return $this->belongsTo(Product::class);
     }
 
@@ -59,12 +64,12 @@ class Variant extends Model
     }
 
     public function getVouchers()
-    {    $vouchers = [];
-         foreach ($this->vouchers->where('used', false) as $voucher) {
-             array_push($vouchers, $voucher->code);
-         }
-         $vouchers = implode(', ', $vouchers);
-         return $vouchers;
+    {
+        $vouchers = [];
+        foreach ($this->vouchers->where('used', false) as $voucher) {
+            array_push($vouchers, $voucher->code);
+        }
+        $vouchers = implode(', ', $vouchers);
+        return $vouchers;
     }
-    
 }

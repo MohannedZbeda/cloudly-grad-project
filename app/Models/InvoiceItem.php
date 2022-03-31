@@ -9,7 +9,8 @@ class InvoiceItem extends Model
 {
     use HasFactory;
 
-   public function invoiceable()
+
+    public function invoiceable()
     {
         return $this->morphTo();
     }
@@ -22,5 +23,13 @@ class InvoiceItem extends Model
     public function cycle()
     {
         return $this->belongsTo(SubscriptionCycle::class, 'cycle_id');
+    }
+
+    public function getTotal()
+    {
+        $total = 0;
+        $total =  $this->invoiceable->getDiscount() * $this->cycle->months;
+        $total = $total - ($total * ($this->cycle->discount_percentage / 100));
+        return $total;
     }
 }

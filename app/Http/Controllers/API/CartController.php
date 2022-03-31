@@ -5,12 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\CartResource;
 use App\Models\CartItem;
-use App\Models\CustomAttribute;
 use App\Models\Package;
-use App\Models\Product;
 use App\Models\ProductValue;
 use App\Models\Variant;
-use Attribute;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +26,6 @@ class CartController extends Controller
           $cartItem->cartable_id =  $id;
           $cartItem->cartable_type = $type;
           $cartItem->save();
-          $cart->total = $cart->getTotal();
           $cart->save();
           
         });
@@ -67,7 +63,7 @@ class CartController extends Controller
           $variant = new Variant();
           $variant->product_id = $request->product_id;
           $variant->customized = true;
-        $variant->customized_by = auth('sanctum')->user()->name;
+          $variant->customized_by = auth('sanctum')->user()->name;
           $variant->price = Variant::getPrice($request->product_id, json_decode($request['attributes']));
           $variant->save();
           foreach(json_decode($request['attributes']) as $attribute) {
@@ -115,7 +111,7 @@ class CartController extends Controller
         try {
           $cart = auth('sanctum')->user()->cart;
           $items = CartResource::collection($cart->items);
-          return response()->json(['status_code' => 200, 'items' => $items, 'total' => $cart->total])->setStatusCode(200); 
+          return response()->json(['status_code' => 200, 'items' => $items, 'total' => $cart->getTotal()])->setStatusCode(200); 
         } 
         catch(Error $error) {
           return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CartController, Trying to get cart items'])->setStatusCode(500);  

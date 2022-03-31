@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSubscribtionCycles extends Migration
 {
-    
+
     public function up()
     {
         Schema::create('subscribtion_cycles', function (Blueprint $table) {
@@ -14,12 +14,13 @@ class CreateSubscribtionCycles extends Migration
             $table->string('ar_name')->unique();
             $table->string('en_name')->unique();
             $table->integer('months')->min(1);
+            $table->double('discount_percentage')->default(0)->min(0)->max(100);
             $table->boolean('enabled')->default(true);
             $table->timestamps();
         });
     }
 
-    
+
     public function down()
     {
         Schema::dropIfExists('subscribtion_cycles');

@@ -5,9 +5,7 @@
                 <v-list-item-content
                     style="display: flex; align-items: center; padding : 1.8em"
                 >
-                    <v-avatar size="2.2em">
-                        <img alt="User Avatar" src="/images/man.png" />
-                    </v-avatar>
+                    
                     <h3 style="text-align : center; padding : .6em 0">
                         <b>{{ user.name }}</b>
                     </h3>
