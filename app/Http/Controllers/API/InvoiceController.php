@@ -33,7 +33,7 @@ class InvoiceController extends Controller
   public function issueInvoice(Request $request)
   {
     try {
-      $user = User::find(auth('sanctum')->user()->id);
+      $user = User::with('info')->find(auth('sanctum')->user()->id);
       $cartItems = $user->cart->items;
       if (empty($cartItems->toArray()))
         return response()->json(['status_code' => 422, 'message' => 'Empty Cart'])->setStatusCode(422);
@@ -64,7 +64,7 @@ class InvoiceController extends Controller
       });
 
       DB::commit();
-      //Mail::to($user->email)->send(new \App\Mail\InvoiceIssued($new_invoice, $user));
+      Mail::to($user->email)->send(new \App\Mail\InvoiceIssued($new_invoice, $user));
 
       return response()->json(['status_code' => 200, 'message' => 'Invoice Issued', 'invoice' => new InvoiceResource($new_invoice), 'total' => $new_invoice->getTotal()])->setStatusCode(200);
     } catch (Error $error) {

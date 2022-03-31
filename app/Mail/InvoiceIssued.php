@@ -14,21 +14,19 @@ class InvoiceIssued extends Mailable
 {
     use Queueable, SerializesModels;
 
-    
-    private $invoice;
-    private $user;
+
+    private Invoice $invoice;
+    private User $user;
     public function __construct(Invoice $invoice, User $user)
     {
         $this->invoice = $invoice;
         $this->user = $user;
-       
-
     }
 
-    
+
     public function build()
     {
         return $this->subject('TSIC Product Invoice')
-        ->view('emails.invoice-issued', ['invoice' => new InvoiceResource($this->invoice), 'user' => new UserResource($this->user->with('info'))]);
+            ->view('emails.invoice-issued')->with(['invoice' => $this->invoice, 'user' => $this->user]);
     }
 }
