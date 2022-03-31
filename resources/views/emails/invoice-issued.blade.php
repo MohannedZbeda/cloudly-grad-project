@@ -187,16 +187,17 @@
                     <tr class="item last">
                         <td>{{ $item->invoiceable->ar_name . ' / ' . $item->invoiceable->en_name }}</td>
                         <td>{{ $item->months . 'Months' }}</td>
-                        <td>{{ $item->invoiceable->price }}</td>
+                        <td>{{ $item->invoiceable->getDiscount() }}</td>
+                        <td>{{ $item->getTotal() }}</td>
+                    </tr>
+                @else
+                    <tr class="item">
+                        <td>{{ $item->invoiceable->ar_name . ' / ' . $item->invoiceable->en_name }}</td>
+                        <td>{{ $item->months . 'Months' }}</td>
+                        <td>{{ $item->invoiceable->getDiscount() }}</td>
                         <td>{{ $item->getTotal() }}</td>
                     </tr>
                 @endif
-                <tr class="item">
-                    <td>{{ $item->invoiceable->ar_name . ' / ' . $item->invoiceable->en_name }}</td>
-                    <td>{{ $item->months . 'Months' }}</td>
-                    <td>{{ $item->invoiceable->price }}</td>
-                    <td>{{ $item->getTotal() }}</td>
-                </tr>
             @endforeach
 
             <tr class="total">

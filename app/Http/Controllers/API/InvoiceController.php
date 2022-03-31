@@ -53,16 +53,18 @@ class InvoiceController extends Controller
           ]);
         }
         DB::table('invoice_items')->insert($invoice_items);
+        $invoice->total =  $invoice->items->getTotal();
         DB::table('cart_items')->where('cart_id', $user->cart->id)->delete();
 
 
         $new_invoice = Invoice::with('items')->find($invoice->id);
-        Mail::to($user->email)->send(new \App\Mail\InvoiceIssued($new_invoice, $user));
 
         return $new_invoice;
       });
 
       DB::commit();
+      //Mail::to($user->email)->send(new \App\Mail\InvoiceIssued($new_invoice, $user));
+
       return response()->json(['status_code' => 200, 'message' => 'Invoice Issued', 'invoice' => new InvoiceResource($new_invoice), 'total' => $new_invoice->getTotal()])->setStatusCode(200);
     } catch (Error $error) {
       DB::rollBack();

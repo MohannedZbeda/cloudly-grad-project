@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Invoice extends Model
 {
-    use HasFactory;    
+    use HasFactory;
     use SoftDeletes;
 
     public function user()
@@ -17,9 +17,10 @@ class Invoice extends Model
     }
 
     public function getTotal()
-    {   $total = 0;
-        foreach($this->items as $item) {
-          $total+= $item->invoiceable->getDiscount() * $item->months;
+    {
+        $total = 0;
+        foreach ($this->items as $item) {
+            $total += $item->getTotal();
         }
         return $total;
     }
@@ -28,5 +29,4 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
-
 }

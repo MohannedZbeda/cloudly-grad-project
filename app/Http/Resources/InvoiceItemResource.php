@@ -14,7 +14,7 @@ class InvoiceItemResource extends JsonResource
             'ar_name' => $this->invoiceable->ar_name,
             'en_name' => $this->invoiceable->en_name,
             'cycle' => new CycleResource($this->whenLoaded('cycle')),
-            'price' => $this->invoiceable->getDiscount()
+            'price' => $this->getTotal()
         ];
     }
 }
