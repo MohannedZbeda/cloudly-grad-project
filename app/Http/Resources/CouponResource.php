@@ -11,7 +11,7 @@ class CouponResource extends JsonResource
     public function toArray($request)
     {   $codes = Coupon::where('start_date', $this->start_date)
         ->where('end_date', $this->end_date)
-        ->where('disocunt_percentage', $this->discount_percentage);
+        ->where('discount_percentage', $this->discount_percentage);
         return [
             'id' => $this->id,
             'start_date' => $this->start_date,
