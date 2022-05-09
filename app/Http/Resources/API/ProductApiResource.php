@@ -14,6 +14,7 @@ class ProductApiResource extends JsonResource
             'id' => $this->id,
             'ar_name' => $this->ar_name,
             'en_name' => $this->en_name,
+            'image' => $this->getFirstMediaUrl(),
             'category' => [
               'ar_name' => $this->category->ar_name,
               'en_name' => $this->category->en_name
