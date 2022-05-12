@@ -23,7 +23,7 @@ class InvoiceController extends Controller
   public function index()
   {
     try {
-      $invoices = auth('sanctum')->user()->invoices;
+      $invoices = Invoice::with('items')->where('user_id', auth('sanctum')->user()->id)->get();
       return response()->json(['status_code' => 200, 'invoices' => InvoiceResource::collection($invoices)])->setStatusCode(200);
     } catch (Error $error) {
       return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'InvoiceController, Trying to get customer invoices'])->setStatusCode(200);
