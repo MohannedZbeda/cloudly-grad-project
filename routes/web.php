@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AttributeController;
@@ -30,6 +31,15 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::post('/', [UserController::class, 'store']);
         Route::put('/', [UserController::class, 'update']);
         Route::post('/change-state', [UserController::class, 'changeState']);
+    });
+
+    Route::prefix('/customers')->middleware('role:super_admin')->group(function () {
+        Route::get('/', [CustomerController::class, 'index']);
+        Route::get('/customer/{id}', [CustomerController::class, 'GetCustomer']);
+        Route::post('/', [CustomerController::class, 'store']);
+        Route::put('/', [CustomerController::class, 'update']);
+        Route::post('/charge-wallet', [CustomerController::class, 'chargeWallet']);
+        Route::post('/change-state', [CustomerController::class, 'changeState']);
     });
 
     Route::prefix('/categories')->middleware('role:super_admin|marketing_admin')->middleware('role:super_admin|marketing_admin')->group(function () {

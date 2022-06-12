@@ -18,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\API\UserResource;
 
 class AuthController extends Controller
 {
@@ -202,7 +203,7 @@ class AuthController extends Controller
         return response()->json(['status_code' => 422, 'ar_message' => 'رقم سري خاطئ', 'en_message ' => 'Wrong password'])->setStatusCode(422);
         
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['status_code' => 200, 'token' => $token, 'user' => $user])->withCookie('token', $token, 10080)->setStatusCode(200);
+        return response()->json(['status_code' => 200, 'token' => $token, 'user' => new UserResource($user)])->withCookie('token', $token, 10080)->setStatusCode(200);
     }
     catch(Error $error) {
         DB::rollBack();

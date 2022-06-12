@@ -59,6 +59,47 @@
                     <template v-slot:activator>
                         <v-list-item-content>
                             <v-list-item-title
+                                ><v-icon style=""
+                                    >mdi-account-tie</v-icon
+                                >
+                                {{
+                                    $translate("Customers", "الزبائن")
+                                }}</v-list-item-title
+                            >
+                        </v-list-item-content>
+                    </template>
+
+                    <router-link to="/customers" class="link">
+                        <v-list-item link>
+                            <v-list-item-action>
+                                <v-icon>mdi-account-details</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>{{
+                                    $translate("All Customers", "جميع الزبائن")
+                                }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </router-link>
+
+                    <!-- <router-link to="/customers/create" class="link">
+                        <v-list-item link>
+                            <v-list-item-action>
+                                <v-icon>mdi-account-plus</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>{{
+                                    $translate("Add Customer", "إضافة زبون")
+                                }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </router-link> -->
+                </v-list-group>
+
+                <v-list-group no-action>
+                    <template v-slot:activator>
+                        <v-list-item-content>
+                            <v-list-item-title
                                 ><v-icon style="margin : 10dp"
                                     >mdi-solar-panel</v-icon
                                 >{{

@@ -24,6 +24,9 @@ import EditCoupon from '../components/coupon/edit.vue';
 import FaqIndex from '../components/faq/index.vue';
 import CreateFaq from '../components/faq/create.vue';
 import EditFaq from '../components/faq/edit.vue';
+import CustomerIndex from '../components/customer/index.vue';
+import CreateCustomer from '../components/customer/create.vue';
+import EditCustomer from '../components/customer/edit.vue';
 import CycleIndex from '../components/cycle/index.vue'
 import CreateCycle from '../components/cycle/create.vue'
 import EditCustomAttribute from '../components/variant/editattributevalue.vue';
@@ -183,7 +186,21 @@ const routes = [
     name: 'email.index',
     component : EmailIndex,        
   },
-
+  {
+    path: '/customers',
+    name: 'customer.index',
+    component : CustomerIndex,        
+  },
+  {
+    path: '/customers/create',
+    name: 'customer.create',
+    component : CreateCustomer,        
+  },
+  {
+    path: '/customers/edit/:id',
+    name: 'customer.edit',
+    component : EditCustomer,        
+  }
   
 ]
 
