@@ -24,6 +24,10 @@ export default class {
         return API.post(`${prefix}/charge-wallet`, payload);
     }
 
+    static async GetTransactions(id) {
+        return API.get(`${prefix}/${id}/transactions`);
+    }
+
     static async ChangeState(payload) {
         return API.post(`${prefix}/change-state`, payload);
     }

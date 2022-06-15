@@ -196,7 +196,7 @@ class AuthController extends Controller
         if($validator->fails()) {
             return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
         }
-        $user = User::where('username', $request->username)->first();
+        $user = User::whereRoleIs('customer')->where('username', $request->username)->first();
         if(!$user)
             return response()->json(['status_code' => 422, 'ar_message' => 'لا يوجد مستخدم بهذا الإسم', 'en_message ' => 'No user with that username was found'])->setStatusCode(422);
         else if(!Hash::check($request->password, $user->password))

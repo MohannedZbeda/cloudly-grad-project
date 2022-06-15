@@ -10,8 +10,7 @@ use App\Models\Transaction;
 use Error;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-
+use App\Http\Resources\API\TransactionResource;
 class CustomerController extends Controller
 {
     public function index()
@@ -32,11 +31,9 @@ class CustomerController extends Controller
             ]);
             if($validator->fails()) 
               return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-            // $user = User::find($request->id);
-            // $wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
             $transaction = DB::transaction(function () use ($request) {
                 $transaction = new Transaction();
-                $transaction->description = "Wallet Charge";
+                $transaction->description = auth()->user()->name ." Charged Customer Wallet";
                 $transaction->wallet_id = $request->wallet_id;
                 $transaction->credit = true;
                 $transaction->amount = $request->amount;
@@ -55,6 +52,18 @@ class CustomerController extends Controller
         }
     }
 
+
+    public function getTransactions($id)
+    {
+        try {
+            $wallet = Wallet::where('user_id', $id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
+            $transactions = Transaction::where('wallet_id', $wallet->id)->get();
+            return response()->json(['status_code' => 200, 'transactions' => TransactionResource::collection($transactions)]);
+        } catch (Error $error) {
+            DB::rollBack();
+            return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CustomerController, Trying to get customer transactions'])->setStatusCode(500);
+        }
+    }
 
     public function changeState(Request $request)
     {

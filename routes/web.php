@@ -39,6 +39,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::post('/', [CustomerController::class, 'store']);
         Route::put('/', [CustomerController::class, 'update']);
         Route::post('/charge-wallet', [CustomerController::class, 'chargeWallet']);
+        Route::get('/{id}/transactions', [CustomerController::class, 'getTransactions']);
         Route::post('/change-state', [CustomerController::class, 'changeState']);
     });
 

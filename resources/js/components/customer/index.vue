@@ -182,6 +182,9 @@
             >
                 mdi-wallet-plus
             </v-icon>
+            <v-icon style="margin-right : 10px" @click="goToHistory(item.id)">
+                mdi-history
+            </v-icon>
         </template>
 
         <template v-slot:[`item.state`]="{ item }">
@@ -256,12 +259,16 @@ export default {
             CustomerService.ChargeWallet(payload)
                 .then(response => {
                     this.customers.forEach(customer => {
-                      if(customer.id == this.customer.id)
-                       customer.wallet_balance = response.data.wallet_balance;
+                        if (customer.id == this.customer.id)
+                            customer.wallet_balance =
+                                response.data.wallet_balance;
                     });
                     this.closeDialog();
                 })
                 .catch(() => this.$unexpectedError());
+        },
+        goToHistory(id) {
+            this.$router.push(`/customers/${id}/transactions/`);
         }
     }
 };

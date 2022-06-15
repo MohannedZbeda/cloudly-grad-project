@@ -12,8 +12,8 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->boolean('credit')->default(false);
             $table->foreignId('wallet_id')->references('id')->on('wallets')->onDelete('RESTRICT');
+            $table->boolean('credit')->default(false);
             $table->double('amount');
             $table->timestamps();
         });

@@ -27,6 +27,7 @@ import EditFaq from '../components/faq/edit.vue';
 import CustomerIndex from '../components/customer/index.vue';
 import CreateCustomer from '../components/customer/create.vue';
 import EditCustomer from '../components/customer/edit.vue';
+import CustomerTransactions from '../components/customer/transactions.vue';
 import CycleIndex from '../components/cycle/index.vue'
 import CreateCycle from '../components/cycle/create.vue'
 import EditCustomAttribute from '../components/variant/editattributevalue.vue';
@@ -200,6 +201,11 @@ const routes = [
     path: '/customers/edit/:id',
     name: 'customer.edit',
     component : EditCustomer,        
+  },
+  {
+    path: '/customers/:id/transactions',
+    name: 'customer.transactions',
+    component : CustomerTransactions,        
   }
   
 ]
