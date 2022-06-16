@@ -70,6 +70,16 @@ class WalletController extends Controller
             
         }
     }
+    public function getBalance()
+    {
+      try {
+        $user = auth('sanctum')->user();
+        $wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
+        return response()->json(["wallet_balance" => $wallet->getWalletBalance()]);
+      } catch (Error $error) {
+        throw $error;
+      }
+    }
 
    
 }

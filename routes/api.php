@@ -35,6 +35,7 @@ Route::prefix('/auth')->middleware('api.guest')->group(function () {
 Route::prefix('/wallets')->middleware(['auth:sanctum', 'role:customer'])->group(function () {
     Route::post('/add-wallet', [WalletController::class, 'addWallet']);
     Route::post('/charge', [WalletController::class, 'chargeWallet']);
+    Route::get('/get-balance', [WalletController::class, 'getBalance']);
 });
 
 Route::prefix('/carts')->middleware(['auth:sanctum', 'role:customer'])->group(function () {
