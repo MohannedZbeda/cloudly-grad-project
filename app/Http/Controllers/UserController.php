@@ -18,7 +18,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-        return response()->json(['admins' => UserResource::collection(User::all())]);
+        return response()->json(['admins' => UserResource::collection(User::whereHas("roles", function($q){ $q->where("name", "<>","customer")->where('name', '<>', 'super_admin'); })->get())]);
         }
         catch(Error $error) {
             return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'UserController, Trying to get all admins'])->setStatusCode(500);  

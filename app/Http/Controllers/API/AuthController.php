@@ -170,12 +170,14 @@ class AuthController extends Controller
         });
         
         $token = $user->createToken('auth_token')->plainTextToken;
+        $wallet_balance = Wallet::whereRelation('type', 'type_name', 'balance_wallet')->where('user_id', $user->id)->first()->getWalletBalance();
         DB::commit();
         return response()
                ->json([
                    'status_code' => 201,
                    'user' => User::with('info')->find($user->id),
-                   'token' => $token
+                   'token' => $token,
+                   'wallet_balance' => $wallet_balance
                 ])
                 ->withCookie('token', $token, 10080)
                 ->setStatusCode(201);
