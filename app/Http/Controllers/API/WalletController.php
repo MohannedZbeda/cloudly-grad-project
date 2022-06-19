@@ -77,8 +77,7 @@ class WalletController extends Controller
         $wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
         return response()->json(["wallet_balance" => $wallet->getWalletBalance()]);
       } catch (Error $error) {
-        throw $error;
-      }
+        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'WalletController, Trying to get wallet balance'])->setStatusCode(500);        }
     }
 
    
