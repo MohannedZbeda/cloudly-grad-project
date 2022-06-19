@@ -203,6 +203,8 @@ class AuthController extends Controller
             return response()->json(['status_code' => 422, 'ar_message' => 'لا يوجد مستخدم بهذا الإسم', 'en_message ' => 'No user with that username was found'])->setStatusCode(422);
         else if(!Hash::check($request->password, $user->password))
         return response()->json(['status_code' => 422, 'ar_message' => 'رقم سري خاطئ', 'en_message ' => 'Wrong password'])->setStatusCode(422);
+        else if(!$user->state)
+        return response()->json(['status_code' => 422, 'ar_message' => 'نعتذر, تم تعطيل حسابك, يرجى مراجعة الشركة', 'en_message ' => 'Your account has been deactivated.'])->setStatusCode(422);
         
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json(['status_code' => 200, 'token' => $token, 'user' => new UserResource($user)])->withCookie('token', $token, 10080)->setStatusCode(200);
