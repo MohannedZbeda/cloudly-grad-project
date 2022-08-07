@@ -9,9 +9,7 @@ use App\Http\Controllers\API\InvoiceController;
 use App\Http\Controllers\API\TestimonyController;
 use App\Http\Controllers\API\StoreController;
 use App\Http\Controllers\API\NewsletterEmailController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes

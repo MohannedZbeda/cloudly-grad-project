@@ -79,8 +79,8 @@ class InvoiceController extends Controller
       $validator = Validator::make($request->all(), [
         'invoice_id' => 'required|exists:invoices,id',
       ]);
-        if($validator->fails())
-          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
+      if ($validator->fails())
+        return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
       $invoice = Invoice::find($request->invoice_id);
       $invoice_total = $invoice->getTotal();
       if ($invoice->paid) {
@@ -88,7 +88,7 @@ class InvoiceController extends Controller
           'status_code' => 200,
           'message' => 'Invoice is Already Paid'
         ])
-        ->setStatusCode(200);
+          ->setStatusCode(200);
       }
       $user = auth('sanctum')->user();
       $balance_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
@@ -100,22 +100,26 @@ class InvoiceController extends Controller
           'code' => 'INSUFFICIENT_BALANCE',
           'message' => 'You dont have enough balance to pay for this invoice, You need ' . $invoice_total - $wallet_balance . ' more LYDs'
         ])
-        ->setStatusCode(200);
+          ->setStatusCode(200);
 
       $reservation_wallet->reserveBalance($balance_wallet->id, $invoice_total);
 
-      DB::transaction(function () use ($invoice) {
+      DB::transaction(function () use ($invoice, $user) {
         $invoice->paid = true;
         $invoice->save();
         $sub = new Subscription();
-        $sub->user_id = auth('sanctum')->user()->id;
+        $sub->user_id = $user->id;
         $sub->save();
         $subs = [];
         foreach ($invoice->items as $item) {
-            array_push($subs, [
-              'subscription_id' => $sub->id, 
-            ]);
+          array_push($subs, [
+            'subscription_id' => $sub->id,
+            'subscribeable_id' => $item->invoiceable_id,
+            'subscribeable_type' => $item->invoiceable_type,
+            'cycle_id' => $item->cycle_id
+          ]);
         }
+        DB::table('subscribeables')->insert($subs);
       });
 
       DB::commit();
@@ -125,7 +129,6 @@ class InvoiceController extends Controller
         'wallet_balance' => $balance_wallet->getWalletBalance()
       ])
         ->setStatusCode(200);
-
     } catch (Error $error) {
       DB::rollBack();
       return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'InvoiceController, Trying to pay for invoice'])->setStatusCode(500);

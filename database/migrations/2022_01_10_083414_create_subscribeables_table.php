@@ -16,7 +16,6 @@ class CreateSubscribeablesTable extends Migration
             $table->string('subscribeable_type');
             $table->foreignId('cycle_id')->references('id')->on('subscribtion_cycles');
             $table->date('start_date')->nullable();
-            $table->integer('duration')->nullable();
         });
     }
 
