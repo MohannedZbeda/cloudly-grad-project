@@ -14,7 +14,7 @@ class CreateUserInfoTable extends Migration
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('CASCADE');
             $table->string('phone')->unique();
             $table->string('password_reset_code')->unique()->nullable();
-            $table->timestamps();
+            //$table->timestamps();
         });
     }
 

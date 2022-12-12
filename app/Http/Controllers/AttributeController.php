@@ -19,8 +19,7 @@ class AttributeController extends Controller
       return response()->json(['status_code' => 200, 'attributes' => $attributes])->setStatusCode(200);
     }
      catch(Error $error) {
-      return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AttributeController, Trying to return all attributes'])->setStatusCode(500);  
-        
+      return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AttributeController, Trying to return all attributes'])->setStatusCode(500);          
     }
     }
 
@@ -31,8 +30,7 @@ class AttributeController extends Controller
       return response()->json(['status_code' => 200, 'attribute' => $attribute])->setStatusCode(200);
     }
     catch(Error $error) {
-      return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AttributeController, Trying to return all attributes for product creation'])->setStatusCode(500);  
-        
+      return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'AttributeController, Trying to return all attributes for product creation'])->setStatusCode(500);     
     }
     }
 
