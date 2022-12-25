@@ -22,7 +22,7 @@
                                     >mdi-account-supervisor</v-icon
                                 >
                                 {{
-                                    $translate("Admins", "المشرفين")
+                                    $translate("Admins", "المسؤولين")
                                 }}</v-list-item-title
                             >
                         </v-list-item-content>
@@ -35,7 +35,7 @@
                             </v-list-item-action>
                             <v-list-item-content>
                                 <v-list-item-title>{{
-                                    $translate("All Admins", "جميع المشرفين")
+                                    $translate("All Admins", "جميع المسؤولين")
                                 }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -48,7 +48,7 @@
                             </v-list-item-action>
                             <v-list-item-content>
                                 <v-list-item-title>{{
-                                    $translate("Add Admin", "إضافة مشرف")
+                                    $translate("Add Admin", "إضافة مسؤول")
                                 }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -103,7 +103,7 @@
                                 ><v-icon style="margin : 10dp"
                                     >mdi-solar-panel</v-icon
                                 >{{
-                                    $translate("Categories", "التصنيفات")
+                                    $translate("Categories", "الفئات")
                                 }}</v-list-item-title
                             >
                         </v-list-item-content>
@@ -118,7 +118,7 @@
                                 <v-list-item-title>{{
                                     $translate(
                                         "All Categories",
-                                        "جميع التصنيفات"
+                                        "جميع الفئات"
                                     )
                                 }}</v-list-item-title>
                             </v-list-item-content>
@@ -132,7 +132,7 @@
                             </v-list-item-action>
                             <v-list-item-content>
                                 <v-list-item-title>{{
-                                    $translate("Add a Category", "إضافة تصنيف")
+                                    $translate("Add a Category", "إضافة فئة")
                                 }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -262,85 +262,6 @@
                     <template v-slot:activator>
                         <v-list-item-content>
                             <v-list-item-title
-                                ><v-icon style="margin : 10dp">mdi-sale</v-icon
-                                >{{
-                                    $translate("Discounts", "التخفيضات")
-                                }}</v-list-item-title
-                            >
-                        </v-list-item-content>
-                    </template>
-
-                    <router-link to="/discounts" class="link">
-                        <v-list-item link>
-                            <v-list-item-action>
-                                <v-icon>mdi-format-list-bulleted</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>{{
-                                    $translate("All Discounts", "كل التخفيضات")
-                                }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </router-link>
-
-                    <router-link to="/discounts/create" class="link">
-                        <v-list-item link>
-                            <v-list-item-action>
-                                <v-icon>mdi-plus</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>{{
-                                    $translate("Add a Discount", "إضافة تخفيض")
-                                }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </router-link>
-                </v-list-group>
-
-                <v-list-group no-action>
-                    <template v-slot:activator>
-                        <v-list-item-content>
-                            <v-list-item-title
-                                ><v-icon style="margin : 10dp"
-                                    >mdi-wallet-giftcard</v-icon
-                                >{{
-                                    $translate("Coupons", "الكوبونات")
-                                }}</v-list-item-title
-                            >
-                        </v-list-item-content>
-                    </template>
-
-                    <router-link to="/coupons" class="link">
-                        <v-list-item link>
-                            <v-list-item-action>
-                                <v-icon>mdi-format-list-bulleted</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>{{
-                                    $translate("All Coupons", "كل الكوبونات")
-                                }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </router-link>
-
-                    <router-link to="/coupons/create" class="link">
-                        <v-list-item link>
-                            <v-list-item-action>
-                                <v-icon>mdi-plus</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>{{
-                                    $translate("Add Coupons", "إضافة كوبونات")
-                                }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </router-link>
-                </v-list-group>
-
-                <v-list-group no-action>
-                    <template v-slot:activator>
-                        <v-list-item-content>
-                            <v-list-item-title
                                 ><v-icon style="margin : 10dp"
                                     >mdi-frequently-asked-questions</v-icon
                                 >{{
@@ -377,32 +298,6 @@
                     </router-link>
                 </v-list-group>
 
-                <v-list-group no-action>
-                    <template v-slot:activator>
-                        <v-list-item-content>
-                            <v-list-item-title
-                                ><v-icon style="margin : 10dp"
-                                    >mdi-account-tie-voice</v-icon
-                                >{{
-                                    $translate("Testimonies", "الشهادات")
-                                }}</v-list-item-title
-                            >
-                        </v-list-item-content>
-                    </template>
-
-                    <router-link to="/testimonies" class="link">
-                        <v-list-item link>
-                            <v-list-item-action>
-                                <v-icon>mdi-format-list-bulleted</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>{{
-                                    $translate("All Testimonies", "كل الشهادات")
-                                }}</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                    </router-link>
-                </v-list-group>
             </v-list>
             <v-list dense>
                 <v-list-item
@@ -457,7 +352,7 @@
             <router-view></router-view>
         </v-main>
         <v-footer color="primary" app>
-            <span class="white--text">&copy; TSIC CLOUD</span>
+            <span class="white--text">&copy; CLOUDLY</span>
         </v-footer>
     </v-app>
 </template>

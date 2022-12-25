@@ -7,19 +7,18 @@
                      </v-toolbar>
                      <v-card-text>
                         <v-form>
-                            <v-text-field
-                              :label="$translate('AR Name', 'الإسم بالعربي')"
-                              :placeholder="$translate('AR Attribute Name', 'إسم الخاصية بالعربي')"
-                              outlined
-                              v-model="form.ar_name"
-                            ></v-text-field>
-                            <v-text-field
-                              dir="ltr"
-                              :label="$translate('EN Name', 'الإسم بالإنجليزي')"
-                              :placeholder="$translate('EN Attribute Name', 'إسم الخاصية بالإنجليزي')"
-                              outlined
-                              v-model="form.en_name"
-                            ></v-text-field>
+                          <v-text-field
+                            :label="$translate('Name', 'الإسم')"
+                            :placeholder="
+                                $translate(
+                                    'Attribute Name',
+                                    'إسم الخاصية'
+                                )
+                            "
+                            outlined
+                            v-model="form.name"
+                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
+                        ></v-text-field>
 
                             <v-checkbox
                              v-model="form.advanced"
@@ -46,16 +45,15 @@ export default {
         id: this.$route.params.id,
         category_id: this.$route.params.category_id,
         form: {
-           ar_name: '',
-           en_name: '',
+           name: '',
            advanced: false
-         }
+         },
+         errors: []
       }
     },
     beforeMount() {
       CategoryService.GetAttribute(this.category_id, this.id).then(response => {
-        this.form.ar_name = response.data.attribute.ar_name;
-        this.form.en_name = response.data.attribute.en_name;
+        this.form.name = response.data.attribute.name;
         this.form.advanced = response.data.attribute.advanced;
      });
     },
@@ -73,6 +71,8 @@ export default {
               'success').then(() => {
               this.$router.push('/categories/'+this.category_id+'/attributes') 
             });
+          }).catch(errors => {
+              this.errors = errors.response.data.errors;
           });
         }
   }

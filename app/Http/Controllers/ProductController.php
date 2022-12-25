@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = ProductResource::collection(Product::with('customAttributes')->get());
+            $products = ProductResource::collection(Product::all());
             return response()->json(['status_code' => 200, 'products' => $products])->setStatusCode(200);
         } catch (Error $error) {
             return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to get all products'])->setStatusCode(500);
@@ -37,47 +37,11 @@ class ProductController extends Controller
         }
     }
 
-    public function getCustomAttributes($id)
-    {
-        try {
-            $attribute = new CustomAttributeResource(CustomAttribute::find($id));
-            return response()->json(['status_code' => 200, 'attribute' => $attribute])->setStatusCode(200);
-        } catch (Error $error) {
-            return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to get custom attribute for update creation'])->setStatusCode(500);
-        }
-    }
-
-    public function updateCustomAttribute(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'id' => 'required|exists:custom_attributes,id',
-                'custom_price' => 'required|numeric',
-                'unit_max' => 'required|numeric|gte:unit_min',
-                'unit_min' => 'required|numeric|lte:unit_max'
-            ]);
-            if ($validator->fails())
-                return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-            DB::transaction(function () use ($request) {
-                $attribute = CustomAttribute::find($request->id);
-                $attribute->custom_price = $request->custom_price;
-                $attribute->unit_max = $request->unit_max;
-                $attribute->unit_min = $request->unit_min;
-                $attribute->save();
-                return $attribute;
-            });
-
-            DB::commit();
-            return response()->json(['status_code' => 200])->setStatusCode(200);
-        } catch (Error $error) {
-            DB::rollBack();
-            return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to create a Product'])->setStatusCode(500);
-        }
-    }
+    
     public function getProduct($id)
     {
         try {
-            $product = new ProductResource(Product::with(['cycles', 'customAttributes'])->find($id));
+            $product = new ProductResource(Product::with(['cycles'])->find($id));
             return response()->json(['status_code' => 200, 'product' => $product])->setStatusCode(200);
         } catch (Error $error) {
             return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'ProductController, Trying to get a product for update'])->setStatusCode(500);
@@ -89,38 +53,24 @@ class ProductController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'category_id' => 'required|exists:categories,id',
-                'ar_name' => 'required|unique:products,ar_name',
-                'en_name' => 'required|unique:products,en_name',
-                'customizable' => 'required|boolean',
-                'custom_attributes' => 'required_if:customizable,1|array',
-                'custom_attributes.*.custom_price' => $request->customizable ? 'required|numeric' : 'nullable',
-                'custom_attributes.*.unit_min' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
-                'custom_attributes.*.unit_max' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
+                'name' => 'required|unique:products,name',
                 'cycles' => 'required|array|exists:subscribtion_cycles,id'
-            ]);
+            ], [
+                'category_id.required' => ['ar' => 'يرجى تحديد الفئة اللتي ينتمي إليها المنتج', 'en' => 'Please specify category products'],
+                'name.required' => ['ar' => 'يرجى إدخال إسم للمنتج', 'en' => 'Please enter product name'],
+                'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
+                'advanced.required' => ['ar'=> 'يرحى تحديد ما إذا كانت الخاصية أساسية أو لا', 'en' => 'Please specify attribute type'],
+                'cycles.required' => ['ar'=> 'يرحى تحديد دورة دفع واحدة على الأقل', 'en' => 'Please select at least one payment cycle']
+              ]);
             if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
             $product = DB::transaction(function () use ($request) {
                 $product = new Product();
                 $product->category_id = $request->category_id;
-                $product->ar_name = $request->ar_name;
-                $product->en_name = $request->en_name;
-                $product->customizable = $request->customizable;
+                $product->name = $request->name;
                 $product->save();
                 $product->addMediaFromBase64($request->base64image)->toMediaCollection();
-                if ($request->custom_attributes) {
-                    $attributes = array_map(function ($attribute) use ($product) {
-                        return [
-                            'product_id' => $product->id,
-                            'attribute_id' => $attribute['attribute_id'],
-                            'custom_price' => $attribute['custom_price'],
-                            'unit_max' => $attribute['unit_max'],
-                            'unit_min' => $attribute['unit_min']
-
-                        ];
-                    }, $request->custom_attributes);
-                    DB::table('custom_attributes')->insert($attributes);
-                }
+            
                 $product->cycles()->attach($request->cycles);
                 return $product;
             });
@@ -138,51 +88,32 @@ class ProductController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'category_id' => 'required|exists:categories,id',
-                'ar_name' => [
+                'name' => [
                     'required',
-                    Rule::unique('products', 'ar_name')->ignore($request->id)
+                    Rule::unique('products', 'name')->ignore($request->id)
 
                 ],
-                'en_name' => [
-                    'required',
-                    Rule::unique('products', 'en_name')->ignore($request->id)
-
-                ],
-                'customizable' => 'required|boolean',
-                'custom_attributes' => 'required_if:customizable,1|array',
-                'custom_attributes.*.custom_price' => $request->customizable ? 'required|numeric' : 'nullable',
-                'custom_attributes.*.unit_min' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
-                'custom_attributes.*.unit_max' => $request->customizable ? 'required|numeric|min:1' : 'nullable',
                 'cycles' => 'required|array|exists:subscribtion_cycles,id'
 
-            ]);
+            ], [
+                'category_id.required' => ['ar' => 'يرجى تحديد الفئة اللتي ينتمي إليها المنتج', 'en' => 'Please specify category products'],
+                'name.required' => ['ar' => 'يرجى إدخال إسم للمنتج', 'en' => 'Please enter product name'],
+                'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
+                'advanced.required' => ['ar'=> 'يرحى تحديد ما إذا كانت الخاصية أساسية أو لا', 'en' => 'Please specify attribute type'],
+                'cycles.required' => ['ar'=> 'يرحى تحديد دورة دفع واحدة على الأقل', 'en' => 'Please select at least one payment cycle']
+              ]);
             if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
             $product = DB::transaction(function () use ($request) {
                 $product = Product::find($request->id);
-                $wasCustom = $product->customizable;
                 $product->category_id = $request->category_id;
-                $product->ar_name = $request->ar_name;
-                $product->en_name = $request->en_name;
-                $product->customizable = $request->customizable;
+                $product->name = $request->name;
                 $product->save();
                 if($request->base64image) {
                 $product->clearMediaCollection();
                 $product->addMediaFromBase64($request->base64image)->toMediaCollection();
                 }
-                if (!$wasCustom && $request->custom_attributes && $request->customizable) {
-                    $attributes = array_map(function ($attribute) use ($product) {
-                        return [
-                            'product_id' => $product->id,
-                            'attribute_id' => $attribute['attribute_id'],
-                            'custom_price' => $attribute['custom_price'],
-                            'unit_max' => $attribute['unit_max'],
-                            'unit_min' => $attribute['unit_min']
 
-                        ];
-                    }, $request->custom_attributes);
-                    DB::table('custom_attributes')->insert($attributes);
-                }
                 $product->cycles()->sync($request->cycles);
                 return $product;
             });

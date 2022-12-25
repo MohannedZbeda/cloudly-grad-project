@@ -8,30 +8,18 @@
                      <v-card-text>
                         <v-form>
                             <v-text-field
-                              :label="$translate('AR Question', 'السؤال بالعربي')"
-                              :placeholder="$translate('AR Question', ' السؤال بالعربي')"
+                              :label="$translate('Question', 'السؤال')"
+                              :placeholder="$translate('Question', ' السؤال')"
                               outlined
-                              v-model="form.ar_question"
+                              v-model="form.question"
+                              :error-messages="errors.question ? $translate(errors.question[0].en, errors.question[0].ar) : null"
                             ></v-text-field>
                             <v-text-field
-                              dir="ltr"
-                              :label="$translate('EN Question', 'السؤال بالإنجليزي')"
-                              :placeholder="$translate('EN Question', ' السؤال بالإنجليزي')"
+                              :label="$translate('Answer', 'الجواب')"
+                              :placeholder="$translate('Answer', 'الجواب')"
                               outlined
-                              v-model="form.en_question"
-                            ></v-text-field>
-                            <v-text-field
-                              :label="$translate('AR Answer', 'الجواب بالعربي')"
-                              :placeholder="$translate('AR Answer', 'الجواب بالعربي')"
-                              outlined
-                              v-model="form.ar_answer"
-                            ></v-text-field>
-                              <v-text-field
-                              dir="ltr"
-                              :label="$translate('EN Answer', 'الجواب بالإنجليزي')"
-                              :placeholder="$translate('EN Answer', 'الجواب بالإنجليزي')"
-                              outlined
-                              v-model="form.en_answer"
+                              v-model="form.answer"
+                              :error-messages="errors.answer ? $translate(errors.answer[0].en, errors.answer[0].ar) : null"
                             ></v-text-field>
                         </v-form>
                      </v-card-text>
@@ -52,11 +40,10 @@ export default {
     data() {
         return {
          form: {
-           ar_question: '',
-           ar_answer: '',
-           en_question: '',
-           en_answer: ''
-         }
+           question: '',
+           answer: ''
+         },
+         errors: []
         }
     },
     methods: {
@@ -68,12 +55,10 @@ export default {
               'success').then(() => {
              this.$router.push('/faqs') 
             });
+          }).catch(errors => {
+            this.errors = errors.response.data.errors;
           });
         }
     }
 }
 </script>
-
-<style>
-
-</style>

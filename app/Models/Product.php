@@ -28,9 +28,5 @@ class Product extends Model implements HasMedia
         return $this->morphToMany(SubscriptionCycle::class, 'cycleable');
     }
     
-    public function customAttributes()
-    {
-        return $this->hasMany(CustomAttribute::class);
-    }
     
 }

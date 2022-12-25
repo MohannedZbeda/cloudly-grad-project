@@ -7,7 +7,6 @@ use App\Models\Cart;
 use App\Models\User;
 use App\Models\UserInfo;
 use App\Models\Wallet;
-use App\Models\WalletType;
 use Carbon\Carbon;
 use Error;
 use Illuminate\Http\Request;
@@ -150,13 +149,6 @@ class AuthController extends Controller
             $user_info->save();
             
             Wallet::insert([
-              'type_id' => WalletType::where('type_name', 'balance_wallet')->first()->id,
-              'user_id' => $user->id,
-              'created_at' => Carbon::now(),
-              'updated_at' => Carbon::now()
-            ]);
-            Wallet::insert([
-              'type_id' => WalletType::where('type_name', 'reservation_wallet')->first()->id,
               'user_id' => $user->id,
               'created_at' => Carbon::now(),
               'updated_at' => Carbon::now()
@@ -170,7 +162,7 @@ class AuthController extends Controller
         });
         
         $token = $user->createToken('auth_token')->plainTextToken;
-        $wallet_balance = Wallet::whereRelation('type', 'type_name', 'balance_wallet')->where('user_id', $user->id)->first()->getWalletBalance();
+        $wallet_balance = $user->wallet->getWalletBalance();
         DB::commit();
         return response()
                ->json([

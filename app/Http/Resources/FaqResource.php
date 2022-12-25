@@ -11,10 +11,8 @@ class FaqResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_question' => $this->ar_question,
-            'ar_answer' => $this->ar_answer,
-            'en_question' => $this->en_question,
-            'en_answer' => $this->en_answer,
+            'question' => $this->question,
+            'answer' => $this->answer,
             'created_at' => $this->created_at->toDateString()
         ];
     }

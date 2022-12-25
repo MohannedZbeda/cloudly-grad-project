@@ -11,10 +11,8 @@ class CycleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_name' => $this->ar_name,
-            'en_name' => $this->en_name,
+            'name' => $this->name,
             'months' => $this->months,
-            'discount_percentage' => $this->discount_percentage,
             'enabled' => $this->enabled,
             'created_at' => $this->created_at->toDateString()
         ];

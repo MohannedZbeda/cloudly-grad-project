@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
+import home from '../components/home/home.vue';
 import CreateAdmin from '../components/admin/create.vue';
 import EditAdmin from '../components/admin/edit.vue';
 import AdminIndex from '../components/admin/index.vue';
@@ -18,9 +20,6 @@ import EditAttribute from '../components/category/attribute/edit.vue';
 import PackageIndex from '../components/package/index.vue';
 import CreatePackage from '../components/package/create.vue';
 import EditPackage from '../components/package/edit.vue';
-import CouponIndex from '../components/coupon/index.vue';
-import CreateCoupon from '../components/coupon/create.vue';
-import EditCoupon from '../components/coupon/edit.vue';
 import FaqIndex from '../components/faq/index.vue';
 import CreateFaq from '../components/faq/create.vue';
 import EditFaq from '../components/faq/edit.vue';
@@ -30,13 +29,15 @@ import EditCustomer from '../components/customer/edit.vue';
 import CustomerTransactions from '../components/customer/transactions.vue';
 import CycleIndex from '../components/cycle/index.vue'
 import CreateCycle from '../components/cycle/create.vue'
-import EditCustomAttribute from '../components/variant/editattributevalue.vue';
-import TestimonyIndex from '../components/testimony/index.vue';
-import EmailIndex from '../components/email/index.vue';
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component : home,        
+  },
   {
     path: '/admins',
     name: 'admin.index',
@@ -83,13 +84,6 @@ const routes = [
     name: 'variant.edit',
     component : EditVariant,        
   },
-
-  {
-    path: '/products/:product_id/custom-attributes/:id',
-    name: 'custom.edit',
-    component : EditCustomAttribute,        
-  },
-
   {
     path: '/categories',
     name: 'category.index',
@@ -139,21 +133,6 @@ const routes = [
     component : EditPackage,        
   },
   {
-    path: '/coupons',
-    name: 'coupon.index',
-    component : CouponIndex,        
-  },
-  {
-    path: '/coupons/create',
-    name: 'coupon.create',
-    component : CreateCoupon,        
-  },
-  {
-    path: '/coupons/edit/:start_date/:end_date',
-    name: 'coupon.edit',
-    component : EditCoupon,        
-  },
-  {
     path: '/faqs',
     name: 'faq.index',
     component : FaqIndex,        
@@ -176,16 +155,6 @@ const routes = [
     path: '/cycles/create',
     name: 'cycle.create',
     component : CreateCycle,        
-  },
-  {
-    path: '/testimonies',
-    name: 'testimony.index',
-    component : TestimonyIndex,        
-  },
-  {
-    path: '/emails',
-    name: 'email.index',
-    component : EmailIndex,        
   },
   {
     path: '/customers',

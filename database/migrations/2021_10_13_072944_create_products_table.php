@@ -12,9 +12,8 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('CASCADE');
-            $table->string('ar_name')->unique();
-            $table->string('en_name')->unique();
-            $table->boolean('customizable')->default(false);
+            $table->string('name')->unique();
+            //$table->boolean('customizable')->default(false);
             $table->timestamps();
         });
     }

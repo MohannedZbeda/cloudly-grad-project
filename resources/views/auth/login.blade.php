@@ -2,10 +2,15 @@
 
 @section('content')
 <div class="container">
+    <div class="text-center">
+        <img src="{{asset('images/cloudly_logo.png')}}" class="rounded" alt="logo" height="200.2em" width="200.2em">
+        <h2>Cloudly</h2>
+      </div>
+      <br>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div  class="card-header">{{ __('login.form_title') }}</div>
+                <div style="background-color: #1976D2 !important; color: #fff"  class="card-header">{{ __('login.form_title') }}</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">

@@ -10,26 +10,17 @@
                 <v-card-text>
                     <v-form>
                         <v-text-field
-                            :label="$translate('AR Name', ' الإسم بالعربي')"
+                            :label="$translate('Name', ' الإسم')"
                             :placeholder="
                                 $translate(
-                                    'Cycle AR Name',
-                                    'الإسم الدورة بالعربي'
+                                    'AR Name',
+                                    'إسم دورة الدفع'
                                 )
                             "
                             outlined
-                            v-model="form.ar_name"
-                        ></v-text-field>
-                        <v-text-field
-                            :label="$translate('EN Name', ' الإسم بالإنجليزي')"
-                            :placeholder="
-                                $translate(
-                                    'Cycle EN Name',
-                                    'الإسم الدورة بالإنجليزي'
-                                )
-                            "
-                            outlined
-                            v-model="form.en_name"
+                            v-model="form.name"
+                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
+
                         ></v-text-field>
                         <v-text-field
                             :label="
@@ -46,20 +37,11 @@
                             "
                             outlined
                             type="number"
+                            min="1"
                             v-model="form.months"
+                            :error-messages="errors.months ? $translate(errors.months[0].en, errors.months[0].ar) : null"
                         ></v-text-field>
-                        <v-text-field
-                            :label="$translate('Cycle Discount', 'نسبة الخصم')"
-                            :placeholder="
-                                $translate(
-                                    'Cycle Discount Percentage',
-                                    'نسبة الخصم من سعر المنتج عند إختيار الدورة'
-                                )
-                            "
-                            outlined
-                            type="number"
-                            v-model="form.discount_percentage"
-                        ></v-text-field>
+                        
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -80,11 +62,10 @@ export default {
     data() {
         return {
             form: {
-                ar_name: "",
-                en_name: "",
-                months: null,
-                discount_percentage: null
-            }
+                name: "",
+                months: null
+            },
+            errors: []
         };
     },
 
@@ -104,6 +85,8 @@ export default {
                 ).then(() => {
                     this.$router.push("/cycles");
                 });
+            }).catch(errors => {
+                this.errors = errors.response.data.errors;
             });
         }
     }

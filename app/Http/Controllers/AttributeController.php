@@ -39,17 +39,18 @@ class AttributeController extends Controller
       try {
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
-            'ar_name' => 'required|string',
-            'en_name' => 'required|string',
+            'name' => 'required|string',
             'advanced' => 'required|boolean'
+        ], [
+          'name.required' => ['ar' => 'يرجى إدخال إسم للخاصية', 'en' => 'Please enter attribute name'],
+          'advanced.required' => ['ar'=> 'يرحى تحديد ما إذا كانت الخاصية أساسية أو لا', 'en' => 'Please specify attribute type']
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $attribute = DB::transaction(function() use($request) {
           $attribute = new Attribute();
           $attribute->category_id = $request->category_id;
-          $attribute->ar_name = $request->ar_name;
-          $attribute->en_name = $request->en_name;
+          $attribute->name = $request->name;
           $attribute->advanced = $request->advanced;
           $attribute->save();
           return $attribute;
@@ -68,17 +69,18 @@ class AttributeController extends Controller
       try {
         $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
-            'ar_name' => 'required|string',
-            'en_name' => 'required|string',
+            'name' => 'required|string',
             'advanced' => 'required|boolean'
+        ], [
+          'name.required' => ['ar' => 'يرجى إدخال إسم للخاصية', 'en' => 'Please enter attribute name'],
+          'advanced.required' => ['ar'=> 'يرحى تحديد ما إذا كانت الخاصية أساسية أو لا', 'en' => 'Please specify attribute type']
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
           $attribute = DB::transaction(function() use($request) {
             $attribute = Attribute::find($request->id);
             $attribute->category_id = $request->category_id;
-            $attribute->ar_name = $request->ar_name;
-            $attribute->en_name = $request->en_name;
+            $attribute->name = $request->name;
             $attribute->advanced = $request->advanced;
             $attribute->save();
             return $attribute;

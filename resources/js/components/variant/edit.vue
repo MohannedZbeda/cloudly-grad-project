@@ -10,44 +10,67 @@
                          'There are no attributes for this product, Please add some', 
                          'لا توجد خصائص لهذا المنتج، يرجى الإضافة')}}</p>
                         <v-form>
-                            <v-text-field
-                              :label="$translate('AR Name', 'الإسم بالعربي')"
-                              :placeholder="$translate('AR Variant Name', 'إسم المنتج بالعربي')"
-                              outlined
-                              v-model="form.ar_name"
-                            ></v-text-field>
-
-                            <v-text-field
-                              dir="ltr"
-                              :label="$translate('EN Name', 'الإسم بالإنجليزي')"
-                              :placeholder="$translate('EN Variant Name', 'إسم المنتج بالإنجليزي')"
-                              outlined
-                              v-model="form.en_name"
-                            ></v-text-field>
-
-                            <v-divider style="background-color: black"></v-divider>
-                            <br> <br>
-                            <div v-for="attribute in form.attributes" :key="attribute.id">
-                              <v-text-field
-                                :label="$translate(attribute.en_name, attribute.ar_name)"
-                                outlined
-                                v-model="attribute.value"
-                              >
-                                <template v-slot:prepend>
-                                  <v-icon v-if="attribute.advanced" style="color:#c0392b; cursor:pointer" @click="removeAttribute(attribute.id)">mdi-window-close</v-icon>                          
-                                </template>
-                              </v-text-field>
-                              
-                            </div>
-                            <br> <br> 
-                            <v-divider style="background-color: black"></v-divider>
-                             <br> <br>
-                            <v-text-field
-                              :label="$translate('Price', 'السعر')"
-                              outlined
-                              type="number"
-                              v-model="form.price"
-                            ></v-text-field>
+                          <v-text-field
+                            :label="$translate('Name', 'الإسم')"
+                            :placeholder="
+                                $translate(
+                                    'Variant Name',
+                                    'إسم المنتج'
+                                )
+                            "
+                            outlined
+                            v-model="form.name"
+                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
+                        ></v-text-field>
+                        
+                        <v-divider style="background-color: black"></v-divider>
+                        <br />
+                        <br />
+                        <v-row
+                                v-for="attribute in form.attributes"
+                                :key="attribute.id"
+                            >
+                                <v-col cols="2" sm="2" md="1">
+                                    <h3 style="margin-top: 1em">
+                                        {{
+                                            attribute.name
+                                            
+                                        }}
+                                        : 
+                                    </h3>
+                                </v-col>
+                                        
+                                <v-col cols="2" sm="2" md="3">
+                                    <v-select
+                                        :label="
+                                            $translate(
+                                                'Value',
+                                                'القيمة'
+                                            )
+                                        "
+                                        outlined
+                                        :items="attribute.values"
+                                        item-text="value"
+                                        item-value="id"
+                                        v-model="attribute.value_id"
+                                    ></v-select>
+                                </v-col>
+                                <br />
+                                <br />
+                            </v-row>
+                        <br />
+                        <br />
+                        <v-divider style="background-color: black"></v-divider>
+                        <br />
+                        <br />
+                        <v-text-field
+                            :label="$translate('Price', 'السعر')"
+                            outlined
+                            type="number"
+                            min="0"
+                            v-model="form.price"
+                            :error-messages="errors.price ? $translate(errors.price[0].en, errors.price[0].ar) : null"
+                        ></v-text-field>
                         </v-form>
                      </v-card-text>
                      <v-card-actions>
@@ -71,23 +94,24 @@ export default {
          categories : [],
          noAttributes: false,
          form: {
-           ar_name: '',
-           en_name: '',
+           name: '',
            price: '',
-           attributes: [],
-         }
+           attributes: []
+         },
+         errors: []
         }
     },
     beforeMount() {
       VariantService.GetVariant(this.id).then(response => {
         this.form = response.data.variant;
+        console.log(response.data.variant.attributes);
         this.form.attributes = response.data.variant.attributes.map(attribute => {
         return {
           id: attribute.id,
-          ar_name: attribute.attribute_ar_name,
-          en_name: attribute.attribute_en_name,
+          name: attribute.name,
           advanced: attribute.advanced,
-          value: attribute.value
+          values: attribute.values,
+          value_id: attribute.value_id
         }
       });
       });
@@ -101,6 +125,8 @@ export default {
               'success').then(() => {
              this.$router.push(`/products/${this.product_id}/variants`); 
             });
+          }).catch(errors => {
+            this.errors = errors.response.data.errors;
           });
         }
     }

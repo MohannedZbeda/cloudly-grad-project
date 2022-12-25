@@ -8,21 +8,10 @@
                     }}</v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
-                    <p
-                        v-if="noAttributes && form.customizable"
-                        style="color:red"
-                    >
-                        {{
-                            $translate(
-                                "There are no attributes for this product, Please add some",
-                                "لا توجد خصائص لهذا المنتج، يرجى الإضافة"
-                            )
-                        }}
-                    </p>
                     <v-form>
                         <v-select
                             :items="categories"
-                            item-text="en_name"
+                            item-text="name"
                             item-value="id"
                             :label="
                                 $translate('Product Category', 'تصنيف المنتج')
@@ -31,33 +20,21 @@
                             outlined
                         ></v-select>
                         <v-text-field
-                            :label="$translate('AR Name', 'الإسم بالعربي')"
+                            :label="$translate('Name', 'الإسم')"
                             :placeholder="
                                 $translate(
-                                    'AR Product Name',
-                                    'إسم المنتج بالعربي'
+                                    'Product Name',
+                                    'إسم المنتج'
                                 )
                             "
                             outlined
-                            v-model="form.ar_name"
-                        ></v-text-field>
-
-                        <v-text-field
-                            dir="ltr"
-                            :label="$translate('EN Name', 'الإسم بالإنجليزي')"
-                            :placeholder="
-                                $translate(
-                                    'EN Product Name',
-                                    'إسم المنتج بالإنجليزي'
-                                )
-                            "
-                            outlined
-                            v-model="form.en_name"
+                            v-model="form.name"
+                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
                         ></v-text-field>
                         <v-autocomplete
                             v-model="form.cycles"
                             :items="cycles"
-                            :item-text="$translate('en_name', 'ar_name')"
+                            item-text="name"
                             item-value="id"
                             outlined
                             dense
@@ -70,6 +47,7 @@
                                 )
                             "
                             multiple
+                            :error-messages="errors.cycles ? $translate(errors.cycles[0].en, errors.cycles[0].ar) : null"
                         >
                         </v-autocomplete>
                         <v-file-input
@@ -90,106 +68,7 @@
                             max-width="300"
                             :src="form.base64image"
                         ></v-img>
-                        <br />
-                        <br />
-                        <b>
-                            {{
-                                $translate(
-                                    "If chekced, The Customer will be able to customize this broduct to their needs, Limited only by the attribute limits",
-                                    "في حالة إختيار هذا الخيار, سيتمكن الزبون من تعديل المنتج لما يناسبه من المواصفات ضمن الحدود المسموحة"
-                                )
-                            }}
-                        </b>
-                        <br />
-                        <v-checkbox
-                            v-model="form.customizable"
-                            :label="
-                                $translate('Customizable ? ', 'قابل للتعديل ؟')
-                            "
-                        ></v-checkbox>
-                        <br />
-                        <v-divider style="background-color: black"></v-divider>
-                        <br />
-
-                        <v-container v-if="form.customizable">
-                            <v-row
-                                v-for="attribute in form.custom_attributes"
-                                :key="attribute.attribute_id"
-                            >
-                                <v-col cols="6" sm="3" md="1">
-                                    <h3 style="margin-top: 1em">
-                                        {{
-                                            $translate(
-                                                attribute.en_name,
-                                                attribute.ar_name
-                                            )
-                                        }}
-                                        :
-                                    </h3>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="3">
-                                    <v-text-field
-                                        :label="
-                                            $translate(
-                                                'Custom Price',
-                                                'سعر الوحدة'
-                                            )
-                                        "
-                                        :placeholder="
-                                            $translate(
-                                                'Custom price per unit',
-                                                'سعر الوحدة'
-                                            )
-                                        "
-                                        outlined
-                                        type="number"
-                                        v-model="attribute.custom_price"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6" md="3">
-                                    <v-text-field
-                                        :label="
-                                            $translate(
-                                                'Unit Maximum',
-                                                'أقصى قيمة للوحدة'
-                                            )
-                                        "
-                                        :placeholder="
-                                            $translate(
-                                                'Maximum adjustment per unit',
-                                                'أقصى قيمة يسمح بإضافتها لهذه الخاصية'
-                                            )
-                                        "
-                                        outlined
-                                        type="number"
-                                        v-model="attribute.unit_max"
-                                    ></v-text-field>
-                                </v-col>
-
-                                <v-col cols="12" sm="6" md="3">
-                                    <v-text-field
-                                        :label="
-                                            $translate(
-                                                'Unit Minimum',
-                                                'أدنى قيمة للوحدة'
-                                            )
-                                        "
-                                        :placeholder="
-                                            $translate(
-                                                'Minimum adjustment per unit',
-                                                'أدنى قيمة يسمح بإضافتها لهذه الخاصية'
-                                            )
-                                        "
-                                        outlined
-                                        type="number"
-                                        v-model="attribute.unit_min"
-                                    ></v-text-field>
-                                </v-col>
-                                <br />
-                                <br />
-                            </v-row>
-                        </v-container>
+                        
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -214,16 +93,13 @@ export default {
             categories: [],
             cycles: [],
             image: null,
-            noAttributes: false,
             form: {
-                ar_name: "",
-                en_name: "",
+                name: "",
                 category_id: "",
-                customizable: false,
-                custom_attributes: [],
                 cycles: [],
                 base64image: null
-            }
+            },
+            errors: []
         };
     },
     beforeMount() {
@@ -233,8 +109,16 @@ export default {
 
         ProductService.GetProduct(this.id).then(response => {
             this.form = response.data.product;
-            this.getAttributes();
         });
+        CycleService.AllCycles().then(response => {
+                if (!response.data.cycles.length) {
+                    this.noCycles = true;
+                    this.form.cycles = [];
+                    return;
+                }
+                this.noCycles = false;
+                this.cycles = response.data.cycles;
+            });
     },
     methods: {
         toBase64() {
@@ -248,39 +132,7 @@ export default {
                 this.form.base64image = reader.result;
             };
         },
-        getAttributes() {
-            ProductService.GetAttributes(this.form.category_id).then(
-                response => {
-                    if (!response.data.attributes.length) {
-                        this.noAttributes = true;
-                        this.form.custom_attributes = [];
-                        return;
-                    }
-                    this.noAttributes = false;
-                    this.form.custom_attributes = response.data.attributes.map(
-                        attribute => {
-                            return {
-                                attribute_id: attribute.id,
-                                ar_name: attribute.ar_name,
-                                en_name: attribute.en_name,
-                                custom_price: null,
-                                unit_max: null,
-                                unit_min: null
-                            };
-                        }
-                    );
-                }
-            );
-            CycleService.AllCycles().then(response => {
-                if (!response.data.cycles.length) {
-                    this.noCycles = true;
-                    this.form.cycles = [];
-                    return;
-                }
-                this.noCycles = false;
-                this.cycles = response.data.cycles;
-            });
-        },
+        
         update() {
             this.form.cycles = this.form.cycles.map(cycle =>
                 cycle["id"] ? cycle["id"] : cycle
@@ -301,7 +153,9 @@ export default {
                         this.$router.push("/products");
                     });
                 }
-            );
+            ).catch(errors => {
+                this.errors =  errors.response.data.errors;
+            });
         }
     },
      watch: {

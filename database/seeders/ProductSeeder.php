@@ -13,31 +13,27 @@ class ProductSeeder extends Seeder
     {
         DB::table('products')->insert([
             'category_id' => 1,
-            'ar_name' => 'المنتج التابع  للتصنيف رقم واحد',
-            'en_name' => 'Category NO1 Product',
+            'name' => 'المنتج التابع  للتصنيف رقم واحد',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
 
         DB::table('products')->insert([
             'category_id' => 1,
-            'ar_name' => 'المنتج  الثاني التابع  للتصنيف رقم واحد',
-            'en_name' => 'Category NO1 Product 2',
+            'name' => 'المنتج  الثاني التابع  للتصنيف رقم واحد',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
 
         DB::table('products')->insert([
             'category_id' => 2,
-            'ar_name' => 'المنتج التابع  للتصنيف رقم إثنين',
-            'en_name' => 'Category NO2 Product',
+            'name' => 'المنتج التابع  للتصنيف رقم إثنين',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
         DB::table('products')->insert([
             'category_id' => 3,
-            'ar_name' => 'المنتج التابع  للتصنيف رقم ثلاثة',
-            'en_name' => 'Category NO3 Product',
+            'name' => 'المنتج التابع  للتصنيف رقم ثلاثة',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);    

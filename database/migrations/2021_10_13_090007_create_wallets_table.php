@@ -11,9 +11,7 @@ class CreateWalletsTable extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('type_id')->references('id')->on('wallet_types')->onDelete('RESTRICT');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('RESTRICT');
-            $table->unique(['type_id', 'user_id']);
             $table->timestamps();
         });
     }

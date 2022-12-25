@@ -13,8 +13,7 @@ class CreateAttributesTable extends Migration
             $table->id();
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('CASCADE');
             $table->boolean('advanced')->default(false);
-            $table->string('ar_name');
-            $table->string('en_name');
+            $table->string('name');
             $table->timestamps();
         });
     }

@@ -3,29 +3,22 @@
             <v-layout  align-center justify-center>
                   <v-card  style="min-width : 50%"  class="elevation-12">
                      <v-toolbar dark color="primary">
-                        <v-toolbar-title>{{$translate('Update a Category', 'تعديل تصنيف')}}</v-toolbar-title>
+                        <v-toolbar-title>{{$translate('Update a Category', 'تعديل فئة')}}</v-toolbar-title>
                      </v-toolbar>
                      <v-card-text>
                         <v-form>
                             <v-text-field
-                              :label="$translate('AR Name', 'الإسم بالعربي')"
-                              :placeholder="$translate('AR Category Name', 'إسم التصنيف بالعربي')"
+                              :label="$translate('Name', 'الإسم')"
+                              :placeholder="$translate('Category Name', 'إسم الفئة')"
                               outlined
-                              v-model="form.ar_name"
-                            ></v-text-field>
-
-                            <v-text-field
-                              dir="ltr"
-                              :label="$translate('EN Name', 'الإسم بالإنجليزي')"
-                              :placeholder="$translate('EN Category Name', 'إسم التصنيف بالإنجليزي')"
-                              outlined
-                              v-model="form.en_name"
+                              v-model="form.name"
+                              :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
                             ></v-text-field>
                         </v-form>
                      </v-card-text>
                      <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" @click="update">{{$translate('Update Category', 'تعديل تصنيف')}}</v-btn>
+                        <v-btn color="primary" @click="update">{{$translate('Update Category', 'تعديل فئة')}}</v-btn>
                      </v-card-actions>
                   </v-card>
             </v-layout>
@@ -41,9 +34,9 @@ export default {
         return {
          id : this.$route.params.id, 
          form: {
-           ar_name: '',
-           en_name: ''
-         }
+           name: ''
+         },
+         errors: []
         }
     },
     beforeMount() {
@@ -53,13 +46,15 @@ export default {
     },
     methods: {
         update() {
-          CategoryService.UpdateCategory(this.form).then((response) => {
+          CategoryService.UpdateCategory(this.form).then(() => {
             this.$swal(
               this.$translate('Operation done successfully !', 'تمت العملية بنجاح !'), 
-              this.$translate('Category updated successfully', 'تم تعديل التصنيف بنجاح'), 
+              this.$translate('Category updated successfully', 'تم تعديل الفئة بنجاح'), 
               'success').then(() => {
              this.$router.push('/categories') 
             });
+          }).catch(errors => {
+            this.errors = errors.response.data.errors;
           });
         }
     }

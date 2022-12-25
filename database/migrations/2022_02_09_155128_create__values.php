@@ -13,7 +13,7 @@ class CreateValues extends Migration
             $table->id();
             $table->foreignId('attribute_id')->references('id')->on('attributes');
             $table->string('value');
-            $table->boolean('hidden')->default(false);
+            //$table->boolean('hidden')->default(false);
             $table->timestamps();
         });
     }

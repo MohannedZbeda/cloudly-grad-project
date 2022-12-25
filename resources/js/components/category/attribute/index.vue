@@ -8,15 +8,10 @@
                 $translate(
                     [
                         {
-                            text: 'AR Name',
+                            text: 'Name',
                             align: 'start',
                             sortable: false,
-                            value: 'ar_name'
-                        },
-                        {
-                            text: 'EN Name',
-                            sortable: false,
-                            value: 'en_name'
+                            value: 'name'
                         },
                         {
                             text: 'Advanced ?',
@@ -32,15 +27,10 @@
                     ],
                     [
                         {
-                            text: 'الإسم بالعربي',
+                            text: 'الإسم',
                             align: 'start',
                             sortable: false,
-                            value: 'ar_name'
-                        },
-                        {
-                            text: 'الإسم بالإنجليزي',
-                            sortable: false,
-                            value: 'en_name'
+                            value: 'name'
                         },
                         {
                             text: 'خاصية أساسية ؟',
@@ -78,8 +68,8 @@
                 <v-card-title class="text-h5"
                     >{{
                         $translate(
-                            `Add Value to ${attribute.en_name}'`,
-                            `إضافة قيمة ل  ${attribute.ar_name}`
+                            `Add Value to ${attribute.name}'`,
+                            `إضافة قيمة ل  ${attribute.name}`
                         )
                     }}<br />
                 </v-card-title>
@@ -112,8 +102,8 @@
                 <v-card-title class="text-h5"
                     >{{
                         $translate(
-                            `${attribute.en_name}'s Values`,
-                            `قيم ${attribute.ar_name}`
+                            `${attribute.name}'s Values`,
+                            `قيم ${attribute.name}`
                         )
                     }}<br />
                 </v-card-title>
@@ -160,8 +150,7 @@ export default {
                 value: null
             },
             form: {
-                ar_name: "",
-                en_name: ""
+                name: ""
             }
         };
     },

@@ -12,7 +12,6 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Variant;
 use App\Models\Wallet;
-use App\Models\WalletType;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -91,9 +90,8 @@ class InvoiceController extends Controller
           ->setStatusCode(200);
       }
       $user = auth('sanctum')->user();
-      $balance_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
-      $reservation_wallet = Wallet::where('user_id', $user->id)->whereRelation('type', 'type_name', 'reservation_wallet')->first();
-      $wallet_balance = $balance_wallet->getWalletBalance();
+      $wallet = Wallet::where('user_id', $user->id)->first();
+      $wallet_balance = $wallet->getWalletBalance();
       if ($invoice_total > $wallet_balance)
         return response()->json([
           'status_code' => 200,
@@ -102,11 +100,15 @@ class InvoiceController extends Controller
         ])
           ->setStatusCode(200);
 
-      $reservation_wallet->reserveBalance($balance_wallet->id, $invoice_total);
-
-      DB::transaction(function () use ($invoice, $user) {
+      DB::transaction(function () use($invoice, $user,$wallet, $invoice_total) {
+        $transaction = new Transaction();
+        $transaction->description = "Paying for invoice";
+        $transaction->wallet_id = $wallet->id;
+        $transaction->amount = $invoice_total;
+        $transaction->save();
         $invoice->paid = true;
         $invoice->save();
+        
         $sub = new Subscription();
         $sub->user_id = $user->id;
         $sub->save();
@@ -119,14 +121,14 @@ class InvoiceController extends Controller
             'cycle_id' => $item->cycle_id
           ]);
         }
-        DB::table('subscribeables')->insert($subs);
+        DB::table('subscribeables')->insert($subs);  
       });
 
       DB::commit();
       return response()->json([
         'status_code' => 200,
         'message' => 'Invoice Paid',
-        'wallet_balance' => $balance_wallet->getWalletBalance()
+        'wallet_balance' => $wallet->getWalletBalance()
       ])
         ->setStatusCode(200);
     } catch (Error $error) {

@@ -20,30 +20,17 @@
                    
                     <v-form>
                         <v-text-field
-                            :label="$translate('AR Name', 'الإسم بالعربي')"
+                            :label="$translate('Name', 'الإسم')"
                             :placeholder="
                                 $translate(
-                                    'AR Variant Name',
-                                    'إسم المنتج بالعربي'
+                                    'Variant Name',
+                                    'إسم المنتج'
                                 )
                             "
                             outlined
-                            v-model="form.ar_name"
+                            v-model="form.name"
+                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
                         ></v-text-field>
-
-                        <v-text-field
-                            dir="ltr"
-                            :label="$translate('EN Name', 'الإسم بالإنجليزي')"
-                            :placeholder="
-                                $translate(
-                                    'EN Variant Name',
-                                    'إسم المنتج بالإنجليزي'
-                                )
-                            "
-                            outlined
-                            v-model="form.en_name"
-                        ></v-text-field>
-
                         
                         <v-divider style="background-color: black"></v-divider>
                         <br />
@@ -55,10 +42,8 @@
                                 <v-col cols="2" sm="2" md="1">
                                     <h3 style="margin-top: 1em">
                                         {{
-                                            $translate(
-                                                attribute.en_name,
-                                                attribute.ar_name
-                                            )
+                                            attribute.name
+                                            
                                         }}
                                         : 
                                     </h3>
@@ -91,7 +76,9 @@
                             :label="$translate('Price', 'السعر')"
                             outlined
                             type="number"
+                            min="0"
                             v-model="form.price"
+                            :error-messages="errors.price ? $translate(errors.price[0].en, errors.price[0].ar) : null"
                         ></v-text-field>
                     </v-form>
                 </v-card-text>
@@ -115,11 +102,11 @@ export default {
             id: this.$route.params.id,
             noAttributes: false,
             form: {
-                ar_name: "",
-                en_name: "",
+                name: "",
                 attributes: [],
                 price: null
-            }
+            },
+            errors: []
         };
     },
     beforeMount() {
@@ -138,8 +125,7 @@ export default {
                     attribute => {
                         return {
                             id: attribute.id,
-                            ar_name: attribute.ar_name,
-                            en_name: attribute.en_name,
+                            name: attribute.name,
                             advanced: attribute.advanced,
                             values: attribute.values
                         };
@@ -172,6 +158,8 @@ export default {
                 ).then(() => {
                     this.$router.push(`/products/${this.id}/variants`);
                 });
+            }).catch(errors => {
+                this.errors = errors.response.data.errors;
             });
         }
     }

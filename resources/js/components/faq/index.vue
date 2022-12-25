@@ -2,51 +2,30 @@
   <v-data-table
     :headers="$translate([
         {
-          text: 'AR Question',
+          text: 'Question',
           align: 'start',
           sortable: false,
-          value: 'ar_question',
+          value: 'question',
         },
         {
-          text: 'AR Answer',
+          text: 'Answer',
           sortable: false,
-          value: 'ar_answer',
-        },
-        {
-          text: 'EN Question',
-          align: 'start',
-          sortable: false,
-          value: 'en_question',
-        },
-        {
-          text: 'EN Answer',
-          sortable: false,
-          value: 'en_answer',
+          value: 'answer',
         },
         { text: 'Addition Date', value: 'created_at', sortable : true },
         { text: 'Actions', value: 'actions', sortable: false },
       ], [
         {
-          text: 'السؤال بالعربي',
+          text: 'السؤال',
           align: 'start',
           sortable: false,
-          value: 'ar_question',
+          value: 'question',
         },
         {
-          text: 'الجواب بالعربي',
+          text: 'الجواب',
           align: 'start',
           sortable: false,
-          value: 'ar_answer',
-        },
-        {
-          text: 'السؤال بالإنجليزي',
-          sortable: false,
-          value: 'en_question',
-        },
-        {
-          text: 'الجواب بالإنجليزي',
-          sortable: false,
-          value: 'en_answer',
+          value: 'answer',
         },
         { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
         { text: 'العمليات', value: 'actions', sortable: false },
@@ -67,11 +46,11 @@
         >
           
           <v-card>
-            <v-card-title class="text-h5">{{$translate(`Delete ${faq.en_question}  ?`, `حذف ${faq.ar_question} ؟`)}}<br>
+            <v-card-title class="text-h5">{{$translate(`Delete ${faq.question}  ?`, `حذف ${faq.question} ؟`)}}<br>
             </v-card-title>
             <v-card-text dir="rtl"> 
-              <b>{{$translate(`Are you sure you want to delete ${faq.en_question} ? `,
-                 `هل أنت متأكد أنك تريد حذف ${faq.ar_question}`
+              <b>{{$translate(`Are you sure you want to delete ${faq.question} ? `,
+                 `هل أنت متأكد أنك تريد حذف ${faq.question}`
                 )}}
               
               </b>

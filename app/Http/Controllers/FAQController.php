@@ -37,19 +37,18 @@ class FAQController extends Controller
     { 
       try {
         $validator = Validator::make($request->all(), [
-          'ar_question' => 'required|string',
-          'ar_answer' => 'required|string',
-          'en_question' => 'required|string',
-          'en_answer' => 'required|string',
+          'question' => 'required|string',
+          'answer' => 'required|string'
+        ], [
+          'question.required' => ['ar' => 'يرجى تحديد السؤال', 'en' => 'Please specify question'],
+          'answer.required' => ['ar' => 'يرجى تحديد الجواب', 'en' => 'Please specify answer']
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $faq = DB::transaction(function() use($request) {
           $faq = new FAQ();
-          $faq->ar_question = $request->ar_question;
-          $faq->ar_answer = $request->ar_answer;
-          $faq->en_question = $request->en_question;
-          $faq->en_answer = $request->en_answer;
+          $faq->question = $request->question;
+          $faq->answer = $request->answer;
           $faq->save();
           return $faq;
         });
@@ -68,19 +67,18 @@ class FAQController extends Controller
         {
           try {
             $validator = Validator::make($request->all(), [
-              'ar_question' => 'required|string',
-              'ar_answer' => 'required|string',
-              'en_question' => 'required|string',
-              'en_answer' => 'required|string',
+              'question' => 'required|string',
+              'answer' => 'required|string'
+            ], [
+              'question.required' => ['ar' => 'يرجى تحديد السؤال', 'en' => 'Please specify question'],
+              'answer.required' => ['ar' => 'يرجى تحديد الجواب', 'en' => 'Please specify answer']
             ]);
             if($validator->fails()) 
               return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
             $faq = DB::transaction(function() use($request) {
               $faq = FAQ::find($request->id);
-              $faq->ar_question = $request->ar_question;
-              $faq->ar_answer = $request->ar_answer;
-              $faq->en_question = $request->en_question;
-              $faq->en_answer = $request->en_answer;
+              $faq->question = $request->question;
+              $faq->answer = $request->answer;
               $faq->save();
               return $faq;
             });

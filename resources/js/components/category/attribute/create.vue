@@ -10,28 +10,16 @@
                 <v-card-text>
                     <v-form>
                         <v-text-field
-                            :label="$translate('AR Name', 'الإسم بالعربي')"
+                            :label="$translate('Name', 'الإسم')"
                             :placeholder="
                                 $translate(
-                                    'AR Attribute Name',
-                                    'إسم الخاصية بالعربي'
+                                    'Attribute Name',
+                                    'إسم الخاصية'
                                 )
                             "
                             outlined
-                            v-model="form.ar_name"
-                        ></v-text-field>
-
-                        <v-text-field
-                            dir="ltr"
-                            :label="$translate('EN Name', 'الإسم بالإنجليزي')"
-                            :placeholder="
-                                $translate(
-                                    'EN Attribute Name',
-                                    'إسم الخاصية بالإنجليزي'
-                                )
-                            "
-                            outlined
-                            v-model="form.en_name"
+                            v-model="form.name"
+                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
                         ></v-text-field>
 
                         <v-checkbox
@@ -64,10 +52,10 @@ export default {
         return {
             category_id: this.$route.params.category_id,
             form: {
-                ar_name: "",
-                en_name: "",
+                name: "",
                 advanced: false
-            }
+            },
+            errors: []
         };
     },
     methods: {
@@ -92,7 +80,9 @@ export default {
                         "/categories/" + this.category_id + "/attributes"
                     );
                 });
-            });
+            }).catch(errors => {
+              this.errors = errors.response.data.errors;
+          });
         }
     }
 };

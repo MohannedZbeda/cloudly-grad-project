@@ -6,14 +6,11 @@
                         <v-toolbar-title>{{$translate('Update a Package', 'تعديل باقة')}}</v-toolbar-title>
                      </v-toolbar>
                      <v-card-text>
-                       <!-- <p v-if="noAttributes" style="color:red">{{$translate(
-                         'There are no attributes for this category, Please add some', 
-                         'لا توجد خصائص لهذا التصنيف، يرجى الإضافة')}}</p> -->
                         <v-form>
                           <v-autocomplete
                             v-model="form.variants"
                             :items="variants"
-                            item-text="en_name"
+                            item-text="name"
                             item-value="id"
                             outlined
                             dense
@@ -21,26 +18,20 @@
                             small-chips
                             :label="$translate('Package variants', 'منتجات الباقة')"
                             multiple
+                            :error-messages="errors.variants ? $translate(errors.variants[0].en, errors.variants[0].ar) : null"
                           ></v-autocomplete>
 
                             <v-text-field
-                              :label="$translate('AR Name', 'الإسم بالعربي')"
-                              :placeholder="$translate('AR Package Name', 'إسم الباقة بالعربي')"
+                              :label="$translate('Name', 'الإسم')"
+                              :placeholder="$translate('Package Name', 'إسم الباقة')"
                               outlined
-                              v-model="form.ar_name"
-                            ></v-text-field>
-
-                            <v-text-field
-                              dir="ltr"
-                              :label="$translate('EN Name', 'الإسم بالإنجليزي')"
-                              :placeholder="$translate('EN Package Name', 'إسم الباقة بالإنجليزي')"
-                              outlined
-                              v-model="form.en_name"
+                              v-model="form.name"
+                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
                             ></v-text-field>
                             <v-autocomplete
                             v-model="form.cycles"
                             :items="cycles"
-                            :item-text="$translate('en_name', 'ar_name')"
+                            item-text="name"
                             item-value="id"
                             outlined
                             dense
@@ -53,6 +44,7 @@
                                 )
                             "
                             multiple
+                            :error-messages="errors.cycles ? $translate(errors.cycles[0].en, errors.cycles[0].ar) : null"
                         >
                         </v-autocomplete>
                             <v-divider style="background-color: black"></v-divider>
@@ -62,6 +54,7 @@
                               outlined
                               type="number"
                               v-model="form.price"
+                            :error-messages="errors.price ? $translate(errors.price[0].en, errors.price[0].ar) : null"
                             ></v-text-field>
                         </v-form>
                      </v-card-text>
@@ -86,12 +79,12 @@ export default {
          cycles: [],
          variants: [],
          form: {
-          ar_name: '',
-          en_name: '',
+          name: '',
           cycles: [],
           variants: [],
           price: null
          },
+         errors: []
         }
     },
     beforeMount() {
@@ -120,6 +113,8 @@ export default {
               'success').then(() => {
              this.$router.push('/packages') 
             });
+          }).catch(errors => {
+            this.errors = errors.response.data.errors;
           });
         }
         

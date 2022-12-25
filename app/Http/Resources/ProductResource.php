@@ -11,16 +11,12 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_name' => $this->ar_name,
-            'en_name' => $this->en_name,
-            'customizable' => $this->customizable,
-            'customizable_text' => $this->customizable ? ['ar' =>  'نعم', 'en' => 'Yes'] : ['ar' => 'لا', 'en' => 'No'],
-            'custom_attributes' => CustomAttributeResource::collection($this->whenLoaded('customAttributes')),
+            'name' => $this->name,
             'image' => $this->getFirstMediaUrl(),
             'cycles' => CycleResource::collection($this->whenLoaded('cycles')),
             'created_at' => $this->created_at->toDateString(),
             'category_id' => $this->category_id,
-            'category' => $this->category->en_name
+            'category' => $this->category->name
         ];
     }
 }

@@ -11,10 +11,8 @@ class CreateSubscribtionCycles extends Migration
     {
         Schema::create('subscribtion_cycles', function (Blueprint $table) {
             $table->id();
-            $table->string('ar_name')->unique();
-            $table->string('en_name')->unique();
+            $table->string('name')->unique();
             $table->integer('months')->min(1);
-            $table->double('discount_percentage')->default(0)->min(0)->max(100);
             $table->boolean('enabled')->default(true);
             $table->timestamps();
         });

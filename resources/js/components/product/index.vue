@@ -3,59 +3,39 @@
   <v-data-table
     :headers="$translate([
          {
-          text: 'AR Name',
+          text: 'Name',
           align: 'start',
           sortable: false,
-          value: 'ar_name',
-        },
-        {
-          text: 'EN Name',
-          sortable: false,
-          value: 'en_name',
-        },
-        {
-          text: 'Customizable',
-          sortable: false,
-          value: 'customizable_text.en',
-        },
-        {
-          text: 'Product attributes',
-          sortable: false,
-          value: 'attributes',
+          value: 'name',
         },
         {
           text: 'Category',
           sortable: false,
           value: 'category',
         },
+        {
+          text: 'Variants',
+          sortable: false,
+          value: 'attributes',
+        },
         { text: 'Addition Date', value: 'created_at', sortable : true },
         { text: 'Actions', value: 'actions', sortable: false },
       ],[
          {
-          text: 'الإسم بالعربي',
+          text: 'الإسم',
           align: 'start',
           sortable: false,
-          value: 'ar_name',
-        },
-        {
-          text: 'الإسم بالإنجليزي',
-          sortable: false,
-          value: 'en_name',
-        },
-        {
-          text: 'قابل للتعديل',
-          sortable: false,
-          value: 'customizable_text.ar',
-        },
-        {
-          text: 'خصائص المنتج',
-          sortable: false,
-          value: 'attributes',
+          value: 'name',
         },
         {
           text: 'التصنيف',
           sortable: false,
           value: 'category',
+        },
+        {
+          text: 'التفرعات',
+          sortable: false,
+          value: 'attributes',
         },
         { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
         { text: 'العمليات', value: 'actions', sortable: false }
@@ -87,13 +67,13 @@
           
           <v-card>
             <v-card-title class="text-h6">
-             {{$translate(`${product.en_name}'s Image`, 
-             `صورة ${product.ar_name}`)}}
+             {{$translate(`${product.name}'s Image`, 
+             `صورة ${product.name}`)}}
             </v-card-title>
             <v-card-text class="text-h6">
              <v-img
               :src="product.image"
-              :alt="$translate(product.en_name, product.ar_name)"
+              :alt="$translate(product.name, product.name)"
               max-height="300"
               max-width="300"
              >

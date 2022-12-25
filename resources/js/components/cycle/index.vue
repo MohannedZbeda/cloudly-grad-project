@@ -4,18 +4,12 @@
             $translate(
                 [
                     {
-                        text: 'AR Name',
+                        text: 'Name',
                         align: 'start',
                         sortable: false,
-                        value: 'ar_name'
+                        value: 'name'
                     },
-                    { text: 'EN Name', value: 'en_name', sortable: false },
                     { text: 'Cycle Months', value: 'months', sortable: false },
-                    {
-                        text: 'Discount Percentage',
-                        value: 'discount',
-                        sortable: false
-                    },
                     { text: 'State', value: 'state', sortable: false },
                     {
                         text: 'Addition Date',
@@ -26,22 +20,12 @@
                 ],
                 [
                     {
-                        text: 'الإسم بالعربي',
+                        text: 'الإسم',
                         align: 'start',
                         sortable: false,
-                        value: 'ar_name'
-                    },
-                    {
-                        text: 'الإسم بالإنجليزي',
-                        sortable: false,
-                        value: 'en_name'
+                        value: 'name'
                     },
                     { text: 'أشهر الدفع', value: 'months', sortable: false },
-                    {
-                        text: 'نسبة الخصم',
-                        value: 'discount',
-                        sortable: false
-                    },
                     { text: 'الحالة', value: 'state', sortable: false },
                     {
                         text: 'تاريخ الإضافة',
@@ -68,10 +52,10 @@
                                 $translate(
                                     `Are you sure you want to ${
                                         cycle.enabled ? "disable " : "enable "
-                                    }${cycle.en_name} `,
+                                    }${cycle.name} `,
                                     `هل أنت متأكد من أنك تريد ${
                                         cycle.enabled ? "تعطيل " : "تفعيل "
-                                    }${cycle.ar_name}`
+                                    }${cycle.name}`
                                 )
                             }}
                         </v-card-title>
@@ -94,54 +78,8 @@
                     </v-card>
                 </v-dialog>
 
-                <v-dialog v-model="activateDiscountDialog" max-width="500px">
-                    <v-card>
-                        <v-card-title class="text-h6">
-                            {{
-                                $translate(
-                                    `Update Discount`,
-                                    `تعديل نسبة الخصم`
-                                )
-                            }}
-                        </v-card-title>
-                        <v-card-text>
-                            <v-text-field
-                                :label="
-                                    $translate('Cycle Discount', 'نسبة الخصم')
-                                "
-                                :placeholder="
-                                    $translate(
-                                        'Cycle Discount Percentage',
-                                        'نسبة الخصم من سعر المنتج عند إختيار الدورة'
-                                    )
-                                "
-                                outlined
-                                type="number"
-                                v-model="form.discount_percentage"
-                            ></v-text-field>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="closeDialog"
-                                >{{ $translate("Cancel", "إلغاء") }}</v-btn
-                            >
-                            <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="updateDiscount"
-                                >{{ $translate("Update", "تحديث") }}</v-btn
-                            >
-                            <v-spacer></v-spacer>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
+                
             </v-toolbar>
-        </template>
-        <template v-slot:[`item.discount`]="{ item }">
-            {{ `${item.discount_percentage}%` }}
         </template>
         <template v-slot:[`item.state`]="{ item }">
             {{
@@ -163,15 +101,6 @@
                 }}
             </v-btn>
 
-            <v-btn
-                color="primary"
-                @click="prepareDiscountDialog(item)"
-                style="color:#fff"
-            >
-                {{
-                    $translate("Update Discount Percentage", "تعديل نسبة الخصم")
-                }}
-            </v-btn>
         </template>
     </v-data-table>
 </template>
@@ -183,10 +112,7 @@ export default {
     data() {
         return {
             activateDialog: false,
-            activateDiscountDialog: false,
-            form: {
-                discount_percentage: null
-            },
+            
             cycles: [],
             cycle: {}
         };
@@ -203,14 +129,8 @@ export default {
             this.activateDialog = true;
         },
 
-        prepareDiscountDialog(item) {
-            this.cycle = item;
-            this.form.discount_percentage = item.discount_percentage;
-            this.activateDiscountDialog = true;
-        },
         closeDialog() {
             this.activateDialog = false;
-            this.activateDiscountDialog = false;
             this.cycle = {};
         },
         changeState() {
@@ -227,19 +147,7 @@ export default {
                 .catch(() => this.$unexpectedError());
         },
 
-        updateDiscount() {
-            const payload = {
-                cycle_id: this.cycle.id,
-                discount_percentage: this.form.discount_percentage
-            };
-            CycleService.UpdateDiscount(payload)
-                .then(response => {
-                    this.cycles = response.data.cycles;
-                    this.activateDiscountDialog = false;
-                    this.cycle = {};
-                })
-                .catch(() => this.$unexpectedError());
-        }
+        
     }
 };
 </script>

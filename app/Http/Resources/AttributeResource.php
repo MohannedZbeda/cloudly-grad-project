@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use App\Http\Resources\AttributeValueResource;
 class AttributeResource extends JsonResource
 {
 
@@ -11,12 +11,11 @@ class AttributeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_name' => $this->ar_name,
-            'en_name' => $this->en_name,
+            'name' => $this->name,
             'advanced' => $this->advanced,
             'ar_type' => !$this->advanced ? 'أساسية' : 'غير أساسية',
             'en_type' => $this->advanced ? 'Advanced' : 'Basic',
-            'values' => ValueResource::collection($this->whenLoaded('values')),
+            'values' => AttributeValueResource::collection($this->whenLoaded('values')),
             'created_at' => $this->created_at->toDateString()
         ];
     }

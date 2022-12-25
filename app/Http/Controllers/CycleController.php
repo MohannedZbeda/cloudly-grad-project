@@ -36,19 +36,21 @@ class CycleController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'ar_name' => 'required|unique:subscribtion_cycles,ar_name',
-                'en_name' => 'required|unique:subscribtion_cycles,en_name',
-                'months' => 'required|numeric|min:1',
-                'discount_percentage' => 'nullable|numeric',
+                'name' => 'required|unique:subscribtion_cycles,name',
+                'months' => 'required|numeric|min:1'
+            ], [
+                'name.required' => ['ar' => 'يرجى تحديد إسم دورة الدفع', 'en' => 'Please enter payment cycle name'],
+                'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
+                'months.required' => ['ar' => 'يرجى تحديد عدد الأشهر', 'en' => 'Please enter months'],
+                'months.numeric' => ['ar' => 'عدد الأشهر يجب أن يكون رقما', 'en' => 'Months should be numeric'],
+                'months.min' => ['ar' => 'عدد الأشهر يجب أن لا يقل عن واحد', 'en' => 'Months should be bigger than 1']
             ]);
             if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
             $cycle = DB::transaction(function () use ($request) {
                 $cycle = new SubscriptionCycle();
-                $cycle->ar_name = $request->ar_name;
-                $cycle->en_name = $request->en_name;
+                $cycle->name = $request->name;
                 $cycle->months = $request->months;
-                $cycle->discount_percentage = $request->discount_percentage;
                 $cycle->save();
                 return $cycle;
             });
@@ -83,25 +85,5 @@ class CycleController extends Controller
     }
 
 
-    public function updateDiscount(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'cycle_id' => 'required|exists:subscribtion_cycles,id',
-                'discount_percentage' => 'required|numeric|min:0|max:100',
-            ]);
-            if ($validator->fails())
-                return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
-            DB::transaction(function () use ($request) {
-                $cycle = SubscriptionCycle::find($request->cycle_id);
-                $cycle->discount_percentage = $request->discount_percentage;
-                $cycle->save();
-            });
-            DB::commit();
-            return response()->json(['status_code' => 200, 'cycles' => CycleResource::collection(SubscriptionCycle::all())])->setStatusCode(200);
-        } catch (Error $error) {
-            DB::rollBack();
-            return response()->json(['status_code' => 500, 'location' => 'CycleController, Trying to get all cycles', 'error' => $error->getMessage()])->setStatusCode(500);
-        }
-    }
+    
 }

@@ -11,14 +11,10 @@ class PackageResource extends JsonResource
     {
         return [
          'id' => $this->id,
-         'ar_name' => $this->ar_name,
-         'en_name' => $this->en_name,
+         'name' => $this->name,
          'price' => $this->price,
-         'new_price' => $this->getDiscount(),
          'variants' => VariantResource::collection($this->whenLoaded('variants')),
          'cycles' => CycleResource::collection($this->whenLoaded('cycles')),
-         'discount' => $this->discount_percentage ? $this->discount_percentage.'%' : null,
-         'vouchers' => $this->getVouchers(),
          'created_at' => $this->created_at->toDateString()
         ];
     }

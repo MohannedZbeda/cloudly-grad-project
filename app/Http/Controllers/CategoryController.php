@@ -39,15 +39,16 @@ class CategoryController extends Controller
     {
       try {
         $validator = Validator::make($request->all(), [
-            'ar_name' => 'required|unique:categories,ar_name',
-            'en_name' => 'required|unique:categories,en_name'
+            'name' => 'required|unique:categories,name'
+        ], [
+          'name.required' => ['ar' => 'يرجى إدخال إسم للفئة', 'en' => 'Please enter category name'],
+          'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken']
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $category = DB::transaction(function() use($request) {
           $category = new Category();
-          $category->ar_name = $request->ar_name;
-          $category->en_name = $request->en_name;
+          $category->name = $request->name;
           $category->save();
           return $category;
         });
@@ -65,21 +66,19 @@ class CategoryController extends Controller
     {
       try {
         $validator = Validator::make($request->all(), [
-            'ar_name' => [
+            'name' => [
               'required',
-              Rule::unique('categories', 'ar_name')->ignore($request->id)
-            ],
-            'en_name' => [
-                'required',
-                Rule::unique('categories', 'en_name')->ignore($request->id)
-              ]
+              Rule::unique('categories', 'name')->ignore($request->id)
+            ]
+        ], [
+          'name.required' => ['ar' => 'يرجى إدخال إسم للفئة', 'en' => 'Please enter category name'],
+          'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken']
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
     
         $category = Category::find($request->id);
-        $category->ar_name = $request->ar_name;
-        $category->en_name = $request->en_name;
+        $category->name = $request->name;
         $category->save();
         return response()->json(['status_code' => 200, 'Category' => $category])->setStatusCode(200);
     }  

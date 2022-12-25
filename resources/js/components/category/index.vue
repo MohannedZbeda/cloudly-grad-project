@@ -2,29 +2,19 @@
   <v-data-table
     :headers="$translate([
         {
-          text: 'AR Name',
+          text: 'Name',
           align: 'start',
           sortable: false,
-          value: 'ar_name',
-        },
-        {
-          text: 'EN Name',
-          sortable: false,
-          value: 'en_name',
+          value: 'name',
         },
         { text: 'Addition Date', value: 'created_at', sortable : true },
         { text: 'Actions', value: 'actions', sortable: false },
       ], [
         {
-          text: 'الإسم بالعربي',
+          text: 'الإسم',
           align: 'start',
           sortable: false,
-          value: 'ar_name',
-        },
-        {
-          text: 'الإسم بالإنجليزي',
-          sortable: false,
-          value: 'en_name',
+          value: 'name',
         },
         { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
         { text: 'العمليات', value: 'actions', sortable: false },
@@ -33,7 +23,7 @@
     sort-by="created_at"
     class="elevation-1"
     calculated-width="true"
-    :no-data-text="$translate(`There's no categories..`, 'لا يوجد تصنيفات..')"
+    :no-data-text="$translate(`There's no categories..`, 'لا يوجد فئات..')"
 
   >
         
@@ -55,12 +45,7 @@ import CategoryService from '../../services/Category';
       activateDialog: false,
       additionMode: false,
       categories: [],
-      category: {},
-      form: {
-        ar_name: '',
-        en_name: ''
-      }
-
+      category: {}
       } 
     },
 

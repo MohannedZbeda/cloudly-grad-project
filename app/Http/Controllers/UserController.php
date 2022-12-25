@@ -57,10 +57,19 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|unique:users,email',
+            'email' => 'required|email|unique:users,email',
             'username' => 'required|string|unique:users,username',
             'password' => 'required|string|min:8',
             'role' => 'required|exists:roles,id'
+        ], [
+            'name.required' => ['ar' =>'يرجى إدخال إسم للمسؤول', 'en' => 'Please enter name'],
+            'email.required' => ['ar' =>'يرجى إدخال بريد إلكتروني', 'en' => 'Please enter email'],
+            'email.email' => ['ar' =>' يرجى إدخال بريد إلكتروني صالح', 'en' => 'Please enter a valid email'],
+            'email.unique' => ['ar' =>' هذا البريد الإلكتروني مستعمل', 'en' => 'This email is taken'],
+            'username.required' => ['ar' =>' يرجى إدخال إسم مستخدم للمسؤول', 'en' => 'Please enter username'],
+            'username.unique' => ['ar' =>'إسم المستخدم مستعمل', 'en' => 'This username is taken'],
+            'password.required' => ['ar' =>'يرجى إدخال رمز سري', 'en' => 'Please enter a password'],
+            'role.required' => ['ar' =>'يرجى تحديد دور المسؤول', 'en' => 'Please specify admin role']
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
@@ -98,6 +107,15 @@ class UserController extends Controller
                  Rule::unique('users', 'username')->ignore($request->id)  
               ],
             'role_id' => 'required|exists:roles,id'
+        ],[
+            'name.required' => ['ar' =>'يرجى إدخال إسم للمسؤول', 'en' => 'Please enter name'],
+            'email.required' => ['ar' =>'يرجى إدخال بريد إلكتروني', 'en' => 'Please enter email'],
+            'email.email' => ['ar' =>' يرجى إدخال بريد إلكتروني صالح', 'en' => 'Please enter a valid email'],
+            'email.unique' => ['ar' =>' هذا البريد الإلكتروني مستعمل', 'en' => 'This email is taken'],
+            'username.required' => ['ar' =>' يرجى إدخال إسم مستخدم للمسؤول', 'en' => 'Please enter username'],
+            'username.unique' => ['ar' =>'إسم المستخدم مستعمل', 'en' => 'This username is taken'],
+            'password.required' => ['ar' =>'يرجى إدخال رمز سري', 'en' => 'Please enter a password'],
+            'role.required' => ['ar' =>'يرجى تحديد دور المسؤول', 'en' => 'Please specify admin role']
         ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);

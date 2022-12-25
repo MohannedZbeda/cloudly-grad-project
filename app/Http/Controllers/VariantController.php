@@ -10,7 +10,6 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\VariantResource;
-use App\Models\CustomAttribute;
 use App\Models\ProductValue;
 use App\Models\Variant;
 use Illuminate\Support\Carbon;
@@ -24,10 +23,9 @@ class VariantController extends Controller
     {
     try {
         $product = Product::find($product_id);
-        $custom_attributes = CustomAttributeResource::collection($product->customAttributes);
-        $variants = VariantResource::collection(Variant::with(['values'])->where('product_id',$product_id)->where('customized', false)->get());
+        $variants = VariantResource::collection(Variant::with(['values'])->where('product_id',$product_id)->get());
         $cycles = CycleResource::collection($product->cycles);
-        return response()->json(['status_code' => 200, 'variants' => $variants, 'custom_attributes' => $custom_attributes, 'cycles' => $cycles])->setStatusCode(200);
+        return response()->json(['status_code' => 200, 'variants' => $variants, 'cycles' => $cycles])->setStatusCode(200);
     }
     catch(Error $error) {
         return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to get all variants'])->setStatusCode(500);  
@@ -71,76 +69,6 @@ public function getVariants()
       }   
 }
 
-public function addDiscount(Request $request)
-    {
-        try {
-        $validator = Validator::make($request->all(), [
-            'discount_percentage' => 'required|numeric|min:1|max:100',
-            'variant_id' => 'required|exists:variants,id'
-        ]);
-        if($validator->fails()) 
-            return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);    
-        $variant = Variant::find($request->variant_id);
-        DB::transaction(function() use($variant, $request) {
-        $variant->discount_percentage = $request->discount_percentage;
-        $variant->save();
-        });
-        DB::commit();
-        $variants = VariantResource::collection(Variant::all());
-        return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
-    }  
-    catch(Error $error) {
-        DB::rollBack();
-        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to add a discount'])->setStatusCode(500);  
-      
-      }  
-}
-
-    public function removeDiscount(Request $request)
-    {
-        try {
-        $variant = Variant::find($request->variant_id);
-        DB::transaction(function () use($variant){
-            $variant->discount_percentage = null;
-            $variant->save();
-        });
-        DB::commit();
-        $variants = VariantResource::collection(Variant::all());
-        return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
-    }  catch(Error $error) {
-        DB::rollBack();
-        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to remove a discount'])->setStatusCode(500);  
-      
-      }   
-}
-
-    public function addVouchers(Request $request)
-    {
-      try {
-        $vouchers = [];
-        for ($i=0; $i <$request->quantity; $i++) { 
-         array_push($vouchers, [
-             'code' => 'PRVA-'.substr(str_shuffle("0123456789"), 0, 7),
-             'voucherable_id' => $request->variant_id,
-             'voucherable_type' => Variant::class,
-              'created_at' => Carbon::now(),
-              'updated_at' => Carbon::now()
-         ]);
-        }
-        DB::transaction(function() use($vouchers) {
-            Voucher::insert($vouchers);
-        });
-        DB::commit();
-        $variants = VariantResource::collection(Variant::all());
-        return response()->json(['status_code' => 200, 'variants' => $variants])->setStatusCode(200);
-    }  catch(Error $error) {
-        DB::rollBack();
-        return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'VariantController, Trying to generate vouchers'])->setStatusCode(500);  
-      
-      }   
-
-}
-
 
     public function getVariant($id)
     {
@@ -157,20 +85,24 @@ public function addDiscount(Request $request)
         try {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
-            'ar_name' => 'required|unique:variants,ar_name',
-            'en_name' => 'required|unique:variants,en_name',
+            'name' => 'required|unique:variants,name',
             'price' => 'required|numeric',
             'attributes' => 'required|array',
             'attributes.*.value_id' => 'required|exists:values,id',
             'attributes.*.id' => 'required|exists:attributes,id'
-        ]);
+        ], [
+            'product_id.required' => ['ar' => 'يرجى تحديد المنتج اللتي ينتمي إليها هذا التفرع', 'en' => 'Please specify product variants'],
+            'name.required' => ['ar' => 'يرجى إدخال إسم للمنتج', 'en' => 'Please enter product name'],
+            'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
+            'price.required' => ['ar'=> 'يرحى تحديد السعر', 'en' => 'Please specify price'],
+            'attributes.required' => ['ar'=> 'يرحى تحديد دخاصية واحدة على الأقل', 'en' => 'Please select at least one attribute']
+          ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $variant = DB::transaction(function () use($request) {
             $variant = new Variant();
             $variant->product_id = $request->product_id;
-            $variant->ar_name = $request->ar_name;
-            $variant->en_name = $request->en_name;
+            $variant->name = $request->name;
             $variant->price = $request->price;
             $variant->save();
             foreach($request['attributes'] as $attribute) {
@@ -195,29 +127,29 @@ public function addDiscount(Request $request)
         try {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:products,id',
-            'ar_name' => [
+            'name' => [
                 'required',
                 'string',
-                Rule::unique('variants', 'ar_name')->ignore($request->id)
-            ],
-            'en_name' => [
-                'required',
-                'string',
-                Rule::unique('variants', 'en_name')->ignore($request->id)
+                Rule::unique('variants', 'name')->ignore($request->id)
             ],
             'price' => 'required|numeric',
             'attributes' => 'required|array',
             'attributes.*.value_id' => 'required|exists:values,id',
             'attributes.*.id' => 'required|exists:attributes,id',
 
-        ]);
+        ], [
+            'product_id.required' => ['ar' => 'يرجى تحديد المنتج اللتي ينتمي إليها هذا التفرع', 'en' => 'Please specify product variants'],
+            'name.required' => ['ar' => 'يرجى إدخال إسم للمنتج', 'en' => 'Please enter product name'],
+            'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
+            'price.required' => ['ar'=> 'يرحى تحديد السعر', 'en' => 'Please specify price'],
+            'attributes.required' => ['ar'=> 'يرحى تحديد دخاصية واحدة على الأقل', 'en' => 'Please select at least one attribute']
+          ]);
         if($validator->fails()) 
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         $variant = DB::transaction(function() use($request) {
             $variant = Variant::find($request->id);
             $variant->product_id = $request->product_id;
-            $variant->ar_name = $request->ar_name;
-            $variant->en_name = $request->en_name;
+            $variant->name = $request->name;
             $variant->price = $request->price;
             $variant->save();
             foreach($request['attributes'] as $attribute) {

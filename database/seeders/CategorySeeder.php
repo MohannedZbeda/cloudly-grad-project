@@ -11,20 +11,17 @@ class CategorySeeder extends Seeder
     public function run()
     {
         DB::table('categories')->insert([
-            'ar_name' => 'التصنيف رقم واحد',
-            'en_name' => 'Category NO1',
+            'name' => 'التصنيف رقم واحد',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
         DB::table('categories')->insert([
-            'ar_name' => 'التصنيف رقم إثنين',
-            'en_name' => 'Category NO2',
+            'name' => 'التصنيف رقم إثنين',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
         DB::table('categories')->insert([
-            'ar_name' => 'التصنيف رقم ثلاثة',
-            'en_name' => 'Category NO3',
+            'name' => 'التصنيف رقم ثلاثة',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
