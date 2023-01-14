@@ -12,6 +12,8 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'description' => $this->description,
+            'price' => $this->price,
             'image' => $this->getFirstMediaUrl(),
             'cycles' => CycleResource::collection($this->whenLoaded('cycles')),
             'created_at' => $this->created_at->toDateString(),

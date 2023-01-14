@@ -8,17 +8,17 @@
                      <v-card-text>
                         <v-form>
                           <v-autocomplete
-                            v-model="form.variants"
-                            :items="variants"
+                            v-model="form.products"
+                            :items="products"
                             item-text="name"
                             item-value="id"
                             outlined
                             dense
                             chips
                             small-chips
-                            :label="$translate('Package variants', 'منتجات الباقة')"
+                            :label="$translate('Package products', 'منتجات الباقة')"
                             multiple
-                            :error-messages="errors.variants ? $translate(errors.variants[0].en, errors.variants[0].ar) : null"
+                            :error-messages="errors.products ? $translate(errors.products[0].en, errors.products[0].ar) : null"
                           ></v-autocomplete>
 
                             <v-text-field
@@ -70,6 +70,7 @@
 
 <script>
 import PackageService from '../../services/Package'
+import ProductService from '../../services/Product'
 import CycleService from '../../services/Cycle'
 export default {
     name: 'package.edit',
@@ -77,11 +78,11 @@ export default {
         return {
          id: this.$route.params.id,
          cycles: [],
-         variants: [],
+         products: [],
          form: {
           name: '',
           cycles: [],
-          variants: [],
+          products: [],
           price: null
          },
          errors: []
@@ -91,8 +92,8 @@ export default {
       PackageService.GetPackage(this.id).then(response => {
         this.form = response.data.package;
       });
-      PackageService.GetVariants().then(response => {
-        this.variants = response.data.variants;
+      ProductService.GetProducts().then(response => {
+        this.products = response.data.products;
       });
       CycleService.AllCycles().then(response => {
         this.cycles = response.data.cycles;
@@ -100,7 +101,7 @@ export default {
     },
     methods: {
         update() {
-          this.form.variants = this.form.variants.map(variant => variant['id'] ? variant['id'] : variant);
+          this.form.products = this.form.products.map(product => product['id'] ? product['id'] : product);
           this.form.cycles = this.form.cycles.map(cycle => cycle['id'] ? cycle['id'] : cycle);
           const payload = {
             id : this.id,

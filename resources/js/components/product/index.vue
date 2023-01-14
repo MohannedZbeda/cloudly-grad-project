@@ -14,9 +14,14 @@
           value: 'category',
         },
         {
-          text: 'Variants',
+          text: 'Description',
           sortable: false,
-          value: 'attributes',
+          value: 'des',
+        },
+        {
+          text: 'Price (monthly)',
+          sortable: false,
+          value: 'price',
         },
         { text: 'Addition Date', value: 'created_at', sortable : true },
         { text: 'Actions', value: 'actions', sortable: false },
@@ -33,9 +38,14 @@
           value: 'category',
         },
         {
-          text: 'التفرعات',
+          text: 'الوصف',
           sortable: false,
-          value: 'attributes',
+          value: 'des',
+        },
+        {
+          text: 'السعر (شهريا)',
+          sortable: false,
+          value: 'price',
         },
         { text: 'تاريخ الإضافة', value: 'created_at', sortable : true },
         { text: 'العمليات', value: 'actions', sortable: false }
@@ -45,7 +55,6 @@
     class="elevation-1"
     calculated-width="true"
     :no-data-text="$translate(`There's no products..`, 'لا يوجد منتجات..')"
-
   >
       
 
@@ -53,9 +62,8 @@
       <v-icon style="margin-right: 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
       <v-icon style="margin-right: 10px" @click="showImage(item)">mdi-image-size-select-actual</v-icon>
     </template>
-
-    <template v-slot:[`item.attributes`]="{ item }">
-       <v-btn class="primary" @click="goToVariants(item.id)">{{$translate('View Variants', 'عرض التفرعات')}}</v-btn>  
+    <template v-slot:[`item.des`]="{ item }">
+      <v-btn class="primary" @click="showDescription(item)">{{ $translate('Show Description', 'عرض الوصف') }}</v-btn>
     </template>
     
   </v-data-table>
@@ -86,6 +94,27 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+        <v-dialog
+          v-model="desDialog"
+          max-width="500px"
+        >
+          
+          <v-card>
+            <v-card-title class="text-h6">
+             {{$translate(`${product.name}'s Description`, 
+             `وصف ${product.name}`)}}
+            </v-card-title>
+            <v-card-text class="text-h6">
+             {{ product.description }}
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
   </div>
 </template>
 <script>    
@@ -96,7 +125,8 @@ import Productservice from '../../services/Product';
       return {
       products: [],
       product : {},
-      dialog: false
+      dialog: false,
+      desDialog: false
     } 
     },
 
@@ -109,8 +139,9 @@ import Productservice from '../../services/Product';
     goToEdit(id) {
       this.$router.push('/products/edit/' + id);
     },
-    goToVariants(id) {
-      this.$router.push('/products/'+id+'/variants');
+    showDescription(item) {
+      this.product = item;
+      this.desDialog = true;
     },
 
     showImage(product) {
@@ -120,9 +151,9 @@ import Productservice from '../../services/Product';
 
     closeDialog() {
       this.dialog = false;
+      this.desDialog = false;
       this.product = {};
-    },
-      
+    } 
 
   }  
 }

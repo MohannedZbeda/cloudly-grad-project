@@ -31,6 +31,26 @@
                             v-model="form.name"
                             :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
                         ></v-text-field>
+                        <v-textarea
+                            :label="$translate('Description', 'الوصف')"
+                            :placeholder="$translate('Product NDescriptioname', 'وصف المنتج')"
+                            outlined
+                            v-model="form.description"
+                            :error-messages="errors.description ? $translate(errors.description[0].en, errors.description[0].ar) : null"
+                        ></v-textarea>
+                        <v-text-field
+                            :label="$translate('Price', 'السعر')"
+                            :placeholder="
+                                $translate(
+                                    'Product monthly Price',
+                                    'السعر الشهري للمنتج'
+                                )
+                            "
+                            outlined
+                            min="0"
+                            v-model="form.price"
+                            :error-messages="errors.price ? $translate(errors.price[0].en, errors.price[0].ar) : null"
+                        ></v-text-field>
                         <v-autocomplete
                             v-model="form.cycles"
                             :items="cycles"
@@ -95,6 +115,8 @@ export default {
             image: null,
             form: {
                 name: "",
+                description: "",
+                price: null,
                 category_id: "",
                 cycles: [],
                 base64image: null
@@ -167,5 +189,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

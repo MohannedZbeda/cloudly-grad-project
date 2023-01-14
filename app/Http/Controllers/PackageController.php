@@ -16,7 +16,7 @@ class PackageController extends Controller
     public function index()
     {
         try {
-        $packages = PackageResource::collection(Package::with(['variants', 'cycles'])->get());
+        $packages = PackageResource::collection(Package::with(['products', 'cycles'])->get());
         return response()->json(['status_code' => 200, 'packages' => $packages])->setStatusCode(200);
     }
       catch(Error $error) {
@@ -28,7 +28,7 @@ class PackageController extends Controller
     public function getPackage($id)
     {
         try {
-        $package = new PackageResource(Package::with(['variants', 'cycles'])->find($id));
+        $package = new PackageResource(Package::with(['products', 'cycles'])->find($id));
         return response()->json(['status_code' => 200, 'package' => $package])->setStatusCode(200);
     }  
     catch(Error $error) {
@@ -43,13 +43,13 @@ class PackageController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:packages,name',
             'price' => 'required|numeric',
-            'variants' => 'required|array|exists:variants,id',  
+            'products' => 'required|array|exists:products,id',  
             'cycles' => 'required|array|exists:subscribtion_cycles,id'  
         ], [
           'name.required' => ['ar' => 'يرجى إدخال إسم للباقة', 'en' => 'Please enter package name'],
           'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
           'price.required' => ['ar' => 'يرجى إدخال سعر الباقة', 'en' => 'Please enter package price'],
-          'variants.required' => ['ar'=> 'يرحى تحديد على الأفل منتج واحد للباقة', 'en' => 'Please specify at least one variant'],
+          'products.required' => ['ar'=> 'يرحى تحديد على الأفل منتج واحد للباقة', 'en' => 'Please specify at least one product'],
           'cycles.required' => ['ar'=> 'يرحى تحديد دورة دفع واحدة على الأقل', 'en' => 'Please select at least one payment cycle']
         ]);
         if($validator->fails()) 
@@ -59,7 +59,7 @@ class PackageController extends Controller
         $package->name = $request->name;
         $package->price = $request->price;
         $package->save();
-        $package->variants()->sync($request->variants);
+        $package->products()->sync($request->products);
         $package->cycles()->sync($request->cycles);
         return $package;
       });
@@ -83,13 +83,13 @@ class PackageController extends Controller
               'required',
               Rule::unique('packages', 'name')->ignore($request->id)],
             'price' => 'required|numeric',
-            'variants' => 'required|array|exists:variants,id',  
+            'products' => 'required|array|exists:products,id',  
             'cycles' => 'required|array|exists:subscribtion_cycles,id'  
         ], [
           'name.required' => ['ar' => 'يرجى إدخال إسم للباقة', 'en' => 'Please enter package name'],
           'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
           'price.required' => ['ar' => 'يرجى إدخال سعر الباقة', 'en' => 'Please enter package price'],
-          'variants.required' => ['ar'=> 'يرحى تحديد على الأفل منتج واحد للباقة', 'en' => 'Please specify at least one variant'],
+          'products.required' => ['ar'=> 'يرحى تحديد على الأفل منتج واحد للباقة', 'en' => 'Please specify at least one product'],
           'cycles.required' => ['ar'=> 'يرحى تحديد دورة دفع واحدة على الأقل', 'en' => 'Please select at least one payment cycle']
         ]);
         if($validator->fails()) 
@@ -99,7 +99,7 @@ class PackageController extends Controller
         $package->name = $request->name;
         $package->price = $request->price;
         $package->save();
-        $package->variants()->sync($request->variants);
+        $package->products()->sync($request->products);
         $package->cycles()->sync($request->cycles);
         return $package;
        });

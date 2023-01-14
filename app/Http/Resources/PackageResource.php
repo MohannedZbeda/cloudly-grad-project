@@ -13,7 +13,7 @@ class PackageResource extends JsonResource
          'id' => $this->id,
          'name' => $this->name,
          'price' => $this->price,
-         'variants' => VariantResource::collection($this->whenLoaded('variants')),
+         'products' => ProductResource::collection($this->whenLoaded('products')),
          'cycles' => CycleResource::collection($this->whenLoaded('cycles')),
          'created_at' => $this->created_at->toDateString()
         ];

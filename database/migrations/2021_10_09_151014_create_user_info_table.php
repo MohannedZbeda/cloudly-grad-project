@@ -9,12 +9,11 @@ class CreateUserInfoTable extends Migration
     
     public function up()
     {
-        Schema::create('user_info', function (Blueprint $table) {
+        Schema::create('customer_info', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('CASCADE');
             $table->string('phone')->unique();
             $table->string('password_reset_code')->unique()->nullable();
-            //$table->timestamps();
         });
     }
 

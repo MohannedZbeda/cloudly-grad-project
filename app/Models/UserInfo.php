@@ -9,7 +9,7 @@ class UserInfo extends Model
 {
     const CREATED_AT = null;
     const UPDATED_AT = null;
-    protected $table = 'user_info';
+    protected $table = 'customer_info';
     use HasFactory;
 
     public function user() {

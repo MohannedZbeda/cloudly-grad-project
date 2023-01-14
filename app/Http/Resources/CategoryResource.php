@@ -14,7 +14,6 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'products' => $this->whenLoaded('products'),
-            'attributes' => $this->whenLoaded('attributes'),
             'created_at' => $this->created_at->toDateString()
         ];
     }

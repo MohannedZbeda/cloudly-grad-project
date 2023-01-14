@@ -29,7 +29,6 @@
         
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon style="margin-right : 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
-      <v-icon style="margin-right : 10px" @click="goToAttributes(item.id)">mdi-script-text</v-icon>   
     </template>
   
   </v-data-table>
@@ -55,10 +54,12 @@ import CategoryService from '../../services/Category';
       });
     },
     methods: {
+
     prepareDialog(item){
     this.category = item;
     this.activateDialog = true;
     },
+
     closeDialog() {
     this.activateDialog = false;
     this.category = {};
@@ -66,10 +67,7 @@ import CategoryService from '../../services/Category';
 
     goToEdit(id) {
      this.$router.push('/categories/edit/' + id);
-    },
-    goToAttributes(id) {
-     this.$router.push('/categories/'+id+'/attributes');
-    },  
+    }  
 
     }  
   }

@@ -28,8 +28,7 @@ class InvoiceItem extends Model
     public function getTotal()
     {
         $total = 0;
-        $total =  $this->invoiceable->getDiscount() * $this->cycle->months;
-        $total = $total - ($total * ($this->cycle->discount_percentage / 100));
+        $total =  $this->invoiceable->price * $this->cycle->months;
         return $total;
     }
 }

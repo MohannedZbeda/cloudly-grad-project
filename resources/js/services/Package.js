@@ -11,10 +11,6 @@ export default class {
     static async GetPackage(id) {
         return API.get(`${prefix}/${id}`);
     }
-    
-    static async GetVariants() {
-        return API.get(`${prefix}/get-variants`);
-    }
 
     static async CreateProduct(payload) {
         return API.post(`${prefix}/store`, payload);

@@ -54,10 +54,14 @@ class ProductController extends Controller
             $validator = Validator::make($request->all(), [
                 'category_id' => 'required|exists:categories,id',
                 'name' => 'required|unique:products,name',
+                'description' => 'required',
+                'price' => 'required',
                 'cycles' => 'required|array|exists:subscribtion_cycles,id'
             ], [
                 'category_id.required' => ['ar' => 'يرجى تحديد الفئة اللتي ينتمي إليها المنتج', 'en' => 'Please specify category products'],
                 'name.required' => ['ar' => 'يرجى إدخال إسم للمنتج', 'en' => 'Please enter product name'],
+                'price.required' => ['ar' => 'يرجى إدخال سعر للمنتج', 'en' => 'Please enter product price'],
+                'description.required' => ['ar' => 'يرجى إدخال وصف للمنتج', 'en' => 'Please enter product description'],
                 'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
                 'advanced.required' => ['ar'=> 'يرحى تحديد ما إذا كانت الخاصية أساسية أو لا', 'en' => 'Please specify attribute type'],
                 'cycles.required' => ['ar'=> 'يرحى تحديد دورة دفع واحدة على الأقل', 'en' => 'Please select at least one payment cycle']
@@ -68,6 +72,8 @@ class ProductController extends Controller
                 $product = new Product();
                 $product->category_id = $request->category_id;
                 $product->name = $request->name;
+                $product->description = $request->description;
+                $product->price = $request->price;
                 $product->save();
                 $product->addMediaFromBase64($request->base64image)->toMediaCollection();
             
@@ -93,11 +99,15 @@ class ProductController extends Controller
                     Rule::unique('products', 'name')->ignore($request->id)
 
                 ],
+                'description' => 'required',
+                'price' => 'required',
                 'cycles' => 'required|array|exists:subscribtion_cycles,id'
 
             ], [
                 'category_id.required' => ['ar' => 'يرجى تحديد الفئة اللتي ينتمي إليها المنتج', 'en' => 'Please specify category products'],
                 'name.required' => ['ar' => 'يرجى إدخال إسم للمنتج', 'en' => 'Please enter product name'],
+                'price.required' => ['ar' => 'يرجى إدخال سعر للمنتج', 'en' => 'Please enter product price'],
+                'description.required' => ['ar' => 'يرجى إدخال وصف للمنتج', 'en' => 'Please enter product description'],
                 'name.unique' => ['ar' => 'هذا الإسم مستعمل', 'en' => 'This name is taken'],
                 'advanced.required' => ['ar'=> 'يرحى تحديد ما إذا كانت الخاصية أساسية أو لا', 'en' => 'Please specify attribute type'],
                 'cycles.required' => ['ar'=> 'يرحى تحديد دورة دفع واحدة على الأقل', 'en' => 'Please select at least one payment cycle']
@@ -108,6 +118,8 @@ class ProductController extends Controller
                 $product = Product::find($request->id);
                 $product->category_id = $request->category_id;
                 $product->name = $request->name;
+                $product->description = $request->description;
+                $product->price = $request->price;
                 $product->save();
                 if($request->base64image) {
                 $product->clearMediaCollection();

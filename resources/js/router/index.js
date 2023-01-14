@@ -8,15 +8,9 @@ import AdminIndex from '../components/admin/index.vue';
 import CreateProduct from '../components/product/create.vue';
 import EditProduct from '../components/product/edit.vue';
 import ProductIndex from '../components/product/index.vue';
-import CreateVariant from '../components/variant/create.vue';
-import EditVariant from '../components/variant/edit.vue';
-import VariantIndex from '../components/variant/index.vue';
 import CreateCategory from '../components/category/create.vue';
 import EditCategory from '../components/category/edit.vue';
 import CategoryIndex from '../components/category/index.vue';
-import AttributeIndex from '../components/category/attribute/index.vue';
-import CreateAttribute from '../components/category/attribute/create.vue';
-import EditAttribute from '../components/category/attribute/edit.vue';
 import PackageIndex from '../components/package/index.vue';
 import CreatePackage from '../components/package/create.vue';
 import EditPackage from '../components/package/edit.vue';
@@ -70,21 +64,6 @@ const routes = [
     component : EditProduct,        
   },
   {
-    path: '/products/:id/variants',
-    name: 'variant.index',
-    component : VariantIndex,        
-  },
-  {
-    path: '/products/:id/variants/create',
-    name: 'variant.create',
-    component : CreateVariant,        
-  },
-  {
-    path: '/products/:product_id/variants/edit/:id',
-    name: 'variant.edit',
-    component : EditVariant,        
-  },
-  {
     path: '/categories',
     name: 'category.index',
     component : CategoryIndex,        
@@ -99,24 +78,7 @@ const routes = [
     name: 'category.edit',
     component : EditCategory,        
   },
-  {
-    path: '/categories/:category_id/attributes',
-    name: 'attribute.index',
-    component : AttributeIndex,        
-  },
-
-  {
-    path: '/categories/:category_id/attributes/create',
-    name: 'attribute.create',
-    component : CreateAttribute,        
-  },
-  {
-    path: '/categories/:category_id/attributes/edit/:id',
-    name: 'attribute.edit',
-    component : EditAttribute,        
-  },
-
-  {
+    {
     path: '/packages',
     name: 'package.index',
     component : PackageIndex,        

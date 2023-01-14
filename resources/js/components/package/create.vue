@@ -8,17 +8,17 @@
                      <v-card-text>
                         <v-form>
                           <v-autocomplete
-                            v-model="form.variants"
-                            :items="variants"
+                            v-model="form.products"
+                            :items="products"
                             item-text="name"
                             item-value="id"
                             outlined
                             dense
                             chips
                             small-chips
-                            :label="$translate('Package variants', 'منتجات الباقة')"
+                            :label="$translate('Package products', 'منتجات الباقة')"
                             multiple
-                            :error-messages="errors.variants ? $translate(errors.variants[0].en, errors.variants[0].ar) : null"
+                            :error-messages="errors.products ? $translate(errors.products[0].en, errors.products[0].ar) : null"
                           ></v-autocomplete>
 
                             <v-text-field
@@ -26,7 +26,7 @@
                               :placeholder="$translate('Package Name', 'إسم الباقة')"
                               outlined
                               v-model="form.name"
-                            :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
+                              :error-messages="errors.name ? $translate(errors.name[0].en, errors.name[0].ar) : null"
                             ></v-text-field>
                             <v-autocomplete
                             v-model="form.cycles"
@@ -71,15 +71,16 @@
 <script>
 import PackageService from '../../services/Package'
 import CycleService from '../../services/Cycle'
+import ProductService from '../../services/Product'
 export default {
     name: 'package.create',
     data() {
         return {
          cycles: [],
-         variants: [],
+         products: [],
          form: {
           name: '',
-          variants: [],
+          products: [],
           cycles: [],
           price: null
          },
@@ -87,11 +88,11 @@ export default {
         }
     },
     beforeMount() {
-      PackageService.GetVariants().then(response => {
-        this.variants = response.data.variants;
-      });
       CycleService.AllCycles().then(response => {
         this.cycles = response.data.cycles;
+      });
+      ProductService.GetProducts().then(response => {
+        this.products = response.data.products;
       });
     },
     methods: {

@@ -13,7 +13,8 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('CASCADE');
             $table->string('name')->unique();
-            //$table->boolean('customizable')->default(false);
+            $table->text('description');
+            $table->double('price')->min(0);
             $table->timestamps();
         });
     }

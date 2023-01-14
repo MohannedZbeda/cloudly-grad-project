@@ -13,16 +13,10 @@ class CreatePackagesTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->double('price')->min(0);
-            $table->double('discount_percentage')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('packages');

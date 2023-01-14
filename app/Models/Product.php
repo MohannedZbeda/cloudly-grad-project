@@ -14,8 +14,8 @@ class Product extends Model implements HasMedia
     use InteractsWithMedia;
 
 
-    public function variants() {
-        return $this->hasMany(Variant::class);
+    public function packages() {
+        return $this->hasMany(Product::class);
     }
 
     public function category()

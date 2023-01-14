@@ -14,7 +14,7 @@ class CategoryController extends Controller
     public function index()
     {
       try {
-        $categories = Category::with('attributes')->get();
+        $categories = Category::all();
         return response()->json(['status_code' => 200, 'categories' => CategoryResource::collection($categories)])->setStatusCode(200);
     }
     catch(Error $error) {
@@ -26,7 +26,7 @@ class CategoryController extends Controller
     public function getCategory($id)
     {
       try {
-        $category = Category::with('attributes')->find($id);
+        $category = Category::find($id);
         return response()->json(['status_code' => 200, 'category' => $category])->setStatusCode(200);
     }
     catch(Error $error) {

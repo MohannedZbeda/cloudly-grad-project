@@ -12,7 +12,7 @@ class CreatePackageProducts extends Migration
         Schema::create('package_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('package_id')->references('id')->on('packages')->onDelete('RESTRICT');
-            $table->foreignId('variant_id')->references('id')->on('variants')->onDelete('RESTRICT');
+            $table->foreignId('product_id')->references('id')->on('products')->onDelete('RESTRICT');
         });
     }
 

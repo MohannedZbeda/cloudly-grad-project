@@ -72,11 +72,11 @@
                             </h3>
                             <ul>
                                 <li
-                                    v-for="variant in pack.variants"
-                                    :key="variant.id"
+                                    v-for="product in pack.products"
+                                    :key="product.id"
                                 >
                                     <b>{{
-                                        variant.name
+                                        product.name
                                     }}</b>
                                 </li>
                             </ul>
