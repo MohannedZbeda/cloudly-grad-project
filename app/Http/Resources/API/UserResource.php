@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'email' => $this->email,
             'phone' => $this->info ? $this->info->phone : '',
-            'wallet_balance' => Wallet::where('user_id', $this->id)->whereRelation('type', 'type_name', 'balance_wallet')->first()->getWalletBalance()
+            'wallet_balance' => Wallet::where('user_id', $this->id)->first()->getWalletBalance()
         ];
     }
 }
