@@ -149,7 +149,10 @@ class UserController extends Controller
            $user->save();
        });
        DB::commit();
-       return response()->json(['status_code' => 200, 'message' => 'Admin State Updated', 'admins' => UserResource::collection(User::all())]);  
+       $users = User::whereHas('roles', function ($q) {
+        $q->where('name', '<>', 'super_admin');
+    })->get();
+       return response()->json(['status_code' => 200, 'message' => 'Admin State Updated', 'admins' => UserResource::collection($users)]);  
 
     } catch(Error $error) {
         DB::rollBack();

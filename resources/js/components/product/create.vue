@@ -78,7 +78,8 @@
                         >
                         </v-autocomplete>
                         <v-file-input
-                            accept="image/png, image/jpeg, image/jpg"
+                            accept="image/png,
+                             image/jpeg, image/jpg"
                             :placeholder="
                                 $translate('Product Image', 'صورة المنتج')
                             "

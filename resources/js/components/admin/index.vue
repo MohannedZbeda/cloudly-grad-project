@@ -1,4 +1,9 @@
 <template>
+  <div>
+    <br> <br>
+  <h1 class="text-center">{{$translate('Admins', 'المسؤولين')}}</h1>
+  <br> <br>
+  
   <v-data-table
     :headers="$translate([
         {
@@ -60,20 +65,36 @@
       </v-toolbar>
     </template>
         <template v-slot:[`item.actions`]="{ item }">
-
-      <v-icon
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+        <v-icon
         
         @click="prepareDialog(item)"
         :color="item.state ? '#c0392b' : '#2ecc71'"
+          v-bind="attrs"
+          v-on="on"
+          slot="append"
       >
       
         {{item.state  ? 'mdi-account-off' : 'mdi-account-check' }}
       </v-icon>
+      </template>
+      <span>{{item.state ? $translate('Deactivate Admin Account', 'تعطيل حساب المسؤول') : $translate('Activate Admin Account', 'تفعيل حساب المسؤول')}}</span>
+    </v-tooltip>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      
       <v-icon style="margin-right : 10px"
       @click="goToEdit(item.id)"
+      v-bind="attrs"
+      v-on="on"
+      slot="append"
       >
         mdi-account-edit
       </v-icon>
+    </template>
+      <span>{{$translate('Edit Admin Account', 'تعديل حساب المسؤول')}}</span>
+    </v-tooltip>
     </template>
 
     <template v-slot:[`item.state`]="{ item }">
@@ -83,6 +104,7 @@
     </template>
     
   </v-data-table>
+</div>
 </template>
 <script>    
 

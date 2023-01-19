@@ -1,4 +1,9 @@
 <template>
+     <div>
+    <br> <br>
+  <h1 class="text-center">{{$translate('Subscription Cycles', 'دورات الدفع')}}</h1>
+  <br> <br>
+  
     <v-data-table
         :headers="
             $translate(
@@ -103,6 +108,7 @@
 
         </template>
     </v-data-table>
+</div>
 </template>
 <script>
 import CycleService from "../../services/Cycle";

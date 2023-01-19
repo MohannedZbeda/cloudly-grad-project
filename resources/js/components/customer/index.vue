@@ -1,4 +1,8 @@
 <template>
+     <div>
+    <br> <br>
+  <h1 class="text-center">{{$translate('Customers', 'الزبائن')}}</h1>
+  <br> <br>
     <v-data-table
         :headers="
             $translate(
@@ -170,21 +174,48 @@
             </v-toolbar>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
             <v-icon
                 @click="prepareDialog(item)"
                 :color="item.state ? '#c0392b' : '#2ecc71'"
+                v-bind="attrs"
+                v-on="on"
+                slot="append"
             >
                 {{ item.state ? "mdi-account-off" : "mdi-account-check" }}
             </v-icon>
+        </template>
+      <span>{{item.state ? $translate('Deactivate Customer Account', 'تعطيل حساب الزبون') : $translate('Activate Customer Account', 'تفعيل حساب الزبون')}}</span>
+    </v-tooltip>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
             <v-icon
                 style="margin-right : 10px"
                 @click="prepareWalletDialog(item)"
+                v-bind="attrs"
+                v-on="on"
+                slot="append"
             >
                 mdi-wallet-plus
             </v-icon>
-            <v-icon style="margin-right : 10px" @click="goToHistory(item.id)">
+        </template>
+      <span>{{$translate('Charge Customer Wallet', 'شحن محفظة الزبون')}}</span>
+    </v-tooltip>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+            <v-icon 
+            style="margin-right : 10px" 
+            @click="goToHistory(item.id)"
+            v-bind="attrs"
+            v-on="on"
+            slot="append"
+            >
                 mdi-history
             </v-icon>
+        </template>
+      <span>{{$translate('View Customer Transactions', 'عرض حوالات الزبون')}}</span>
+    </v-tooltip>
         </template>
 
         <template v-slot:[`item.state`]="{ item }">
@@ -193,6 +224,7 @@
             >
         </template>
     </v-data-table>
+     </div>
 </template>
 <script>
 import CustomerService from "../../services/Customer";

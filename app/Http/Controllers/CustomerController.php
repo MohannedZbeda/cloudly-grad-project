@@ -56,7 +56,7 @@ class CustomerController extends Controller
     public function getTransactions($id)
     {
         try {
-            $wallet = Wallet::where('user_id', $id)->whereRelation('type', 'type_name', 'balance_wallet')->first();
+            $wallet = Wallet::where('user_id', $id)->first();
             $transactions = Transaction::where('wallet_id', $wallet->id)->get();
             return response()->json(['status_code' => 200, 'transactions' => TransactionResource::collection($transactions)]);
         } catch (Error $error) {

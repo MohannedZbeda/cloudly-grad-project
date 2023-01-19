@@ -1,4 +1,8 @@
 <template>
+    <div>
+    <br> <br>
+  <h1 class="text-center">{{$translate('FAQs', 'الأسئلة الشائعة')}}</h1>
+  <br> <br>
   <v-data-table
     :headers="$translate([
         {
@@ -68,11 +72,37 @@
     </template>
         
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon style="margin-right : 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
-      <v-icon style="color:#c0392b" @click="prepareDialog(item)">mdi-delete</v-icon>
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      <v-icon 
+        style="margin-right : 10px" 
+        @click="goToEdit(item.id)"
+        v-bind="attrs"
+        v-on="on"
+        slot="append"
+        >mdi-pencil
+      </v-icon>
+    </template>
+      <span>{{$translate('Edit FAQ', 'تعديل السؤال الشائع')}}</span>
+    </v-tooltip>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+    <v-icon 
+      style="color:#c0392b" 
+      @click="prepareDialog(item)"
+      v-bind="attrs"
+      v-on="on"
+      slot="append"
+      >
+      mdi-delete
+    </v-icon>
+  </template>
+      <span>{{$translate('Delete FAQ', 'حذف السؤال الشائع')}}</span>
+    </v-tooltip>
     </template>
   
   </v-data-table>
+  </div>
 </template>
 <script>    
 

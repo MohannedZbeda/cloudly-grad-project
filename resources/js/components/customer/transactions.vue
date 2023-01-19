@@ -1,4 +1,8 @@
 <template>
+     <div>
+    <br> <br>
+  <h1 class="text-center">{{$translate('Transactions', 'الحوالات')}}</h1>
+  <br> <br>
     <v-data-table
         :headers="
             $translate(
@@ -44,6 +48,7 @@
     >
         
     </v-data-table>
+     </div>
 </template>
 <script>
 import CustomerService from "../../services/Customer";

@@ -57,12 +57,11 @@ class AuthController extends Controller
           return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
         
         $user = User::where('email', $request->email)->first();
-        if(!$user)
+        if(!$user || !$user->hasRole('customer'))
           return response()->json([
-            'status_code' => 404,
-            'ar_message' => 'لم يتم العثور على بريد إلكتروني بهذا العنوان',
-            'en_message' => 'Your Email Address was not found in our database'])
-            ->setStatusCode(404);
+            'status_code' => 422,
+            'message' => 'لم يتم العثور على بريد إلكتروني بهذا العنوان'])
+            ->setStatusCode(422);
         $user_info = DB::transaction(function() use($user) {
             $user_info = UserInfo::where('user_id', $user->id)->first();
             $user_info->password_reset_code = substr(str_shuffle("0123456789"), 0, 5);
@@ -85,7 +84,7 @@ class AuthController extends Controller
     {
         try {
         if(!$request->email)
-          return response()->json(['status_code' => 422, 'ar_message' => 'يرجى تحديد البريد الإكتروني', 'en_message' => 'Please specify an email'])->setStatusCode(422);  
+          return response()->json(['status_code' => 422, 'message' => 'يرجى تحديد البريد الإكتروني'])->setStatusCode(422);  
         $user = User::where('email', $request->email)->first();
         $validator = Validator::make($request->all(), [
         'code' => [
@@ -106,7 +105,7 @@ class AuthController extends Controller
             $user_info->save();
         });
         DB::commit();
-        return response()->json(['status_code' => 200, 'message' => 'Password Has Been Reset'])->setStatusCode(200);
+        return response()->json(['status_code' => 200, 'message' => 'تم إعادة ضبط الرمز السري'])->setStatusCode(200);
     }
      catch(Error $error) {
         DB::rollBack();
@@ -128,7 +127,7 @@ class AuthController extends Controller
             'phone' => [
                 'required',
                 'string',
-              Rule::unique('user_info')->ignore($request->id, 'user_id')
+              Rule::unique('customer_info')->ignore($request->id, 'user_id')
             ]
         ]);
         if($validator->fails()) 
@@ -171,7 +170,7 @@ class AuthController extends Controller
                    'token' => $token,
                    'wallet_balance' => $wallet_balance
                 ])
-                ->withCookie('token', $token, 10080)
+                ->withCookie('token', $token, 10080 * 10)
                 ->setStatusCode(201);
     }
     catch(Error $error) {
@@ -192,14 +191,14 @@ class AuthController extends Controller
         }
         $user = User::whereRoleIs('customer')->where('username', $request->username)->first();
         if(!$user)
-            return response()->json(['status_code' => 422, 'ar_message' => 'لا يوجد مستخدم بهذا الإسم', 'en_message ' => 'No user with that username was found'])->setStatusCode(422);
+            return response()->json(['status_code' => 422, 'message' => 'لا يوجد مستخدم بهذا الإسم'])->setStatusCode(422);
         else if(!Hash::check($request->password, $user->password))
-        return response()->json(['status_code' => 422, 'ar_message' => 'رقم سري خاطئ', 'en_message ' => 'Wrong password'])->setStatusCode(422);
+        return response()->json(['status_code' => 422, 'message' => 'رقم سري خاطئ'])->setStatusCode(422);
         else if(!$user->state)
-        return response()->json(['status_code' => 422, 'ar_message' => 'نعتذر, تم تعطيل حسابك, يرجى مراجعة الشركة', 'en_message ' => 'Your account has been deactivated.'])->setStatusCode(422);
+        return response()->json(['status_code' => 422, 'message' => 'نعتذر, تم تعطيل حسابك, يرجى مراجعة الشركة'])->setStatusCode(422);
         
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['status_code' => 200, 'token' => $token, 'user' => new UserResource($user)])->withCookie('token', $token, 10080)->setStatusCode(200);
+        return response()->json(['status_code' => 200, 'token' => $token, 'user' => new UserResource($user)])->withCookie('token', $token, 10080 * 10)->setStatusCode(200);
     }
     catch(Error $error) {
         DB::rollBack();

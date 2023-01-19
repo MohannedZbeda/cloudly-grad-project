@@ -1,5 +1,8 @@
 <template>
 <div>
+  <br> <br>
+  <h1 class="text-center">{{$translate('Products', 'المنتجات')}}</h1>
+  <br> <br>
   <v-data-table
     :headers="$translate([
          {
@@ -59,8 +62,30 @@
       
 
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon style="margin-right: 10px" @click="goToEdit(item.id)">mdi-pencil</v-icon>
-      <v-icon style="margin-right: 10px" @click="showImage(item)">mdi-image-size-select-actual</v-icon>
+      <v-tooltip top>
+           <template v-slot:activator="{ on, attrs }">
+      <v-icon 
+        style="margin-right: 10px" 
+        @click="goToEdit(item.id)"
+        v-bind="attrs"
+        v-on="on"
+        slot="append"
+        >mdi-pencil</v-icon>
+      </template>
+      <span>{{$translate('Edit Product', 'تعديل المنتج')}}</span>
+    </v-tooltip>
+    <v-tooltip top>
+           <template v-slot:activator="{ on, attrs }">
+      <v-icon 
+        style="margin-right: 10px" 
+        @click="showImage(item)"
+        v-bind="attrs"
+        v-on="on"
+        slot="append"
+        >mdi-image-size-select-actual</v-icon>
+      </template>
+      <span>{{$translate('Show Product Image', 'عرض صورة المنتج')}}</span>
+    </v-tooltip>
     </template>
     <template v-slot:[`item.des`]="{ item }">
       <v-btn class="primary" @click="showDescription(item)">{{ $translate('Show Description', 'عرض الوصف') }}</v-btn>

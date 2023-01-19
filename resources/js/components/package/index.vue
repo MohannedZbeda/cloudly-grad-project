@@ -1,4 +1,8 @@
 <template>
+      <div>
+    <br> <br>
+  <h1 class="text-center">{{$translate('Packages', 'الباقات ')}}</h1>
+  <br> <br>
     <v-data-table
         :headers="
             $translate(
@@ -122,9 +126,20 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
-            <v-icon style="margin-right : 10px" @click="goToEdit(item.id)"
-                >mdi-pencil</v-icon
-            >
+          <v-tooltip top>
+           <template v-slot:activator="{ on, attrs }">
+             <v-icon 
+               style="margin-right : 10px" 
+               @click="goToEdit(item.id)"
+               v-bind="attrs"
+               v-on="on"
+               slot="append"
+               >
+                
+                mdi-pencil</v-icon>
+        </template>
+      <span>{{$translate('Edit Package', 'تعديل الباقة')}}</span>
+    </v-tooltip>
         </template>
 
         <template v-slot:[`item.package_attributes`]="{ item }">
@@ -134,6 +149,7 @@
         </template>
 
     </v-data-table>
+      </div>
 </template>
 <script>
 import PackageService from "../../services/Package";
