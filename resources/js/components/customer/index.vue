@@ -216,6 +216,20 @@
         </template>
       <span>{{$translate('View Customer Transactions', 'عرض حوالات الزبون')}}</span>
     </v-tooltip>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+            <v-icon
+                style="margin-right : 10px" 
+                @click="goToSubs(item)"
+                v-bind="attrs"
+                v-on="on"
+                slot="append"
+            >
+                mdi-format-list-bulleted
+            </v-icon>
+        </template>
+        <span>{{$translate('View Customer Subscriptions', 'عرض إشتراكات الزبون')}}</span>
+    </v-tooltip>
         </template>
 
         <template v-slot:[`item.state`]="{ item }">
@@ -248,6 +262,10 @@ export default {
         });
     },
     methods: {
+        goToSubs({id, name}) {
+            this.$store.commit('setCustomerName', name);
+            this.$router.push({name: 'customer.subscriptios', params: {id}});
+        },
         prepareDialog(item) {
             this.customer = item;
             this.activateDialog = true;

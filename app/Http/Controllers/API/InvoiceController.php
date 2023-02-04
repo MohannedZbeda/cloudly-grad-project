@@ -108,20 +108,15 @@ class InvoiceController extends Controller
         $transaction->save();
         $invoice->paid = true;
         $invoice->save();
-        
-        $sub = new Subscription();
-        $sub->user_id = $user->id;
-        $sub->save();
-        $subs = [];
+      
         foreach ($invoice->items as $item) {
-          array_push($subs, [
-            'subscription_id' => $sub->id,
-            'subscribeable_id' => $item->invoiceable_id,
-            'subscribeable_type' => $item->invoiceable_type,
-            'cycle_id' => $item->cycle_id
-          ]);
+          $sub = new Subscription();
+          $sub->user_id = $user->id;
+          $sub->name = $item->name;
+          $sub->record = "تم الإشتراك\n";
+          $sub->status = true;
+          $sub->save();
         }
-        DB::table('subscribeables')->insert($subs);  
       });
 
       DB::commit();

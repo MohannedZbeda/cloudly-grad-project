@@ -12,14 +12,11 @@ class ProductApiResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_name' => $this->ar_name,
-            'en_name' => $this->en_name,
+            'name' => $this->name,
+            'description' => $this->description,
             'image' => $this->getFirstMediaUrl(),
-            'category' => [
-              'ar_name' => $this->category->ar_name,
-              'en_name' => $this->category->en_name
-            ],
-            'variants' => VariantApiResource::collection($this->whenLoaded('variants')),
+            'price' => $this->price,
+            'category' => $this->category->name,
             'cycles' => CycleResource::collection($this->whenLoaded('cycles'))
         ];
     }

@@ -16,7 +16,7 @@ class Wallet extends Model
           $balance = Transaction::where('wallet_id', $this->id)->get()->sum(function($t) { 
             return $t->credit ? $t->amount : $t->amount * -1; 
         });
-          return $balance;
+          return floatval($balance);
         } catch(Error $error) {
            return $error;     
         }  

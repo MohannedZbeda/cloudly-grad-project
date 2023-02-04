@@ -31,18 +31,22 @@ Route::prefix('/auth')->middleware('api.guest')->group(function () {
 });
 
 Route::prefix('/wallets')->middleware(['auth:sanctum', 'role:customer'])->group(function () {
-    Route::post('/add-wallet', [WalletController::class, 'addWallet']);
-    Route::post('/charge', [WalletController::class, 'chargeWallet']);
+    Route::post('/charge-online', [WalletController::class, 'chargeOnline']);
+    Route::post('/{id}/charge', [WalletController::class, 'chargeWallet']);
+    Route::post('/stripe-charge', [WalletController::class, 'chargeWithStripe']);
     Route::get('/get-balance', [WalletController::class, 'getBalance']);
+    Route::get('/get-transactions', [WalletController::class, 'getTransactions']);
+});
+
+Route::prefix('/home')->group(function () {
+    Route::get('/', [HomeController::class, 'index']);   
 });
 
 Route::prefix('/carts')->middleware(['auth:sanctum', 'role:customer'])->group(function () {
     Route::get('/get-items', [CartController::class, 'getCartItems']);
     Route::post('/add-package', [CartController::class, 'addPackage']);
     Route::post('/add-product', [CartController::class, 'addProduct']);
-    Route::post('/add-custom-variant', [CartController::class, 'addCustomVariant']);
     Route::post('/delete-item', [CartController::class, 'removeFromCart']);
-    Route::post('/update-quantity', [CartController::class, 'updateQuantity']);
 });
 
 Route::prefix('/invoices')->middleware('auth:sanctum', 'role:customer')->group(function () {
@@ -51,23 +55,12 @@ Route::prefix('/invoices')->middleware('auth:sanctum', 'role:customer')->group(f
     Route::post('/checkout', [InvoiceController::class, 'checkout']);
 });
 
-Route::prefix('/testimonies')->group(function () {
-    Route::get('/', [TestimonyController::class, 'index']);
-    Route::middleware('auth:sanctum', 'role:customer')->post('/store', [TestimonyController::class, 'store']);
+Route::prefix('/subs')->middleware('auth:sanctum', 'role:customer')->group(function () {
+    Route::get('/', [InvoiceController::class, 'index']);
+    Route::post('/issue-invoice', [InvoiceController::class, 'issueInvoice']);
+    Route::post('/checkout', [InvoiceController::class, 'checkout']);
 });
 
-Route::prefix('/home')->group(function () {
-    Route::get('/home-page', [HomeController::class, 'index']);   
-});
 
-Route::prefix('/contacts')->group(function () {
-    Route::post('/store', [ContactController::class, 'store']);   
-    Route::post('/add-email-to-newsletter', [NewsletterEmailController::class, 'store']);   
-});
-
-Route::prefix('/store')->group(function () {
-    Route::get('/', [StoreController::class, 'index']);   
-    Route::post('/search', [StoreController::class, 'search']);   
-});
 
 Route::middleware('auth:sanctum', 'role:customer')->post('/logout', [AuthController::class, 'logout']);

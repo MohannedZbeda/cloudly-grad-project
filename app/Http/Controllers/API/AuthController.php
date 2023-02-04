@@ -96,7 +96,7 @@ class AuthController extends Controller
 
         ]);
         if($validator->fails()) 
-          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity'])->setStatusCode(422);
+          return response()->json(['status_code' => 422, 'message' => 'Unacceptable Entity', 'errors' => $validator->errors()])->setStatusCode(422);
         DB::transaction(function() use($request, $user) {
             $user->password = Hash::make($request->password);
             $user->save();

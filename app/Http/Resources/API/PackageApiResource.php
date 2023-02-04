@@ -12,12 +12,9 @@ class PackageApiResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_name' => $this->ar_name,
-            'en_name' => $this->en_name,
-            'old_price' => $this->price,
-            'new_price' => $this->getDiscount(),
-            'discount' => $this->discount_percentage ? $this->discount_percentage.'%' : null,
-            'variants' => VariantApiResource::collection($this->whenLoaded('variants')),
+            'name' => $this->name,
+            'price' => $this->price,
+            'products' => ProductApiResource::collection($this->whenLoaded('products')),
             'created_at' => $this->created_at->toDateString()
            ];
     }

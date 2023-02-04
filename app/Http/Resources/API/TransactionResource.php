@@ -13,14 +13,8 @@ class TransactionResource extends JsonResource
         return [
             'id' => $this->id,
             'description' => $this->description,
-            'type' => $this->credit ? [
-                'ar' => 'شحن',
-                'en' => 'credit'
-            ] : [
-                'ar' => 'سحب',
-                'en' => 'Withdraw'
-            ],
-            'amount' => $this->amount,
+            'credit' => $this->credit,
+            'amount' => floatval($this->amount),
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s')
         ];
     }

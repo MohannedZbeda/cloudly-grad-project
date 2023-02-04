@@ -3,7 +3,7 @@
 namespace App\Http\Resources\API;
 
 use App\Http\Resources\CycleResource;
-use App\Models\Variant;
+use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CartResource extends JsonResource
@@ -13,14 +13,11 @@ class CartResource extends JsonResource
     {
 
         return [
-            'item_id' => $this->id,
-            'ar_name' => $this->cartable->ar_name,
-            'en_name' => $this->cartable->en_name,
-            'old_price' => $this->cartable->price,
-            'discount' => $this->cartable->discount_percentage ? $this->cartable->discount_percentage . '%' : null,
-            'cycles' => CycleResource::collection($this->cartable_type == Variant::class ? $this->cartable->product->cycles : $this->cartable->cycles),
-            'new_price' => $this->cartable->getDiscount(),
-            //'type' => $this->cartable_type
+            'id' => $this->id,
+            'name' => $this->cartable->name,
+            'image' => $this->cartable->getFirstMediaUrl() ?? 'http://159.223.232.157:5000/images/cloudly_logo.png',
+            'price' => $this->cartable->price,
+            'cycles' => CycleResource::collection($this->cartable->cycles->where('enabled', true)),
         ];
     }
 }

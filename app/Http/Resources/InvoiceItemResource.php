@@ -11,8 +11,7 @@ class InvoiceItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_name' => $this->invoiceable->ar_name,
-            'en_name' => $this->invoiceable->en_name,
+            'name' => $this->invoiceable->name,
             'cycle' => new CycleResource($this->whenLoaded('cycle')),
             'price' => $this->getTotal()
         ];

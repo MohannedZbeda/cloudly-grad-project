@@ -9,11 +9,15 @@ export default new Vuex.Store({
   state: {
     authenticated : false,
     language : 'ar',
+    customerName: ''
     
   },
   mutations: {
     authAdmin(state) { 
       state.authenticated = !state.authenticated;   
+    },
+    setCustomerName(state, name) { 
+      state.customerName = name;   
     },
 
     changeLang(state) {  

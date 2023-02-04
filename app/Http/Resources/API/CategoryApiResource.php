@@ -11,9 +11,8 @@ class CategoryApiResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'ar_name' => $this->ar_name,
-            'en_name' => $this->en_name,
-            'products' =>   ProductApiResource::collection($this->whenLoaded('products')),
+            'name' => $this->name,
+            'products' => ProductApiResource::collection($this->whenLoaded('products')),
         ];
     }
 }

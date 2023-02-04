@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 import home from '../components/home/home.vue';
 import CreateAdmin from '../components/admin/create.vue';
 import EditAdmin from '../components/admin/edit.vue';
@@ -21,6 +20,7 @@ import CustomerIndex from '../components/customer/index.vue';
 import CreateCustomer from '../components/customer/create.vue';
 import EditCustomer from '../components/customer/edit.vue';
 import CustomerTransactions from '../components/customer/transactions.vue';
+import CustomerSubscriptions from '../components/customer/subscriptions.vue';
 import CycleIndex from '../components/cycle/index.vue'
 import CreateCycle from '../components/cycle/create.vue'
 
@@ -137,6 +137,11 @@ const routes = [
     path: '/customers/:id/transactions',
     name: 'customer.transactions',
     component : CustomerTransactions,        
+  },
+  {
+    path: '/customers/:id/subscriptions',
+    name: 'customer.subscriptios',
+    component : CustomerSubscriptions,        
   }
   
 ]
