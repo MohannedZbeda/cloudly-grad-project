@@ -32,6 +32,13 @@ class InvoiceController extends Controller
   public function issueInvoice(Request $request)
   {
     try {
+      $validator = Validator::make($request->all(), [
+        'attributes' => 'required|array',
+        'attributes.*.item_id' => 'required|exists:cart_items,id',
+        'attributes.*.cycle_id' => 'required|exists:subscribtion_cycles,id'
+      ]);
+      if ($validator->fails())
+        return response()->json(['status_code' => 422, 'message' => 'Please Enter Description'])->setStatusCode(422);
       $user = User::with('info')->find(auth('sanctum')->user()->id);
       $cartItems = $user->cart->items;
       if (empty($cartItems->toArray()))
