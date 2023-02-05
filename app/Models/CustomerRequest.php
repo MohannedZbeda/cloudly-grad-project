@@ -11,4 +11,13 @@ class CustomerRequest extends Model
     protected $table_name = "customer_requests"; 
     const UPDATED_AT = null;
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
+    public function sub()
+    {
+        return $this->belongsTo(Subscription::class, 'sub_id');
+    }
+
 }

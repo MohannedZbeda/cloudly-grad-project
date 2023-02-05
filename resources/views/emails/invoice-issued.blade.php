@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>1stVault Cloud Services - Invoice</title>
+    <title>Cloudly for Cloud Services - Invoice</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/x-icon" />
@@ -153,7 +153,7 @@
                             <td>
                                 1stVault<br />
                                 Janzour, Tripoli<br />
-                                <a href="http://maps.google.com/maps?q=R2GW+WM2، جنزور"
+                                <a href="https://goo.gl/maps/4Ur9PwtxewtjmfC36"
                                     style="text-decoration: none">Location</a>
                             </td>
 
@@ -187,16 +187,16 @@
             @foreach ($invoice->items as $item)
                 @if ($loop->last)
                     <tr class="item last">
-                        <td>{{ $item->invoiceable->ar_name . ' / ' . $item->invoiceable->en_name }}</td>
-                        <td>{{ $item->months . 'Months' }}</td>
-                        <td>{{ $item->invoiceable->getDiscount() }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->cycle->months . 'Months' }}</td>
+                        <td>{{ $item->price }}</td>
                         <td>{{ $item->getTotal() }}</td>
                     </tr>
                 @else
                     <tr class="item">
-                        <td>{{ $item->invoiceable->ar_name . ' / ' . $item->invoiceable->en_name }}</td>
-                        <td>{{ $item->months . 'Months' }}</td>
-                        <td>{{ $item->invoiceable->getDiscount() }}</td>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->cycle->months . 'Months' }}</td>
+                        <td>{{ $item->price }}</td>
                         <td>{{ $item->getTotal() }}</td>
                     </tr>
                 @endif

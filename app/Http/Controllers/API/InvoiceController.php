@@ -43,12 +43,13 @@ class InvoiceController extends Controller
         $invoice->total = $user->cart->getTotal();
         $invoice->save();
         $invoice_items = [];
-        foreach (json_decode($request['attributes']) as $item) {
+        // foreach (json_decode($request['attributes']) as $item) {
+        foreach ($request['attributes'] as $item) {
           array_push($invoice_items, [
             'invoice_id' => $invoice->id,
-            'cycle_id' => $item->cycle_id,
-            'invoiceable_id' => $cartItems->where('id', $item->item_id)->first()->cartable_id,
-            'invoiceable_type' => $cartItems->where('id', $item->item_id)->first()->cartable_type
+            'cycle_id' => $item["cycle_id"],
+            'name' => $cartItems->where('id', $item["item_id"])->first()->cartable->name,
+            'price' => $cartItems->where('id', $item["item_id"])->first()->cartable->price
           ]);
         }
         DB::table('invoice_items')->insert($invoice_items);

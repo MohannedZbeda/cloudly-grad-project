@@ -11,8 +11,9 @@ class CreateCustomerRequests extends Migration
         Schema::create('customer_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->references('id')->on('users');
+            $table->foreignId('sub_id')->references('id')->on('subscriptions');
             $table->boolean('status');
-            $table->boolean('descreption');
+            $table->text('descreption');
             $table->timestamp('created_at')->useCurrent();
         });
     }

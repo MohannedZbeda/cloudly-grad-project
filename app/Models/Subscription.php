@@ -17,6 +17,10 @@ class Subscription extends Model
     {
         return $this->morphedByMany(Variant::class, 'subscribeable');
     }
+    public function requests()
+    {
+        return $this->hasMany(CustomerRequest::class, 'sub_id');
+    }
 
     public function packages()
     {

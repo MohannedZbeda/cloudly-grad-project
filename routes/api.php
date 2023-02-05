@@ -9,6 +9,7 @@ use App\Http\Controllers\API\InvoiceController;
 use App\Http\Controllers\API\TestimonyController;
 use App\Http\Controllers\API\StoreController;
 use App\Http\Controllers\API\NewsletterEmailController;
+use App\Http\Controllers\UserSubsController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -55,10 +56,10 @@ Route::prefix('/invoices')->middleware('auth:sanctum', 'role:customer')->group(f
     Route::post('/checkout', [InvoiceController::class, 'checkout']);
 });
 
-Route::prefix('/subs')->middleware('auth:sanctum', 'role:customer')->group(function () {
-    Route::get('/', [InvoiceController::class, 'index']);
-    Route::post('/issue-invoice', [InvoiceController::class, 'issueInvoice']);
-    Route::post('/checkout', [InvoiceController::class, 'checkout']);
+Route::prefix('{id}/subs')->middleware('auth:sanctum', 'role:customer')->group(function () {
+    Route::get('/', [UserSubsController::class, 'index']);
+    Route::get('{sub_id}/requests', [UserSubsController::class, 'subRequests']);
+    Route::post('{sub_id}/create', [UserSubsController::class, 'createRequest']);
 });
 
 

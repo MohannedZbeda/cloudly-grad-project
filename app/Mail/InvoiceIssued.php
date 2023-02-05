@@ -26,7 +26,7 @@ class InvoiceIssued extends Mailable
 
     public function build()
     {
-        return $this->subject('TSIC Product Invoice')
+        return $this->subject('Cloudly Invoice')
             ->view('emails.invoice-issued')->with(['invoice' => $this->invoice, 'user' => $this->user]);
     }
 }

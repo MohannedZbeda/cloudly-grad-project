@@ -46,7 +46,7 @@
                             outlined
                             chips
                             small-chips
-                            :label="$translate('Admin Role', 'دور المشرف')"
+                            :label="$translate('Admin Role', 'دور المسؤول')"
                             :error-messages="errors.role ? $translate(errors.role[0].en, errors.role[0].ar) : null"
                           ></v-autocomplete>
 
