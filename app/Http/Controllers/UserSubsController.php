@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class UserSubsController extends Controller
 {
-    public function index($id) {
+    public function index() {
         try {
-           $subs = Subscription::where('user_id', $id)->get();
+           $user_id = auth('sanctum')->user()->id;
+           $subs = Subscription::where('user_id', $user_id)->get();
            return response()->json(['subs' => $subs]);
         }
         catch(Error $error) {
@@ -21,9 +22,10 @@ class UserSubsController extends Controller
         }
     }
 
-    public function subRequests($id, $sub_id) {
+    public function subRequests($sub_id) {
         try {
-           $requests = CustomerRequest::where('customer_id', $id)->where('sub_id', $sub_id)->get();
+           $user_id = auth('sanctum')->user()->id;
+           $requests = CustomerRequest::where('customer_id', $user_id)->where('sub_id', $sub_id)->get();
            return response()->json(['requests' => $requests]);
         }
         catch(Error $error) {
@@ -31,16 +33,18 @@ class UserSubsController extends Controller
         }
     }
 
-    public function createRequest($id, $sub_id, Request $request) {
+    public function createRequest($sub_id, Request $request) {
         try {
             $validator = Validator::make($request->all(), [
                 'descreption' => 'required'
               ]);
               if ($validator->fails())
                 return response()->json(['status_code' => 422, 'message' => 'Please Enter Description'])->setStatusCode(422);
-           DB::transaction(function () use($id, $sub_id, $request){
+            
+            $user_id = auth('sanctum')->user()->id;
+            DB::transaction(function () use($user_id, $sub_id, $request){
               $customer_request = new CustomerRequest();
-              $customer_request->customer_id = $id;
+              $customer_request->customer_id = $user_id;
               $customer_request->sub_id = $sub_id;
               $customer_request->status = false;
               $customer_request->descreption = (string)$request->descreption;

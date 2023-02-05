@@ -56,7 +56,7 @@ Route::prefix('/invoices')->middleware('auth:sanctum', 'role:customer')->group(f
     Route::post('/checkout', [InvoiceController::class, 'checkout']);
 });
 
-Route::prefix('{id}/subs')->middleware('auth:sanctum', 'role:customer')->group(function () {
+Route::prefix('/subs')->middleware('auth:sanctum', 'role:customer')->group(function () {
     Route::get('/', [UserSubsController::class, 'index']);
     Route::get('{sub_id}/requests', [UserSubsController::class, 'subRequests']);
     Route::post('{sub_id}/create', [UserSubsController::class, 'createRequest']);
