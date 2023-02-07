@@ -103,7 +103,6 @@ export default {
              this.$router.push('/admins') 
             });
           }).catch(errors => {
-               console.log(errors.response.data.errors);
               this.errors = errors.response.data.errors;
             });;
         }

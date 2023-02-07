@@ -14,11 +14,25 @@ use App\Http\Controllers\CycleController;
 use App\Http\Controllers\FAQController;
 use App\Http\Controllers\VariantController;
 use App\Http\Controllers\NewsletterEmailController;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Invoice;
 
 Auth::routes(['register' => false]);
 
 Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/get-auth-admin', [UserController::class, 'GetAuthUser']);
+    Route::get('/home-data', function() {
+        $customers = count(Role::where('name', 'customer')->first()->users);
+        $invoices = Invoice::all();
+        $invoices_total = $invoices->sum('total');
+        $invoices = count($invoices);      
+        return response()->json([
+            'customers_count' => $customers,
+            'invoices_count' => $invoices,
+            'invoices_total' => $invoices_total
+        ]);
+    });
     Route::prefix('/admins')->middleware('role:super_admin')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/get-roles', [UserController::class, 'getRoles']);
@@ -35,6 +49,8 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
         Route::put('/', [CustomerController::class, 'update']);
         Route::post('/charge-wallet', [CustomerController::class, 'chargeWallet']);
         Route::get('/{id}/transactions', [CustomerController::class, 'getTransactions']);
+        Route::get('/{id}/subs', [CustomerController::class, 'getSubs']);
+        Route::post('{id}/subs/change-status', [CustomerController::class, 'changeSubStatus']);
         Route::post('/change-state', [CustomerController::class, 'changeState']);
     });
 
@@ -95,6 +111,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
     });
     Route::prefix('/customer-requests')->middleware('role:super_admin|marketing_admin|sales_admin')->group(function () {
         Route::get('/', [CustomerRequestController::class, 'index']);
+        Route::get('/{id}/change-status', [CustomerRequestController::class, 'changeStatus']);
     });
 
     Route::post('/logout', function () {
@@ -107,4 +124,5 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 //     $invoice = new InvoiceResource(Invoice::with('items')->where('id', 2)->first());
 //     return view('emails.invoice-issued')->with(['invoice' => $invoice, 'user' => $user]);
 // });
+
 Route::middleware('auth')->get('/{any}', [App\Http\Controllers\MainController::class, 'index'])->where('any', '.*');

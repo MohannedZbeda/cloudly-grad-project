@@ -38,7 +38,7 @@ class InvoiceController extends Controller
         'attributes.*.cycle_id' => 'required|exists:subscribtion_cycles,id'
       ]);
       if ($validator->fails())
-        return response()->json(['status_code' => 422, 'message' => 'Please Enter Description'])->setStatusCode(422);
+        return response()->json(['status_code' => 422, 'message' => 'Invalid Data'])->setStatusCode(422);
       $user = User::with('info')->find(auth('sanctum')->user()->id);
       $cartItems = $user->cart->items;
       if (empty($cartItems->toArray()))
@@ -120,8 +120,9 @@ class InvoiceController extends Controller
         foreach ($invoice->items as $item) {
           $sub = new Subscription();
           $sub->user_id = $user->id;
+          $sub->cycle_id = $item->cycle_id;
           $sub->name = $item->name;
-          $sub->record = "تم الإشتراك\n";
+          $sub->record = "تم الإشتراك <br>";
           $sub->status = true;
           $sub->save();
         }

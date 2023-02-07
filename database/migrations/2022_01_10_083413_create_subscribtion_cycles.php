@@ -9,7 +9,7 @@ class CreateSubscribtionCycles extends Migration
 
     public function up()
     {
-        Schema::create('subscribtion_cycles', function (Blueprint $table) {
+    Schema::create('subscribtion_cycles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->integer('months')->min(1);

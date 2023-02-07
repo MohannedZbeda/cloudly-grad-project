@@ -12,7 +12,7 @@ class CreateCustomerRequests extends Migration
             $table->id();
             $table->foreignId('customer_id')->references('id')->on('users');
             $table->foreignId('sub_id')->references('id')->on('subscriptions');
-            // $table->boolean('status');
+            $table->boolean('status');
             $table->text('descreption');
             $table->timestamp('created_at')->useCurrent();
         });

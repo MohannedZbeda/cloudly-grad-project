@@ -12,8 +12,9 @@ class CreateSubscriptionsTable extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('cycle_id')->references('id')->on('subscribtion_cycles');
             $table->string('name');
-            $table->string('record');
+            $table->text('record');
             $table->timestamps();
         });
     }

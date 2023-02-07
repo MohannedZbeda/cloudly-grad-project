@@ -14,7 +14,7 @@
                 <v-card-text style="text-align: center; color: #fff;">
                   <v-icon x-large>mdi-account-supervisor</v-icon> <br />
                   <br />
-                  <h3>إجمالي الزبائن</h3>
+                  <h3>{{$translate('Total Customers', 'إجمالي الزبائن')}}</h3>
                   <br />
                   <br />
                   <h1>{{ usersCount }}</h1>
@@ -33,7 +33,7 @@
                 <v-card-text style="text-align: center; color: #fff;">
                   <v-icon x-large>mdi-newspaper</v-icon> <br />
                   <br />
-                  <h3>إجمالي عدد الفواتير</h3>
+                  <h3>{{$translate('Total Invoices', 'إجمالي عدد الفواتير')}}</h3>
                   <br />
                   <h1>{{ invoicesCount }}</h1>
                 </v-card-text>
@@ -50,7 +50,7 @@
               >
                 <v-card-text style="text-align: center; color: #fff;">
                   <v-icon x-large>mdi-cash-multiple</v-icon> <br />
-                  <h3>إجمالي الفواتير</h3>
+                  <h3>{{$translate('Invoices Total Earned', 'إجمالي الفواتير')}}</h3>
                   <br />
                   <h1>{{ invoicesTotal }}</h1>
                 </v-card-text>
@@ -65,18 +65,23 @@
 
 
 <script>
-
+import HomeService from "../../services/Home";
 export default {
 name: 'home',
 data() {
     return {
-        usersCount: 3,
-        invoicesCount: 2,
-        invoicesTotal: 540
+        usersCount: null,
+        invoicesCount: null,
+        invoicesTotal: null
     };
 },
 beforeMount() {
-  
+  HomeService.GetData().then(response => {
+      this.usersCount = response.data.customers_count;
+      this.invoicesCount = response.data.invoices_count;
+      this.invoicesTotal = response.data.invoices_total;
+      
+  });
 },
 methods: {
     

@@ -8,6 +8,8 @@ use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\API\SubscriptionResource;
+
 
 class UserSubsController extends Controller
 {
@@ -15,7 +17,7 @@ class UserSubsController extends Controller
         try {
            $user_id = auth('sanctum')->user()->id;
            $subs = Subscription::where('user_id', $user_id)->get();
-           return response()->json(['subs' => $subs]);
+           return response()->json(['subs' => SubscriptionResource::collection($subs)]);
         }
         catch(Error $error) {
             return response()->json($error);

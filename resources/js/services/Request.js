@@ -8,8 +8,8 @@ export default class {
         return API.get(prefix);
     }
 
-    static async ChangeState() {
-        return API.get(`${prefix}/change-state`);
+    static async ChangeStatus(id) {
+        return API.get(`${prefix}/${id}/change-status`);
     }
 
 

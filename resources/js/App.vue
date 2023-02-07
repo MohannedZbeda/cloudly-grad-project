@@ -302,6 +302,21 @@
             <v-list dense>
                 <v-list-item
                     link
+                    @click="goToRequests"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-post-outline</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{
+                            $translate("Customer Requests", "طلبات الزبائن")
+                        }}</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+            <v-list dense>
+                <v-list-item
+                    link
                     @click="
                         drawer = false;
                         $store.commit('logout');
@@ -374,6 +389,9 @@ export default {
         changeLang() {
             this.$store.commit("changeLang");
             this.$vuetify.rtl = this.$store.state.language == "ar";
+        },
+        goToRequests() {
+            this.$router.push('/customer-requests')
         },
         getDir() {
             return this.$store.state.language == "ar";

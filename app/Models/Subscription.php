@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Subscription extends Model
 {
@@ -13,17 +14,19 @@ class Subscription extends Model
         return $this->belongsTo(User::class);
     }
     
-    public function variants()
-    {
-        return $this->morphedByMany(Variant::class, 'subscribeable');
-    }
     public function requests()
     {
         return $this->hasMany(CustomerRequest::class, 'sub_id');
     }
-
-    public function packages()
+    public function cycle()
     {
-        return $this->morphedByMany(Package::class, 'subscribeable');
+        return $this->belongsTo(SubscriptionCycle::class);
     }
+
+    public function getExpiryDate() {
+        $date = new Carbon($this->created_at);
+        return $date->addMonths($this->cycle->months)->toDateString();
+
+    }
+
 }

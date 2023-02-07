@@ -21,6 +21,7 @@ import CreateCustomer from '../components/customer/create.vue';
 import EditCustomer from '../components/customer/edit.vue';
 import CustomerTransactions from '../components/customer/transactions.vue';
 import CustomerSubscriptions from '../components/customer/subscriptions.vue';
+import CustomerRequests from '../components/requests/index.vue';
 import CycleIndex from '../components/cycle/index.vue'
 import CreateCycle from '../components/cycle/create.vue'
 
@@ -142,6 +143,11 @@ const routes = [
     path: '/customers/:id/subscriptions',
     name: 'customer.subscriptios',
     component : CustomerSubscriptions,        
+  },
+  {
+    path: '/customer-requests',
+    name: 'customer.requests',
+    component : CustomerRequests,        
   }
   
 ]

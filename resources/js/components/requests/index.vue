@@ -1,7 +1,7 @@
 <template>
       <div>
     <br> <br>
-  <h1 class="text-center">{{$translate('Subscription Cycles', 'دورات الدفع')}}</h1>
+  <h1 class="text-center">{{$translate('Customer Requests', 'طلبات الزبائن')}}</h1>
   <br> <br>
     <v-data-table
         :headers="
@@ -70,8 +70,8 @@
                         <v-card-title class="text-h5"
                             >{{
                                 $translate(
-                                    `${request.name}'s Descreption`,
-                                    `وصف  ${request.name}`
+                                    `${request.customer_name}'s Descreption`,
+                                    `وصف  ${request.customer_name}`
                                 )
                             }}<br />
                         </v-card-title>
@@ -95,14 +95,47 @@
                 </v-dialog>
             </v-toolbar>
         </template>
-
+        <template v-slot:[`item.des`]="{ item }">
+            <v-btn class="primary" @click="showDescreption(item)">{{
+                $translate("Show Descreption", "عرض الوصف")
+            }}</v-btn>
+        </template>
+        <template v-slot:[`item.stat`]="{ item }">
+            {{item.status ? $translate('Excuted', 'تم التنفيذ') : $translate('Not Excuted', 'لم يتم التنفيذ') }}
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
-            <v-icon style="margin-right : 10px" @click="goToEdit(item.id)"
-                >mdi-pencil</v-icon
+        <v-tooltip v-if="!item.status" top>
+      <template v-slot:activator="{ on, attrs }">
+            <v-icon style="margin-right : 10px"  v-bind="attrs"
+                v-on="on"
+                slot="append"
+                @click="showStatDialog(item)"
+                >mdi-check-bold</v-icon
             >
+            </template>
+        <span>{{$translate('Set as excuted', 'تحديد الطلب كمنفذ') }}</span>
+    </v-tooltip>
         </template>
 
     </v-data-table>
+    <v-dialog
+          v-model="statDialog"
+          max-width="500px"
+        >
+          
+          <v-card>
+            <v-card-title class="text-h6">
+             {{$translate(`Are you sure you want to set the request as excuted ?`, 
+             `هل أنت متأكد من أنك تريد تحديد الطلب كمنفذ؟`)}}
+            </v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDialog">{{$translate('Cancel', 'إلغاء')}}</v-btn>
+              <v-btn color="blue darken-1" text @click="changeStatus">{{$translate('Yes', 'أجل')}}</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
@@ -114,6 +147,7 @@ export default {
         return {
             sending: false,
             dialog: false,
+            statDialog: false,
             requests: [],
             request: {}
         };
@@ -129,8 +163,19 @@ export default {
             this.request = item;
             this.dialog = true;
         },
+        changeStatus() {
+            RequestService.ChangeStatus(this.request.id).then(response => {
+                this.requests = response.data.requests;
+                this.closeDialog();
+            });
+        },
+        showStatDialog(item) {
+            this.request = item;
+            this.statDialog = true;
+        },
         closeDialog() {
             this.dialog = false;
+            this.statDialog = false;
             this.request = {};
         }
     }

@@ -7,10 +7,12 @@ use App\Http\Resources\CustomerResource;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\Transaction;
+use App\Models\Subscription;
 use Error;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\API\TransactionResource;
+use App\Http\Resources\API\SubscriptionResource;
 class CustomerController extends Controller
 {
     public function index()
@@ -59,6 +61,33 @@ class CustomerController extends Controller
             $wallet = Wallet::where('user_id', $id)->first();
             $transactions = Transaction::where('wallet_id', $wallet->id)->get();
             return response()->json(['status_code' => 200, 'transactions' => TransactionResource::collection($transactions)]);
+        } catch (Error $error) {
+            DB::rollBack();
+            return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CustomerController, Trying to get customer transactions'])->setStatusCode(500);
+        }
+    }
+    public function getSubs($id)
+    {
+        try {
+            $subs = Subscription::where('user_id', $id)->get();
+            return response()->json(['status_code' => 200, 'subs' => SubscriptionResource::collection($subs)]);
+        } catch (Error $error) {
+            DB::rollBack();
+            return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CustomerController, Trying to get customer transactions'])->setStatusCode(500);
+        }
+    }
+
+    public function changeSubStatus($id, Request $request)
+    {
+        try {
+            $sub = Subscription::find($request->id);
+            $sub->status = !$sub->status;
+            $sub->save();
+            $sub->record = $sub->record . " تم " . ($sub->status ? "تفعيل الإشتراك" : "تعطيل الإشتراك");
+            $sub->record = $sub->record . "<br>";
+            $sub->save();
+            $subs = Subscription::where('user_id', $id)->get();
+            return response()->json(['status_code' => 200, 'subs' => SubscriptionResource::collection($subs)]);
         } catch (Error $error) {
             DB::rollBack();
             return response()->json(['status_code' => 500, 'error' => $error->getMessage(), 'location' => 'CustomerController, Trying to get customer transactions'])->setStatusCode(500);
