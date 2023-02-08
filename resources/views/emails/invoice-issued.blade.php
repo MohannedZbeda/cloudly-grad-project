@@ -8,7 +8,7 @@
     <title>Cloudly for Cloud Services - Invoice</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('images/cloudly_logo.png') }}" type="image/x-icon" />
 
     <!-- Invoice styling -->
     <style>
@@ -151,8 +151,8 @@
                     <table>
                         <tr>
                             <td>
-                                1stVault<br />
-                                Janzour, Tripoli<br />
+                                Cloudly<br />
+                                Ghout al'shaal, Tripoli<br />
                                 <a href="https://goo.gl/maps/4Ur9PwtxewtjmfC36"
                                     style="text-decoration: none">Location</a>
                             </td>

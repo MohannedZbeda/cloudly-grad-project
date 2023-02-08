@@ -14,6 +14,12 @@
                         value: 'customer_name'
                     },
                     {
+                        text: 'Subscription Name',
+                        align: 'start',
+                        sortable: false,
+                        value: 'sub_name'
+                    },
+                    {
                         text: 'Descreption',
                         sortable: false,
                         value: 'des'
@@ -36,6 +42,12 @@
                         align: 'start',
                         sortable: false,
                         value: 'customer_name'
+                    },
+                    {
+                        text: 'إسم الإشتراك ',
+                        align: 'start',
+                        sortable: false,
+                        value: 'sub_name'
                     },
                     {
                         text: 'الوصف',
